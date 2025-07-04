@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+p {
+    @apply font-serif;
+}
+
+#root {
+    @apply bg-slate-200;
+}
