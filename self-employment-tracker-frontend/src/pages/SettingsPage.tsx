@@ -1,12 +1,11 @@
+import Header from "../components/Header"
+import NavBar from "../components/NavBar"
 function SettingsPage() {
     return (
         <>
-            <div className="flex flex-col items-center h-screen">
-                <div className="flex flex-col items-center justify-center h-[30%]">
-                    <p className="text-6xl font-bold color-black pb-4">Settings Page</p>
-                    <p className="text-1xl italic color-black">Select your settings!</p>
-                </div>
-
+            <NavBar />
+            <div className="flex flex-col items-center h-[90%]">
+                <Header mainTitle="Settings" subTitle="Customize your experience" />
                 <div className="h-[60%] w-[100vw] flex flex-col justify-between items-center">
                     <div className="flex flex-row justify-between items-center w-[80%] ">
                         <p>Default Graph</p>
@@ -24,16 +23,16 @@ function SettingsPage() {
                     <div className="flex flex-row justify-center items-center w-[80%] ">
 
                         <label className="mr-4" htmlFor="Miles">Miles</label>
-                        <input type="radio" id="Miles" name="units" value="Miles" />
+                        <input type="radio" id="Miles" name="distanceUnits" value="Miles" />
                         <label className="mr-4 ml-8" htmlFor="Kilometers">Kilometers</label>
-                        <input type="radio" id="Kilometers" name="units" value="Kilometers" />
+                        <input type="radio" id="Kilometers" name="distanceUnits" value="Kilometers" />
                     </div>
                     <div className="flex flex-row justify-center items-center w-[80%] ">
 
                         <label className="mr-4" htmlFor="12HR">12-HR</label>
-                        <input type="radio" id="12HR" name="units" value="12HR" />
+                        <input type="radio" id="12HR" name="timeUnits" value="12HR" />
                         <label className="mr-4 ml-8" htmlFor="24HR">24-HR</label>
-                        <input type="radio" id="24HR" name="units" value="24HR" />
+                        <input type="radio" id="24HR" name="timeUnits" value="24HR" />
                     </div>
 
                     {/* RECS */}
@@ -42,10 +41,10 @@ function SettingsPage() {
                     </div>
                     <div className="flex flex-row justify-center items-center w-[80%] ">
 
-                        <label className="mr-4" htmlFor="On">On</label>
-                        <input type="radio" id="On" name="recs" value="On" />
-                        <label className="mr-4 ml-8" htmlFor="Off">Off</label>
-                        <input type="radio" id="Off" name="recs" value="Off" />
+                        <label className="mr-4" htmlFor="RecsOn">On</label>
+                        <input type="radio" id="RecsOn" name="recs" value="On" />
+                        <label className="mr-4 ml-8" htmlFor="RecsOff">Off</label>
+                        <input type="radio" id="RecsOff" name="recs" value="Off" />
 
                     </div>
 
@@ -55,10 +54,10 @@ function SettingsPage() {
                     </div>
                     <div className="flex flex-row justify-center items-center w-[80%] ">
 
-                        <label className="mr-4" htmlFor="On">On</label>
-                        <input type="radio" id="On" name="recs" value="On" />
-                        <label className="mr-4 ml-8" htmlFor="Off">Off</label>
-                        <input type="radio" id="Off" name="recs" value="Off" />
+                        <label className="mr-4" htmlFor="DarkOn">On</label>
+                        <input type="radio" id="DarkOn" name="dark" value="On" />
+                        <label className="mr-4 ml-8" htmlFor="DarkOff">Off</label>
+                        <input type="radio" id="DarkOff" name="dark" value="Off" />
 
                     </div>
 
