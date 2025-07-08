@@ -5,7 +5,11 @@
 }
 
 #root {
-    @apply bg-slate-200;
+
     @apply h-screen;
     @apply w-screen;
+}
+
+html{
+    @apply bg-slate-200;
 }

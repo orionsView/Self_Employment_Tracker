@@ -6,6 +6,7 @@ import SettingsPage from './pages/SettingsPage';
 import Menu from './pages/MenuPage';
 import SearchLoggedJobsPage from './pages/SearchLoggedJobsPage';
 import ViewLoggedJobsPage from './pages/ViewLoggedJobsPage';
+import InputJobsPage from './pages/InputJobsPage';
 function App() {
 
 
@@ -19,7 +20,7 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/logged/search" element={<SearchLoggedJobsPage />} />
           <Route path="/logged/view" element={<ViewLoggedJobsPage />} />
-
+          <Route path="/log" element={<InputJobsPage />} />
         </Routes>
       </BrowserRouter>
     </>

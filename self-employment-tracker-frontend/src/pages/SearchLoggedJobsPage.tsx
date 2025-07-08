@@ -29,7 +29,7 @@ function SearchLoggedJobsPage() {
             {/*Client Filter*/}
             <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
                 <p>Sort By Client</p>
-                <ClientSelector selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
+                <ClientSelector setSelectedOptions={setSelectedOptions} selectMultiple={true} />
             </div>
             {/* DATE FILTER */}
             <div className={`flex justify-between flex-col items-center w-[80%] h-[40%] ${borderStyle}`}>
