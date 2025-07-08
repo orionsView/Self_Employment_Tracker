@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from './pages/LoginPage'
 import SettingsPage from './pages/SettingsPage';
 import Menu from './pages/MenuPage';
-import LoggedDataPage from './pages/LoggedJobsPage';
-
+import SearchLoggedJobsPage from './pages/SearchLoggedJobsPage';
+import ViewLoggedJobsPage from './pages/ViewLoggedJobsPage';
 function App() {
 
 
@@ -17,7 +17,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/logged" element={<LoggedDataPage />} />
+          <Route path="/logged/search" element={<SearchLoggedJobsPage />} />
+          <Route path="/logged/view" element={<ViewLoggedJobsPage />} />
+
         </Routes>
       </BrowserRouter>
     </>
