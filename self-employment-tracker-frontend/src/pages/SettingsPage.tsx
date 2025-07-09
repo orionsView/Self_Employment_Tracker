@@ -8,6 +8,7 @@ function SettingsPage() {
             <div className="flex flex-col items-center h-[90%]">
                 <Header mainTitle="Settings" subTitle="Customize your experience" />
                 <div className="h-[60%] w-[100vw] flex flex-col justify-between items-center">
+                    {/* DEFAULT GRAPH */}
                     <div className={`flex flex-row justify-between items-center w-[80%]  ${borderStyle}`}>
                         <p className="text-[4vw] text-nowrap">Default Graph</p>
                         <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5" defaultValue={""}>

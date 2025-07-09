@@ -27,13 +27,7 @@ function InputJobsPage() {
     const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
 
 
-    function setStartDate(value: string): void {
-        throw new Error("Function not implemented.")
-    }
 
-    function setEndDate(value: string): void {
-        throw new Error("Function not implemented.")
-    }
 
     return (
         <>

@@ -7,6 +7,7 @@ import Menu from './pages/MenuPage';
 import SearchLoggedJobsPage from './pages/SearchLoggedJobsPage';
 import ViewLoggedJobsPage from './pages/ViewLoggedJobsPage';
 import InputJobsPage from './pages/InputJobsPage';
+import TrendPage from './pages/TrendPage';
 function App() {
 
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/logged/search" element={<SearchLoggedJobsPage />} />
           <Route path="/logged/view" element={<ViewLoggedJobsPage />} />
           <Route path="/log" element={<InputJobsPage />} />
+          <Route path="/trends" element={<TrendPage />} />
         </Routes>
       </BrowserRouter>
     </>
