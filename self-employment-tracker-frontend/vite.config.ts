@@ -8,5 +8,5 @@ export default defineConfig({
   server: {
     host: '0.0.0.0'
   },
-  base: '/self-employment-tracker-frontend/'
+  base: '/Self_Employment_Tracker/'
 })
