@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route, HashRouter } from "react-router-dom"
 import LoginPage from './pages/LoginPage'
 import SettingsPage from './pages/SettingsPage'
 import Menu from './pages/MenuPage'
@@ -13,7 +13,7 @@ import { AuthProvider } from './authProvider'
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
@@ -39,8 +39,8 @@ function App() {
 
           <Route path="*" element={<LoginPage />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </HashRouter>
+    </AuthProvider >
   )
 }
 
