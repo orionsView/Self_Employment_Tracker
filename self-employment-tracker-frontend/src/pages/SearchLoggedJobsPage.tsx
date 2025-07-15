@@ -2,7 +2,6 @@ import NavBar from "../components/NavBar"
 import Header from "../components/Header"
 import ClientSelector from "../components/ClientSelector"
 import { useState } from "react"
-import { redirect } from "react-router";
 function SearchLoggedJobsPage() {
 
     const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
