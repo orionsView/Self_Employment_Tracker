@@ -7,6 +7,5 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     host: '0.0.0.0'
-  },
-  base: '/Self_Employment_Tracker/'
+  }
 })

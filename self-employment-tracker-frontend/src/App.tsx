@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route, HashRouter } from "react-router-dom"
+import { Routes, Route, BrowserRouter } from "react-router-dom"
 import LoginPage from './pages/LoginPage'
 import SettingsPage from './pages/SettingsPage'
 import Menu from './pages/MenuPage'
@@ -13,8 +13,9 @@ import { AuthProvider } from './authProvider'
 function App() {
   return (
     <AuthProvider>
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
+
           <Route path="/login" element={<LoginPage />} />
 
           {/* Protected Routes */}
@@ -37,9 +38,10 @@ function App() {
             <ProtectedRoute><TrendPage /></ProtectedRoute>
           } />
 
-          <Route path="*" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
+
         </Routes>
-      </HashRouter>
+      </BrowserRouter >
     </AuthProvider >
   )
 }

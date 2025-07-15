@@ -16,9 +16,42 @@ function LoginPage() {
             console.error('Google login error:', error.message)
         }
     }
-    function handleFacebookClick() { console.log("f clicked") }
-    function handleLinkedinClick() { console.log("l clicked") }
-    function handleAppleClick() { console.log("a clicked") }
+    const handleFacebookClick = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'facebook',
+            options: {
+                redirectTo: 'http://localhost:5173/menu', // or your deployed site URL
+            },
+        })
+
+        if (error) {
+            console.error('Facebook login error:', error.message)
+        }
+    }
+
+    const handleLinkedinClick = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'linkedin'
+        })
+
+        if (error) {
+            console.error('Linkedin login error:', error.message)
+        }
+    }
+
+    const handleAppleClick = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'apple',
+            options: {
+                redirectTo: 'http://localhost:5173/menu', // or your deployed site URL
+            },
+        })
+
+        if (error) {
+            console.error('Apple login error:', error.message)
+        }
+    }
+
     return (
         <>
             <div className="flex flex-col items-center h-screen">

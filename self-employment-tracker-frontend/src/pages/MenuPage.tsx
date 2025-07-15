@@ -1,6 +1,19 @@
 import NavBar from "../components/NavBar"
 import Header from "../components/Header"
+import { supabase } from '../supabaseClient'
+
 function Menu() {
+    async function handleLogout() {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            console.error('Error logging out:', error.message)
+        } else {
+            console.log('User logged out successfully')
+        }
+        localStorage.clear()
+        window.location.href = "/login"
+    }
+
     const linkClassName: string = "text-[5vw] italic color-black"
     return (
         <>
@@ -12,7 +25,7 @@ function Menu() {
                 <a href="/log" className={linkClassName}>Input Jobs</a>
                 <a href="/trends" className={linkClassName}>Trends</a>
                 <a href="/logged/search" className={linkClassName}>Logged Data</a>
-                <a href="/logout" className={linkClassName}>Logout</a>
+                <p onClick={handleLogout} className={linkClassName}>Logout</p>
             </div>
         </>
     )
