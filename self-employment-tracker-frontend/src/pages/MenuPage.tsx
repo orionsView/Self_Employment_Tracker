@@ -9,9 +9,9 @@ function Menu() {
             <div className="h-[50%] w-[100vw] flex flex-col justify-between items-center">
                 <a href="/login" className={linkClassName}>Login</a>
                 <a href="/settings" className={linkClassName}>Settings</a>
-                <a href="/dataInput" className={linkClassName}>Input Jobs</a>
+                <a href="/log" className={linkClassName}>Input Jobs</a>
                 <a href="/trends" className={linkClassName}>Trends</a>
-                <a href="/logged" className={linkClassName}>Logged Data</a>
+                <a href="/logged/search" className={linkClassName}>Logged Data</a>
                 <a href="/logout" className={linkClassName}>Logout</a>
             </div>
         </>

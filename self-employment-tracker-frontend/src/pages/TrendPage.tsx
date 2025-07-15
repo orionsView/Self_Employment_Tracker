@@ -13,6 +13,9 @@ function TrendPage() {
         <>
             <NavBar />
             <Header mainTitle="Trends" subTitle="Understand your data" />
+            {/* ADD DATE RANGE FILTER */}
+
+
             <div className="h-[50%] w-[100vw] flex flex-col justify-around items-center">
                 <div className={`flex flex-row justify-between items-center w-[80%] `}>
                     <p className="text-[4vw] text-nowrap">Graph</p>
