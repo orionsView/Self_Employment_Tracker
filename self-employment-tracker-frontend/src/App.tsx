@@ -15,7 +15,6 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/*" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
 
           {/* Protected Routes */}
@@ -37,6 +36,8 @@ function App() {
           <Route path="/trends" element={
             <ProtectedRoute><TrendPage /></ProtectedRoute>
           } />
+
+          <Route path="*" element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
