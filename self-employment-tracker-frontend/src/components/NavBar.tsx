@@ -1,7 +1,6 @@
 function NavBar() {
     return (
         <>
-
             <div className="flex justify-between items-center w-[100%] h-[10%] border-b-2">
                 <div className="flex flex-row items-center">
                     <img className="w-12" src="/src/assets/fist-logo.svg" alt="fist" />

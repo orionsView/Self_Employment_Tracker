@@ -6,8 +6,13 @@
 
 #root {
 
-    @apply h-screen;
-    @apply w-screen;
+    @apply h-[100vh];
+    @apply w-[100vw];
+}
+
+body {
+    @apply h-[100vh];
+    @apply w-[100vw];
 }
 
 html{
