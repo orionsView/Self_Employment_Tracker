@@ -11,13 +11,16 @@ type Props = {
     selectMultiple: boolean
 }
 
-function ClientSelector({ setSelectedOptions, selectMultiple }: Props) {
-    // const clients: string[] = [
-    //     "Client 1", "Client 2", "Client 3", "Client 4", "Client 5",
-    //     "Client 6", "Client 7", "Client 8", "Client 9", "Client 10"
-    // ];
+type client = {
+    FirstName: string,
+    LastName: string,
+    id: string
+}
 
-    const [clients, setClients] = useState<string[]>([]);
+function ClientSelector({ setSelectedOptions, selectMultiple }: Props) {
+
+
+    const [clients, setClients] = useState<client[]>([]);
 
 
 
@@ -26,19 +29,18 @@ function ClientSelector({ setSelectedOptions, selectMultiple }: Props) {
             const {
                 data: { user },
             } = await supabase.auth.getUser()
+            console.log(user?.id)
 
             const { data, error } = await supabase
                 .from('Client')
-                .select('FirstName, LastName')
+                .select('FirstName, LastName, ID')
                 .eq('UserID', user?.id)
 
             if (error) {
                 console.error('Error fetching clients:', error)
             } else {
-                const clientNames = data.map(
-                    (client) => `${client.FirstName} ${client.LastName}`
-                )
-                setClients(clientNames)
+                const clientObjs = data.map((client: any) => ({ FirstName: client.FirstName, LastName: client.LastName, id: client.ID }))
+                setClients(clientObjs)
             }
         }
 
@@ -56,7 +58,7 @@ function ClientSelector({ setSelectedOptions, selectMultiple }: Props) {
     return (
         <div className="w-full">
             <Select
-                options={clients.map(client => ({ value: client, label: client }))}
+                options={clients.map(client => ({ value: client, label: `${client.FirstName} ${client.LastName}` }))}
                 // value={selectedOptions}
                 onChange={setSelectedOptions}
                 isMulti={selectMultiple}

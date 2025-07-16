@@ -2,9 +2,11 @@ import Header from "../components/Header"
 import NavBar from "../components/NavBar"
 import ClientSelector from "../components/ClientSelector"
 import { useState } from "react"
+import { supabase } from '../supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 
 type input = {
-    clients: string,
+    clientId: string,
     startDate: string,
     endDate: string,
     job: string,
@@ -21,9 +23,10 @@ type trip = {
     carId: string,
     gasPrice: number
 }
+
 function InputJobsPage() {
     const [inputData, setInputData] = useState<input>({
-        clients: "",
+        clientId: "",
         startDate: "",
         endDate: "",
         job: "",
@@ -35,8 +38,102 @@ function InputJobsPage() {
     const [numberOfTrips, setNumberOfTrips]: any = useState(0);
     const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
 
-    function handleSubmit() {
-        console.log(inputData);
+    async function handleSubmit() {
+
+
+        // Get current user
+        const {
+            data: { user },
+            error: userError,
+        } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+            console.error('User not authenticated', userError);
+            return;
+        }
+
+
+
+        const jobId = uuidv4();
+
+        // Insert job
+        const { error: jobError } = await supabase.from('Job').insert({
+            ID: jobId,
+            UserID: user.id,
+            TimeEntered: new Date().toISOString(),
+            ClientID: inputData.clientId,
+            HoursWorked: inputData.hours,
+            HasBeenEdited: false,
+        });
+
+        if (jobError) {
+            console.error('Job insert failed:', jobError);
+            return;
+        }
+
+
+        // Insert trips
+        const tripInserts = inputData.trips.map((trip) => ({
+            ID: uuidv4(),
+            JobID: jobId,
+            Distance: trip.distance,
+            GasPrice: trip.gasPrice
+        }));
+
+        const { error: tripError } = await supabase.from('Trip').insert(tripInserts);
+        if (tripError) {
+            console.error('Trip insert failed:', tripError);
+            return;
+        }
+
+
+
+        const paymentId = uuidv4();
+        const expenseId = uuidv4();
+        const defaultPaymentMethod = 'Cash';
+        const { data, error } = await supabase
+            .from('PaymentMethod')
+            .select('ID')
+            .eq('Method', defaultPaymentMethod)
+
+        if (error) {
+            console.error('Error fetching payment method ID:', error)
+        } else { // got payment method id
+            const deafultPaymentMethodId = data[0].ID;
+            const { error: paymentError } = await supabase.from('Payment').insert({
+                ID: paymentId,
+                JobID: jobId,
+                Amount: inputData.earnings,
+                TimePayed: new Date().toISOString(),
+                MethodID: deafultPaymentMethodId,
+            });
+
+            if (paymentError) {
+                console.error('Payment insert failed:', paymentError);
+                return;
+            }
+
+            // Insert expense
+            const { error: expenseError } = await supabase.from('Expense').insert({
+                ID: expenseId,
+                JobID: jobId,
+                Amount: inputData.expenses,
+                TimePayed: new Date().toISOString(),
+                MethodID: deafultPaymentMethodId,
+                Description: 'Auto-entered', // you can customize this
+            });
+
+            if (expenseError) {
+                console.error('Expense insert failed:', expenseError);
+                return;
+            }
+
+            console.log('Job, trips, payment, and expense created successfully!');
+        }
+
+
+
+
     }
 
 
@@ -50,7 +147,7 @@ function InputJobsPage() {
                 {/*Client Filter*/}
                 <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
                     <p>Sort By Client</p>
-                    <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clients: event }) }} selectMultiple={false} />
+                    <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} />
                 </div>
                 {/* DATE FILTER */}
                 <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
