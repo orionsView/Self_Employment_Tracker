@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
 type jobObj = {
-    ID: string;            // The job ID
+    JobName: string;            // The job ID
     ClientName: string;    // Combined FirstName + LastName
     StartDate: string;     // TimeEntered date string
     Earnings: number;      // total_earnings
@@ -35,7 +35,10 @@ function JobTable() {
     useEffect(() => {
         const fetchJobs = async (
             orderBy: string,
-            asc: boolean
+            asc: boolean,
+            clients: string[] | null,
+            startDate: string | null,
+            endDate: string | null
         ) => {
 
             const {
@@ -45,10 +48,13 @@ function JobTable() {
             console.log(`user id: ${user?.id}`);
 
 
-            const { data, error } = await supabase.rpc('get_user_jobs_with_limited_details', {
+            const { data, error } = await supabase.rpc('get_user_jobs_limited_filtered', {
                 in_user_id: user?.id,
                 in_order_by: orderBy,
                 in_asc: asc,
+                in_client_ids: clients,
+                in_start_date: startDate,
+                in_end_date: endDate
             })
 
             if (error) {
@@ -57,7 +63,7 @@ function JobTable() {
             } else {
                 console.log(`data: ${JSON.stringify(data)}`);
                 const jobObjs: jobObj[] = data.map((job: any) => ({
-                    ID: job.ID,
+                    JobName: job.JobName,
                     ClientName: `${job.FirstName} ${job.LastName}`,
                     StartDate: new Date(job.TimeEntered).toLocaleDateString(),  // format date nicely
                     Earnings: job.total_earnings,
@@ -74,7 +80,36 @@ function JobTable() {
         const orderBy = 'StartDate';
         const asc = true;
 
-        fetchJobs(orderBy, asc)
+
+
+        const raw = localStorage.getItem("selectedClients");
+        let selectedClients: string[] = [];
+
+        if (!raw) selectedClients = [];
+
+        try {
+            const parsed: { value: { id: string }; label: string }[] | null = JSON.parse(raw) as {
+                value: { id: string };
+                label: string;
+            }[];
+
+            selectedClients = parsed.map((entry) => entry.value.id);
+        } catch (err) {
+            console.error("Failed to parse clients from localStorage", err);
+        }
+
+        let startDate = localStorage.getItem("startDate");
+        let endDate = localStorage.getItem("endDate");
+        let selectAll = localStorage.getItem("selectAllDates");
+
+        console.log(`selectedClients: ${JSON.stringify(selectedClients)}`);
+
+        // get search paras from local storage
+        if (!selectAll) {
+            fetchJobs(orderBy, asc, selectedClients, startDate, endDate);
+        } else {
+            fetchJobs(orderBy, asc, selectedClients, null, null);
+        }
 
     }, [])
 
@@ -87,7 +122,7 @@ function JobTable() {
     const cellStyle: string = "border border-black";
     return (
         <>
-            <table className="w-[100%] h-[100%]">
+            <table className="w-[100%]">
                 <thead>
                     <tr className="border border-black">
                         <th className={headerCellStyle}>Job</th>
@@ -100,8 +135,8 @@ function JobTable() {
                 <tbody>
                     {
                         jobs.map((job, index) => (
-                            <tr key={`${job.Job}-${index}`}>
-                                <td className={cellStyle}>{job.Job}</td>
+                            <tr key={`${job.JobName}-${index}`}>
+                                <td className={cellStyle}>{job.JobName}</td>
                                 <td className={cellStyle}>{job.ClientName}</td>
                                 <td className={cellStyle}>{job.StartDate}</td>
                                 <td className={cellStyle}>{job.Earnings}</td>

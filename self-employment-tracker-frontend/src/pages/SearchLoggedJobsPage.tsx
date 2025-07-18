@@ -14,7 +14,7 @@ function SearchLoggedJobsPage() {
         localStorage.setItem("selectedClients", JSON.stringify(selectedOptions));
         localStorage.setItem("startDate", startDate);
         localStorage.setItem("endDate", endDate);
-        localStorage.setItem("selectAll", selectAll);
+        localStorage.setItem("selectAllDates", selectAll);
 
         window.location.href = "/logged/view";
         console.log("Submitted");
