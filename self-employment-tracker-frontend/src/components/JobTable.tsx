@@ -88,7 +88,7 @@ function JobTable() {
         if (!raw) selectedClients = [];
 
         try {
-            const parsed: { value: { id: string }; label: string }[] | null = JSON.parse(raw) as {
+            const parsed: { value: { id: string }; label: string }[] | null = JSON.parse(raw || "") as {
                 value: { id: string };
                 label: string;
             }[];
