@@ -1,6 +1,11 @@
 import express, { Request, Response } from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+
 const app = express();
 const PORT = 3000;
+
+app.use(cors());
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -18,4 +23,27 @@ app.post('/api/data', (req: Request, res: Response) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+app.get("/distance", async (req, res) => {
+    // console.log("test");
+    const start = req.query.start;
+    const end = req.query.end;
+
+    dotenv.config();
+    const { GOOGLE_MAPS_API_KEY: apiKey } = process.env;
+
+
+
+    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(start as string)}&destination=${encodeURIComponent(end as string)}&key=${apiKey}`;
+    console.log(`fetching' ${url}`);
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch distance." });
+    }
 });
