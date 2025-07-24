@@ -22,6 +22,7 @@ type trip = {
     distance: number,
     carId: string,
     gasPrice: number
+    mapLink: string
 }
 
 function InputJobsPage() {
@@ -68,21 +69,30 @@ function InputJobsPage() {
 
         if (jobError) {
             console.error('Job insert failed:', jobError);
+
             return;
         }
 
 
+
         // Insert trips
-        const tripInserts = inputData.trips.map((trip) => ({
-            ID: uuidv4(),
-            JobID: jobId,
-            Distance: trip.distance,
-            GasPrice: trip.gasPrice
+
+
+        const tripInserts = await Promise.all(inputData.trips.map(async (trip) => {
+            const distance = trip.distance || await getTripDistanceFromShortLink(trip.mapLink);
+            return {
+                ID: uuidv4(),
+                JobID: jobId,
+                Distance: distance,
+                GasPrice: trip.gasPrice ?? 0,
+            };
         }));
+
 
         const { error: tripError } = await supabase.from('Trip').insert(tripInserts);
         if (tripError) {
             console.error('Trip insert failed:', tripError);
+            console.log('Trip insert failed with:', tripInserts);
             return;
         }
 
@@ -136,6 +146,38 @@ function InputJobsPage() {
 
     }
 
+    async function getTripDistanceFromShortLink(shortLink: string) {
+        console.log(`getting trip distance from short link: ${shortLink}`);
+
+        // const longLink = await getLongUrl(shortLink);
+
+        const distance = await getDistanceFromLongLink(shortLink);
+        console.log(`distance: ${distance}`);
+        return distance;
+    }
+
+    // async function getLongUrl(shortUrl: string) {
+    //     const response = await fetch(shortUrl);
+
+    //     const longUrl = response.headers.get("location");
+    //     // console.log("Redirected to:", location);
+    //     return longUrl;
+    // }
+
+    async function getDistanceFromLongLink(longLink: string) {
+        // un haord code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const start = "1600 Amphitheatre Parkway, Mountain View, CA";
+        const end = "Seattle, Washington";
+        const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+        const url = `${backendUrl}/distance?start=${start}&end=${end}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Return distance in meters
+        return data.routes[0].legs[0].distance.value;
+    }
 
 
 
@@ -237,12 +279,28 @@ function InputJobsPage() {
                                 <input type="text" id={`trip${i}`} onChange={(event) => {
                                     const updatedTrips = [...inputData.trips]; // copy array
                                     updatedTrips[i] = {
-                                        ...updatedTrips[i],         // copy existing trip
-                                        distance: parseFloat(event.target.value) // or whichever field you're updating
+                                        ...updatedTrips[i],
+                                        distance: parseFloat(event.target.value)
                                     };
                                     setInputData({ ...inputData, trips: updatedTrips });
                                 }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                             </div>
+
+                            <p className="font-bold">OR</p>
+
+                            {/* Map Link */}
+                            <div className="flex flex-row justify-between items-center w-[80%] ">
+                                <p className="text-[4vw] text-nowrap">Map Link</p>
+                                <input type="text" id={`trip${i}`} onChange={(event) => {
+                                    const updatedTrips = [...inputData.trips]; // copy array
+                                    updatedTrips[i] = {
+                                        ...updatedTrips[i],
+                                        mapLink: event.target.value
+                                    };
+                                    setInputData({ ...inputData, trips: updatedTrips });
+                                }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                            </div>
+
                         </div>
 
                         {/* Gas Price */}
