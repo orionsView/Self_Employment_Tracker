@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -31,7 +32,6 @@ app.get("/distance", async (req, res) => {
     const start = req.query.start;
     const end = req.query.end;
 
-    dotenv.config();
     const { GOOGLE_MAPS_API_KEY: apiKey } = process.env;
 
 
@@ -46,4 +46,22 @@ app.get("/distance", async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch distance." });
     }
+});
+
+
+app.get("/shortlinkToLonglink", async (req, res) => {
+    const shortLinkRaw = req.query.shortLink;
+    console.log(`shortLinkRaw: ${shortLinkRaw}`);
+
+    const response = await fetch(shortLinkRaw as string, {
+        method: "GET",
+        redirect: "manual",
+    });
+    console.log(`response' ${response}`);
+
+    const longUrl = response.headers.get("Location");
+    console.log(`longUrl: ${longUrl}`);
+    // console.log("Redirected to:", location);
+
+    res.json({ longUrl });
 });

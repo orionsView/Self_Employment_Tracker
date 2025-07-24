@@ -79,13 +79,24 @@ function InputJobsPage() {
 
 
         const tripInserts = await Promise.all(inputData.trips.map(async (trip) => {
-            const distance = trip.distance || await getTripDistanceFromShortLink(trip.mapLink);
-            return {
-                ID: uuidv4(),
-                JobID: jobId,
-                Distance: distance,
-                GasPrice: trip.gasPrice ?? 0,
-            };
+            if (trip.distance) {
+                return {
+                    ID: uuidv4(),
+                    JobID: jobId,
+                    Distance: trip.distance,
+                    GasPrice: trip.gasPrice ?? 0,
+                };
+            } else if (trip.mapLink) {
+                const { distance, source, destination } = await getTripDistanceFromShortLink(trip.mapLink);
+                return {
+                    ID: uuidv4(),
+                    JobID: jobId,
+                    Distance: distance,
+                    GasPrice: trip.gasPrice ?? 0,
+                    Src: source,
+                    Dst: destination
+                };
+            }
         }));
 
 
@@ -151,26 +162,53 @@ function InputJobsPage() {
 
         // const longLink = await getLongUrl(shortLink);
 
-        const distance = await getDistanceFromLongLink(shortLink);
+        const longLink = await getLongLinkFromShortLink(shortLink);
+
+        const { source, destination } = parseGoogleMapsUrl(longLink);
+
+        console.log(`source: ${source}`);
+        console.log(`destination: ${destination}`);
+
+
+        const distance = await getDistanceFromLocations(source || "", destination || "");
         console.log(`distance: ${distance}`);
-        return distance;
+        return { distance, source, destination };
+    }
+    function parseGoogleMapsUrl(url: string) {
+        const regex = /\/maps\/dir\/([^/]+)\/([^/?#]+)/;
+        const match = url.match(regex);
+
+        if (!match || match.length < 3) {
+            return { error: "Unable to parse source and destination" };
+        }
+
+        const source = decodeURIComponent(match[1]);
+        const destination = decodeURIComponent(match[2]);
+
+        return { source, destination };
     }
 
-    // async function getLongUrl(shortUrl: string) {
-    //     const response = await fetch(shortUrl);
+    async function getLongLinkFromShortLink(shortLink: string) {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL
+        const urlToFetch = `${backendUrl}/shortlinkToLonglink?shortLink=${shortLink}`
 
-    //     const longUrl = response.headers.get("location");
-    //     // console.log("Redirected to:", location);
-    //     return longUrl;
-    // }
+        const response = await fetch(urlToFetch);
+        const jsonResponse = await response.json();
 
-    async function getDistanceFromLongLink(longLink: string) {
-        // un haord code !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const start = "1600 Amphitheatre Parkway, Mountain View, CA";
-        const end = "Seattle, Washington";
+        const longUrl = jsonResponse.longUrl
+
+        console.log(`longUrl: ${longUrl}`);
+
+        return longUrl;
+    }
+
+
+
+    async function getDistanceFromLocations(dest: string, src: string) {
+
         const backendUrl = import.meta.env.VITE_BACKEND_URL
 
-        const url = `${backendUrl}/distance?start=${start}&end=${end}`;
+        const url = `${backendUrl}/distance?start=${src}&end=${dest}`;
 
         const response = await fetch(url);
         const data = await response.json();
