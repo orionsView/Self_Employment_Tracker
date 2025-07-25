@@ -7,6 +7,7 @@ import SearchLoggedJobsPage from './pages/SearchLoggedJobsPage'
 import ViewLoggedJobsPage from './pages/ViewLoggedJobsPage'
 import InputJobsPage from './pages/InputJobsPage'
 import TrendPage from './pages/TrendPage'
+import SignUpPage from './pages/SignUpPage'
 import ProtectedRoute from './protectedRoute'
 import { AuthProvider } from './authProvider'
 
@@ -36,6 +37,10 @@ function App() {
           } />
           <Route path="/trends" element={
             <ProtectedRoute><TrendPage /></ProtectedRoute>
+          } />
+
+          <Route path="signup" element={
+            <ProtectedRoute><SignUpPage /></ProtectedRoute>
           } />
 
           <Route path="/" element={<LoginPage />} />
