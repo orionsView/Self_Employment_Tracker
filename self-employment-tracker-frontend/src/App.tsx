@@ -18,6 +18,7 @@ function App() {
         <Routes>
 
           <Route path="/login" element={<LoginPage />} />
+          <Route path="signup" element={<SignUpPage />} />
 
           {/* Protected Routes */}
           <Route path="/settings" element={
@@ -39,9 +40,6 @@ function App() {
             <ProtectedRoute><TrendPage /></ProtectedRoute>
           } />
 
-          <Route path="signup" element={
-            <ProtectedRoute><SignUpPage /></ProtectedRoute>
-          } />
 
           <Route path="/" element={<LoginPage />} />
 
