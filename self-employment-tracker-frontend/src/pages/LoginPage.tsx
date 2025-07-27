@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient'
 import TextInputField from "../components/TextInputField"
 import type { style } from "../components/TextInputField"
 import { useState } from "react"
+import GoogleLogo from '../assets/google-logo.svg'
 
 type inputType = { email: string, password: string }
 function LoginPage() {
@@ -93,7 +94,7 @@ function LoginPage() {
 
                     <p className="font-bold text-[5vw]">OR</p>
 
-                    <img className={`${logoClassName} border-1 p-[1vh] rounded-lg shadow-lg`} src="/src/assets/google-logo.svg" alt="Google logo" onClick={handleGoogleLogin} />
+                    <img className={`${logoClassName} border-1 p-[1vh] rounded-lg shadow-lg`} src={GoogleLogo} alt="Google logo" onClick={handleGoogleLogin} />
                     {/* <img className={logoClassName} src="/src/assets/facebook-logo.svg" alt="Facebook logo" onClick={handleFacebookClick} />
                     <img className={logoClassName} src="/src/assets/linkedin-logo.svg" alt="Linkedin logo" onClick={handleLinkedinClick} />
                     <img className={logoClassName} src="/src/assets/apple-logo.svg" alt="Apple logo" onClick={handleAppleClick} /> */}
