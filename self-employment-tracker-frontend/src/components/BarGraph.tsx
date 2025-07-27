@@ -3,6 +3,7 @@ import {
 } from 'recharts';
 
 export default function BarGraph({ data, showExpenses = false, showEarnings = false }: { data: any, showExpenses?: boolean, showEarnings?: boolean }) {
+
     return (
         <ResponsiveContainer width="100%" height={"75%"}>
             <BarChart
@@ -10,13 +11,14 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" tick={{ angle: -0, textAnchor: 'middle', fontSize: 12 }
+                <XAxis dataKey="label" tick={{ textAnchor: 'middle', fontSize: 12 }
                     // tickFormatter={(value: string) => value.slice(0, 3)
                 } /> {/* label = "July-week1", etc. */}
                 <YAxis
                     domain={[
                         0,
                         (dataMax: number) => Math.ceil((dataMax + 50) / 100) * 100  // round up to nearest 100 with +50 buffer
+
                     ]}
                     allowDataOverflow={true}
                     tickFormatter={(value) => `$${value.toLocaleString()}`}
