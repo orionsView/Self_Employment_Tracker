@@ -3,6 +3,7 @@ import Header from "../components/Header"
 import TextInputField from '../components/TextInputField'
 import type { style } from '../components/TextInputField'
 import { useEffect, useState } from "react"
+import { useNavigate } from 'react-router'
 
 type inputType = {
     email: string,
@@ -28,7 +29,7 @@ function SignUpPage() {
                     alert("Make sure you are using a valid email address")
                 } else {
                     console.log('Sign up successful');
-                    window.location.href = "/login";
+                    navigate("/login");
                 }
             });
         }
@@ -71,6 +72,8 @@ function SignUpPage() {
         console.log(passwordConfimationRegex);
         console.log(currentInput);
     }, [currentInput.password])
+
+    const navigate = useNavigate();
 
 
 

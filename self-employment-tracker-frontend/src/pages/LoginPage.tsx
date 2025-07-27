@@ -4,9 +4,11 @@ import TextInputField from "../components/TextInputField"
 import type { style } from "../components/TextInputField"
 import { useState } from "react"
 import GoogleLogo from '../assets/google-logo.svg'
+import { useNavigate } from "react-router"
 
 type inputType = { email: string, password: string }
 function LoginPage() {
+    const navigate = useNavigate();
     const logoClassName: string = "w-30"
 
 
@@ -14,7 +16,7 @@ function LoginPage() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: '/menu', // or your deployed site URL
+                redirectTo: window.location.origin + "/menu", // or your deployed site URL
             },
         })
 
@@ -33,7 +35,7 @@ function LoginPage() {
                 alert("Invalid email or password")
             } else {
                 console.log('Sign in successful');
-                window.location.href = "/menu"; // redirect to menu on successful login
+                navigate("/menu");
             }
         })
 
