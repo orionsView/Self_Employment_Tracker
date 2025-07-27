@@ -16,7 +16,7 @@ function LoginPage() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin + "/menu", // or your deployed site URL
+                redirectTo: "https://self-employment-tracker.netlify.app/menu", // or your deployed site URL
             },
         })
 
