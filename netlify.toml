@@ -1,6 +1,6 @@
 [build]
   base = "self-employment-tracker-frontend"
-  publish = "self-employment-tracker-frontend/dist"
+  publish = "/dist"
   command = "npm run build"
 
 [[redirects]]
