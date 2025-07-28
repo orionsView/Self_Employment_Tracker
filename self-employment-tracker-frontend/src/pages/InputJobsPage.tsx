@@ -57,8 +57,8 @@ function InputJobsPage() {
             return;
         }
 
+        const newClientId = uuidv4();
         if (inputData.newClientName !== "") {
-            const newClientId = uuidv4();
             setInputData({ ...inputData, clientId: newClientId });
             const names = inputData.newClientName.split(" ");
             const firstName = names[0];
@@ -73,7 +73,7 @@ function InputJobsPage() {
                 console.error('Client insert failed:', clientError);
                 return;
             }
-            console.log('Client inserted:', { ID: newClientId, FirstName: firstName, LastName: lastName, UserID: user.id }, 'client id is now', inputData.clientId);
+            // console.log('Client inserted:', { ID: newClientId, FirstName: firstName, LastName: lastName, UserID: user.id }, 'client id is now', inputData.clientId);
         }
 
 
@@ -85,7 +85,7 @@ function InputJobsPage() {
             ID: jobId,
             UserID: user.id,
             TimeEntered: new Date().toISOString(),
-            ClientID: inputData.clientId,
+            ClientID: inputData.clientId || newClientId,
             HoursWorked: inputData.hours,
             HasBeenEdited: false,
         });
