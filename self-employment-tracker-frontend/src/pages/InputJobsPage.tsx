@@ -90,6 +90,7 @@ function InputJobsPage() {
         });
 
         if (jobError) {
+            console.log('inserting job', inputData);
             console.error('Job insert failed:', jobError);
 
             return;
