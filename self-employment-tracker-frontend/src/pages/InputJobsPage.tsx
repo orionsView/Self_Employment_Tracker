@@ -58,9 +58,15 @@ function InputJobsPage() {
         }
 
         if (inputData.newClientName !== "") {
+            const newClientId = uuidv4();
+            setInputData({ ...inputData, clientId: newClientId });
+            const names = inputData.newClientName.split(" ");
+            const firstName = names[0];
+            const lastName = names.slice(1).join(" ");
             const { error: clientError } = await supabase.from('Client').insert({
-                ID: inputData.clientId,
-                Name: inputData.newClientName,
+                ID: newClientId,
+                FirstName: firstName,
+                LastName: lastName,
             });
             if (clientError) {
                 console.error('Client insert failed:', clientError);
@@ -249,7 +255,7 @@ function InputJobsPage() {
             <div className="h-[60%] w-[100%] flex flex-col justify-between items-center">
                 {/*Client Filter*/}
                 <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
-                    <p>Sort By Client</p>
+                    <p>Use Existing Client</p>
                     <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} />
                     <p className="text-[4vw] text-nowrap">OR</p>
                     <TextInputField
