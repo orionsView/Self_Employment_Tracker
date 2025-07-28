@@ -15,9 +15,7 @@ function LoginPage() {
     const handleGoogleLogin = async () => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: {
-                redirectTo: "https://self-employment-tracker.netlify.app/menu", // or your deployed site URL
-            },
+
         })
 
         if (error) {
