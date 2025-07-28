@@ -89,13 +89,23 @@ function TrendPage() {
 
                     {/* Detail Level */}
                     <div className="flex flex-col items-center" >
-                        <div onClick={() => setShowExpenses(!showExpenses)}>
+                        <div >
                             <label htmlFor="showExpenses" className="mr-2">Show Expenses</label>
-                            <input type="checkbox" name="showExpenses" />
+                            <input type="checkbox"
+                                id="showExpenses"
+                                name="showExpenses"
+                                checked={showExpenses}
+                                onChange={() => setShowExpenses(!showExpenses)}
+                                className="mr-2" />
                         </div>
-                        <div onClick={() => setShowEarnings(!showEarnings)}>
+                        <div >
                             <label htmlFor="showEarnings " className="mr-2">Show Earnings</label>
-                            <input type="checkbox" name="showEarnings" />
+                            <input type="checkbox"
+                                id="showEarnings"
+                                name="showEarnings"
+                                checked={showEarnings}
+                                onChange={() => setShowEarnings(!showEarnings)}
+                                className="mr-2" />
                         </div>
                     </div>
 
