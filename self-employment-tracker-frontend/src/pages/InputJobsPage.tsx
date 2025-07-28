@@ -150,6 +150,8 @@ function InputJobsPage() {
             }
 
             console.log('Job, trips, payment, and expense created successfully!');
+            window.location.href = "/menu";
+            alert('Job, trips, payment, and expense created successfully!');
         }
 
 
