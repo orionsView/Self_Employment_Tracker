@@ -4,9 +4,12 @@ import ClientSelector from "../components/ClientSelector"
 import { useState } from "react"
 import { supabase } from '../supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
+import TextInputField from "../components/TextInputField";
+import type { style } from "../components/TextInputField";
 
 type input = {
     clientId: string,
+    newClientName: string,
     startDate: string,
     endDate: string,
     job: string,
@@ -28,6 +31,7 @@ type trip = {
 function InputJobsPage() {
     const [inputData, setInputData] = useState<input>({
         clientId: "",
+        newClientName: "",
         startDate: "",
         endDate: "",
         job: "",
@@ -51,6 +55,17 @@ function InputJobsPage() {
         if (userError || !user) {
             console.error('User not authenticated', userError);
             return;
+        }
+
+        if (inputData.newClientName !== "") {
+            const { error: clientError } = await supabase.from('Client').insert({
+                ID: inputData.clientId,
+                Name: inputData.newClientName,
+            });
+            if (clientError) {
+                console.error('Client insert failed:', clientError);
+                return;
+            }
         }
 
 
@@ -219,6 +234,12 @@ function InputJobsPage() {
         return data.routes[0].legs[0].distance.value;
     }
 
+    const inputTextStyle: style = {
+        ContainerStyle: "flex flex-row justify-between items-center w-[100%] ",
+        InputStyle: "w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm ",
+        LabelStyle: "text-[4vw] text-nowrap"
+    }
+
 
 
     return (
@@ -230,6 +251,19 @@ function InputJobsPage() {
                 <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
                     <p>Sort By Client</p>
                     <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} />
+                    <p className="text-[4vw] text-nowrap">OR</p>
+                    <TextInputField
+                        Label="Add New Client"
+                        Type="text"
+                        onChange={(event) => { setInputData({ ...inputData, newClientName: event.target.value }) }}
+                        Placeholder="Enter client name"
+                        Style={inputTextStyle}
+                        currentValue=""
+                        setValidity={() => { }}
+                        validationRegex={/ /}
+                        warningMessage=" "
+                        onEnter={() => { }}
+                    />
                 </div>
                 {/* DATE FILTER */}
                 <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
