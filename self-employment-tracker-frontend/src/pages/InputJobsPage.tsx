@@ -73,6 +73,7 @@ function InputJobsPage() {
                 console.error('Client insert failed:', clientError);
                 return;
             }
+            console.log('Client inserted:', { ID: newClientId, FirstName: firstName, LastName: lastName, UserID: user.id }, 'client id is now', inputData.clientId);
         }
 
 
