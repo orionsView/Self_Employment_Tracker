@@ -89,11 +89,11 @@ function TrendPage() {
 
                     {/* Detail Level */}
                     <div className="flex flex-col items-center" >
-                        <div onClick={setShowExpenses(!showExpenses)}>
+                        <div onClick={() => setShowExpenses(!showExpenses)}>
                             <label htmlFor="showExpenses" className="mr-2">Show Expenses</label>
                             <input type="checkbox" name="showExpenses" />
                         </div>
-                        <div onClick={setShowEarnings(!showEarnings)}>
+                        <div onClick={() => setShowEarnings(!showEarnings)}>
                             <label htmlFor="showEarnings " className="mr-2">Show Earnings</label>
                             <input type="checkbox" name="showEarnings" />
                         </div>
