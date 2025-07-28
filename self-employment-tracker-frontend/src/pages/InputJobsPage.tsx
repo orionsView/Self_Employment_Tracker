@@ -258,7 +258,7 @@ function InputJobsPage() {
                         onChange={(event) => { setInputData({ ...inputData, newClientName: event.target.value }) }}
                         Placeholder="Enter client name"
                         Style={inputTextStyle}
-                        currentValue=""
+                        currentValue={inputData.newClientName}
                         setValidity={() => { }}
                         validationRegex={/ /}
                         warningMessage=" "
