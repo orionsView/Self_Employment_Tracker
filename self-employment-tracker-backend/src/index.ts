@@ -6,7 +6,11 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://self-employment-tracker-frontend.netlify.app',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+}));
 
 // Middleware to parse JSON
 app.use(express.json());
