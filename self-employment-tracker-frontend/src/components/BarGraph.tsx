@@ -1,5 +1,5 @@
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 
 export default function BarGraph({ data, showExpenses = false, showEarnings = false }: { data: any, showExpenses?: boolean, showEarnings?: boolean }) {
@@ -26,6 +26,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
 
                 <Tooltip />
                 <Legend />
+                <ReferenceLine y={0} stroke="#000" strokeWidth={2} />
                 <Bar dataKey="net_income" fill="#82ca9d" name="Net Income" />
                 {/* Optional: show both earnings & expenses for context */}
                 {showEarnings && <Bar dataKey="earnings" fill="#8884d8" name="Earnings" />}
