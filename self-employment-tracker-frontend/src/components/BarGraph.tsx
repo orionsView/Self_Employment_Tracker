@@ -34,19 +34,19 @@ function calculateLinearRegression(data: DataPoint[]) {
 }
 
 export default function BarGraph({ data, showExpenses = false, showEarnings = false, showTrend = false }: { data: any, showExpenses?: boolean, showEarnings?: boolean, showTrend?: boolean }) {
-    const trendLineData = useMemo(() => {
+    const mergedData = useMemo(() => {
         const linePoints = calculateLinearRegression(data);
-        if (!linePoints) return [];
-        // Convert back to label + value for plotting
-        return linePoints.map((point, i) => ({
-            label: data[i].label,
-            trend: point.value,
+        if (!linePoints) return data;
+
+        return data.map((item: any, i: number) => ({
+            ...item,
+            trend: linePoints[i].value
         }));
     }, [data]);
     return (
         <ResponsiveContainer width="100%" height={"75%"}>
             <BarChart
-                data={data}
+                data={mergedData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -77,7 +77,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                 {/* Trend line */}
                 {showTrend && <Line
                     type="linear"
-                    data={trendLineData}
+                    data={"trend"}
                     dataKey="trend"
                     stroke="#ff7300"
                     strokeWidth={2}
