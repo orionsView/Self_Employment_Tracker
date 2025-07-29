@@ -59,9 +59,16 @@ function TrendPage() {
             console.error('User not authenticated', userError);
             return;
         }
-        switch (selectedGraph) {
-            case "Week by Week Income":
+        if (startDate === "") {
+            setStartDate(null);
+        }
+        if (endDate === "") {
+            setEndDate(null);
+        }
 
+        switch (selectedGraph) {
+
+            case "Week by Week Income":
                 const { data, error } = await supabase
                     .rpc('get_weekly_income_summary', {
                         user_id: user.id,
