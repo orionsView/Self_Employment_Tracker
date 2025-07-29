@@ -127,11 +127,11 @@ function JobTable() {
                 <table className="min-w-[200%] border-collapse border border-black">
                     <thead>
                         <tr className="border border-black">
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("JobName"); setAsc(!asc) }}>Job ↕</th>
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("ClientName"); setAsc(!asc) }}>Client ↕</th>
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("StartDate"); setAsc(!asc) }}>Start Date ↕</th>
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("Earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("Trips"); setAsc(!asc) }}># Trips ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("TimeEntered"); setAsc(!asc) }}>Job ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("FirstName"); setAsc(!asc) }}>Client ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("TimeStarted"); setAsc(!asc) }}>Start Date ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("total_earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("trip_count"); setAsc(!asc) }}># Trips ↕</th>
                         </tr>
                     </thead>
                     <tbody>
