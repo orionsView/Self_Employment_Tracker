@@ -31,8 +31,8 @@ function TrendPage() {
     const [TotalEarnings, setTotalEarnings]: any = useState(0);
 
     // Date Range
-    const [startDate, setStartDate]: any = useState(null);
-    const [endDate, setEndDate]: any = useState(null);
+    const [startDate, setStartDate]: any = useState("");
+    const [endDate, setEndDate]: any = useState("");
 
 
 
@@ -115,8 +115,8 @@ function TrendPage() {
     }, [selectedGraph, startDate, endDate]);
 
     function clearDateRange() {
-        setStartDate(null);
-        setEndDate(null);
+        setStartDate("");
+        setEndDate("");
     }
 
     const metricsSmallStyle: string = "font-bold text-[2.5vw] text-nowrap";
@@ -130,7 +130,7 @@ function TrendPage() {
 
             <div className="h-[50%] w-[100vw] flex flex-col justify-around items-center">
                 {/* DATE FILTER */}
-                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] border-1 p-[1vh] rounded-lg shadow-lg mb-[2vh]`}>
+                <div className={`flex justify-between flex-col items-center w-[80%] h-[20%] border-1 p-[1vh] rounded-lg shadow-lg mb-[2vh]`}>
                     <div className="flex flex-row justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap" >Date Start</p>
                         <input type="date" id="dateStart" onChange={(e) => setStartDate(e.target.value)} value={startDate} />
@@ -139,7 +139,7 @@ function TrendPage() {
                         <p className="text-[4vw] text-nowrap">Date End</p>
                         <input type="date" id="dateEnd" onChange={(e) => setEndDate(e.target.value)} value={endDate} />
                     </div>
-                    <p className="text-[3vw] text-nowrap" onClick={clearDateRange}>Clear</p>
+                    <p className="text-[3vw] text-nowrap text-red-500" onClick={clearDateRange}>Clear</p>
                 </div>
                 <div className={`flex flex-row justify-between items-center w-[80%] `}>
                     {/* Graph Type */}
