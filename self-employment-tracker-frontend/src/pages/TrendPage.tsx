@@ -128,7 +128,7 @@ function TrendPage() {
                 </div> */}
 
                 {/* <LineGraph data={data} /> */}
-                <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} />
+                <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
 
             </div>
         </>
