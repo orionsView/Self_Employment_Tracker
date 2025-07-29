@@ -157,17 +157,17 @@ function TrendPage() {
                 <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
 
                 {/* Useful Metrics */}
-                <div className="flex flex-row justify-between items-center w-[80%] ">
+                <div className="flex flex-col justify-between items-center w-[80%] ">
                     <p className="font-bold text-[4vw]">Useful Metrics</p>
 
-                    <p className="font-bold text-[1vw]">Total Net Income {TotalNetIncome}</p>
-                    <p className="font-bold text-[1vw]">Average Net Income {AverageNetIncome}</p>
+                    <p className="font-bold text-[2vw]">Total Net Income {TotalNetIncome}</p>
+                    <p className="font-bold text-[2vw]">Average Net Income {AverageNetIncome}</p>
 
-                    <p className="font-bold text-[1vw]">Total Expenses {TotalExpenses}</p>
-                    <p className="font-bold text-[1vw]">Average Expenses {AverageExpenses}</p>
+                    <p className="font-bold text-[2vw]">Total Expenses {TotalExpenses}</p>
+                    <p className="font-bold text-[2vw]">Average Expenses {AverageExpenses}</p>
 
-                    <p className="font-bold text-[1vw]">Total Earnings {TotalEarnings}</p>
-                    <p className="font-bold text-[1vw]">Average Earnings {AverageEarnings}</p>
+                    <p className="font-bold text-[2vw]">Total Earnings {TotalEarnings}</p>
+                    <p className="font-bold text-[2vw]">Average Earnings {AverageEarnings}</p>
                 </div>
             </div>
         </>
