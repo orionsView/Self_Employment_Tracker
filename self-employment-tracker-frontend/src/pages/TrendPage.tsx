@@ -30,6 +30,10 @@ function TrendPage() {
     const [TotalExpenses, setTotalExpenses]: any = useState(0);
     const [TotalEarnings, setTotalEarnings]: any = useState(0);
 
+    // Date Range
+    const [startDate, setStartDate]: any = useState(null);
+    const [endDate, setEndDate]: any = useState(null);
+
     useEffect(() => {
         if (displayData.length === 0) return;
 
@@ -172,9 +176,9 @@ function TrendPage() {
                 <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
 
                 {/* Useful Metrics */}
-                <div className="flex flex-col justify-between items-center w-[80%] ">
+                <div className="flex flex-col justify-between items-center w-[100%] ">
                     <p className="font-bold text-[5vw]">Useful Metrics</p>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                    <div className="flex flex-row justify-around items-center w-[100%] ">
 
                         <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
                             <p className={metricsSmallStyle}>Total Net Income {TotalNetIncome}</p>
