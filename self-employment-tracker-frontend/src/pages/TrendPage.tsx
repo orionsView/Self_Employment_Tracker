@@ -34,8 +34,7 @@ function TrendPage() {
     const [startDate, setStartDate]: any = useState(null);
     const [endDate, setEndDate]: any = useState(null);
 
-    startDate;
-    endDate;
+
 
     useEffect(() => {
         if (displayData.length === 0) return;
@@ -113,7 +112,7 @@ function TrendPage() {
 
     useEffect(() => {
         handleDataChange();
-    }, [selectedGraph]);
+    }, [selectedGraph, startDate, endDate]);
 
     const metricsSmallStyle: string = "font-bold text-[2.5vw] text-nowrap";
 
