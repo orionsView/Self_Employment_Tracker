@@ -122,30 +122,33 @@ function JobTable() {
     const cellStyle: string = "border border-black";
     return (
         <>
-            <table className="w-[100%]">
-                <thead>
-                    <tr className="border border-black">
-                        <th className={headerCellStyle} onClick={() => { setOrderBy("JobName"); setAsc(!asc) }}>Job ↕</th>
-                        <th className={headerCellStyle} onClick={() => { setOrderBy("ClientName"); setAsc(!asc) }}>Client ↕</th>
-                        <th className={headerCellStyle} onClick={() => { setOrderBy("StartDate"); setAsc(!asc) }}>Start Date ↕</th>
-                        <th className={headerCellStyle} onClick={() => { setOrderBy("Earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
-                        <th className={headerCellStyle} onClick={() => { setOrderBy("Trips"); setAsc(!asc) }}># Trips ↕</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        jobs.map((job, index) => (
-                            <tr key={`${job.JobName}-${index}`}>
-                                <td className={cellStyle}>{job.JobName}</td>
-                                <td className={cellStyle}>{job.ClientName}</td>
-                                <td className={cellStyle}>{job.StartDate}</td>
-                                <td className={cellStyle}>{job.Earnings}</td>
-                                <td className={cellStyle}>{job.Trips}</td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table >
+            <div className="w-full overflow-x-auto">
+
+                <table className="min-w-[200%] border-collapse border border-black">
+                    <thead>
+                        <tr className="border border-black">
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("JobName"); setAsc(!asc) }}>Job ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("ClientName"); setAsc(!asc) }}>Client ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("StartDate"); setAsc(!asc) }}>Start Date ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("Earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("Trips"); setAsc(!asc) }}># Trips ↕</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            jobs.map((job, index) => (
+                                <tr key={`${job.JobName}-${index}`}>
+                                    <td className={cellStyle}>{job.JobName}</td>
+                                    <td className={cellStyle}>{job.ClientName}</td>
+                                    <td className={cellStyle}>{job.StartDate}</td>
+                                    <td className={cellStyle}>{job.Earnings}</td>
+                                    <td className={cellStyle}>{job.Trips}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table >
+            </div>
         </>
     )
 }
