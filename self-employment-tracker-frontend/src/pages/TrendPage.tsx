@@ -33,14 +33,14 @@ function TrendPage() {
     useEffect(() => {
         if (displayData.length === 0) return;
 
-        setTotalNetIncome(lodash.sumBy(displayData, 'net_income'));
-        setAverageNetIncome(lodash.meanBy(displayData, 'net_income'));
+        setTotalNetIncome(lodash.round(lodash.sumBy(displayData, 'net_income'), 2));
+        setAverageNetIncome(lodash.round(lodash.meanBy(displayData, 'net_income'), 2));
 
-        setTotalEarnings(lodash.sumBy(displayData, 'earnings'));
-        setAverageEarnings(lodash.meanBy(displayData, 'earnings'));
+        setTotalEarnings(lodash.round(lodash.sumBy(displayData, 'earnings'), 2));
+        setAverageEarnings(lodash.round(lodash.meanBy(displayData, 'earnings'), 2));
 
-        setTotalExpenses(lodash.sumBy(displayData, 'expenses'));
-        setAverageExpenses(lodash.meanBy(displayData, 'expenses'));
+        setTotalExpenses(lodash.round(lodash.sumBy(displayData, 'expenses'), 2));
+        setAverageExpenses(lodash.round(lodash.meanBy(displayData, 'expenses'), 2));
     }, [displayData]);
 
     async function handleDataChange() {
@@ -154,6 +154,18 @@ function TrendPage() {
                         Submit
                     </button>
                 </div> */}
+                {/* DATE FILTER */}
+                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] `}>
+                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Date Start</p>
+                        <input type="date" id="dateStart" />
+                    </div>
+                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Date End</p>
+                        <input type="date" id="dateEnd" />
+                    </div>
+
+                </div>
 
                 {/* <LineGraph data={data} /> */}
                 <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
