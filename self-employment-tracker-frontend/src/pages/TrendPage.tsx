@@ -34,6 +34,9 @@ function TrendPage() {
     const [startDate, setStartDate]: any = useState(null);
     const [endDate, setEndDate]: any = useState(null);
 
+    startDate;
+    endDate;
+
     useEffect(() => {
         if (displayData.length === 0) return;
 
