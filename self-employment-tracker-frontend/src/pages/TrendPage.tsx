@@ -111,7 +111,7 @@ function TrendPage() {
 
             <div className="h-[50%] w-[100vw] flex flex-col justify-around items-center">
                 {/* DATE FILTER */}
-                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] `}>
+                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] border-1 p-[1vh] rounded-lg shadow-lg mb-[2vh]`}>
                     <div className="flex flex-row justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap">Date Start</p>
                         <input type="date" id="dateStart" />
@@ -173,8 +173,9 @@ function TrendPage() {
 
 
                 {/* <LineGraph data={data} /> */}
-                <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
-
+                <div className="h-[70vh]">
+                    <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
+                </div>
                 {/* Useful Metrics */}
                 <div className="flex flex-col justify-between items-center w-[100%] ">
                     <p className="font-bold text-[5vw]">Useful Metrics</p>
@@ -196,7 +197,7 @@ function TrendPage() {
 
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
