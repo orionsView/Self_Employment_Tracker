@@ -96,6 +96,8 @@ function TrendPage() {
         handleDataChange();
     }, [selectedGraph]);
 
+    const metricsSmallStyle: string = "font-bold text-[2.5vw] text-nowrap";
+
     return (
         <>
             <NavBar />
@@ -158,16 +160,24 @@ function TrendPage() {
 
                 {/* Useful Metrics */}
                 <div className="flex flex-col justify-between items-center w-[80%] ">
-                    <p className="font-bold text-[4vw]">Useful Metrics</p>
+                    <p className="font-bold text-[5vw]">Useful Metrics</p>
+                    <div className="flex flex-row justify-between items-center w-[80%] ">
 
-                    <p className="font-bold text-[2vw]">Total Net Income {TotalNetIncome}</p>
-                    <p className="font-bold text-[2vw]">Average Net Income {AverageNetIncome}</p>
+                        <div className="flex flex-col items-center">
+                            <p className={metricsSmallStyle}>Total Net Income {TotalNetIncome}</p>
+                            <p className={metricsSmallStyle}>Total Expenses {TotalExpenses}</p>
+                            <p className={metricsSmallStyle}>Total Earnings {TotalEarnings}</p>
+                        </div>
 
-                    <p className="font-bold text-[2vw]">Total Expenses {TotalExpenses}</p>
-                    <p className="font-bold text-[2vw]">Average Expenses {AverageExpenses}</p>
+                        <div className="flex flex-col items-center">
+                            <p className={metricsSmallStyle}>Average Net Income {AverageNetIncome}</p>
+                            <p className={metricsSmallStyle}>Average Expenses {AverageExpenses}</p>
+                            <p className={metricsSmallStyle}>Average Earnings {AverageEarnings}</p>
+                        </div>
 
-                    <p className="font-bold text-[2vw]">Total Earnings {TotalEarnings}</p>
-                    <p className="font-bold text-[2vw]">Average Earnings {AverageEarnings}</p>
+
+
+                    </div>
                 </div>
             </div>
         </>
