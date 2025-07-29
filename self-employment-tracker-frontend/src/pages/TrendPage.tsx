@@ -64,7 +64,11 @@ function TrendPage() {
             case "Week by Week Income":
 
                 const { data, error } = await supabase
-                    .rpc('get_weekly_income_summary', { user_id: user.id });
+                    .rpc('get_weekly_income_summary', {
+                        user_id: user.id,
+                        start_date: startDate,
+                        end_date: endDate
+                    });
 
                 if (error) {
                     console.error('Error fetching income summary:', error)
@@ -76,7 +80,11 @@ function TrendPage() {
                 break;
             case "Month by Month Income":
                 const { data: monthData, error: monthError } = await supabase
-                    .rpc('get_monthly_income_summary', { user_id: user.id });
+                    .rpc('get_monthly_income_summary', {
+                        user_id: user.id,
+                        start_date: startDate,
+                        end_date: endDate
+                    });
 
                 if (monthError) {
                     console.error('Error fetching income summary:', monthError)
@@ -87,7 +95,11 @@ function TrendPage() {
                 break;
             case "Year by Year Income":
                 const { data: yearData, error: yearError } = await supabase
-                    .rpc('get_yearly_income_summary', { user_id: user.id });
+                    .rpc('get_yearly_income_summary', {
+                        user_id: user.id,
+                        start_date: startDate,
+                        end_date: endDate
+                    });
 
                 if (yearError) {
                     console.error('Error fetching income summary:', yearError)
