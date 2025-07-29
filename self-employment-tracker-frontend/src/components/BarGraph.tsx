@@ -74,7 +74,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                 {showEarnings && <Bar dataKey="earnings" fill="#8884d8" name="Earnings" />}
                 {showExpenses && <Bar dataKey="expenses" fill="#ff7373" name="Expenses" />}
 
-                {/* Trend line */}
+                {/* Trend line
                 <Line
                     type="linear"
                     data={trendLineData}
@@ -83,7 +83,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                     strokeWidth={2}
                     dot={false}
                     name="Trend Line"
-                />
+                /> */}
             </BarChart>
         </ResponsiveContainer>
     );

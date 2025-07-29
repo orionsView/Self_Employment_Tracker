@@ -16,7 +16,7 @@ function TrendPage() {
     const [selectedGraph, setSelectedGraph]: any = useState("");
     const [showExpenses, setShowExpenses]: any = useState(false);
     const [showEarnings, setShowEarnings]: any = useState(false);
-
+    const [showTrend, setShowTrend]: any = useState(false);
     async function handleDataChange() {
         const {
             data: { user },
@@ -105,6 +105,16 @@ function TrendPage() {
                                 name="showEarnings"
                                 checked={showEarnings}
                                 onChange={() => setShowEarnings(!showEarnings)}
+                                className="mr-2" />
+                        </div>
+                        {/* Show Trend */}
+                        <div >
+                            <label htmlFor="showTrend" className="mr-2">Show Trend</label>
+                            <input type="checkbox"
+                                id="showTrend"
+                                name="showTrend"
+                                checked={showTrend}
+                                onChange={() => setShowTrend(!showTrend)}
                                 className="mr-2" />
                         </div>
                     </div>
