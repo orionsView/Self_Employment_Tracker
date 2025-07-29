@@ -29,6 +29,8 @@ function JobTable() {
     // ];
 
     const [jobs, setJobs] = useState<jobObj[]>([]);
+    const [orderBy, setOrderBy] = useState("JobName");
+    const [asc, setAsc] = useState(false);
 
 
 
@@ -77,8 +79,7 @@ function JobTable() {
         }
 
 
-        const orderBy = 'StartDate';
-        const asc = true;
+
 
 
 
@@ -100,18 +101,17 @@ function JobTable() {
 
         let startDate = localStorage.getItem("startDate");
         let endDate = localStorage.getItem("endDate");
-        let selectAll = localStorage.getItem("selectAllDates");
 
         console.log(`selectedClients: ${JSON.stringify(selectedClients)}`);
 
         // get search paras from local storage
-        if (!selectAll) {
+        if (!startDate && !endDate) {
             fetchJobs(orderBy, asc, selectedClients, startDate, endDate);
         } else {
             fetchJobs(orderBy, asc, selectedClients, null, null);
         }
 
-    }, [])
+    }, [orderBy, asc]);
 
     useEffect(() => {
         console.log(jobs)
@@ -125,11 +125,11 @@ function JobTable() {
             <table className="w-[100%]">
                 <thead>
                     <tr className="border border-black">
-                        <th className={headerCellStyle}>Job</th>
-                        <th className={headerCellStyle}>Client</th>
-                        <th className={headerCellStyle}>Start Date</th>
-                        <th className={headerCellStyle}>Net Earnings</th>
-                        <th className={headerCellStyle}># Trips</th>
+                        <th className={headerCellStyle} onClick={() => { setOrderBy("JobName"); setAsc(!asc) }}>Job ↕</th>
+                        <th className={headerCellStyle} onClick={() => { setOrderBy("ClientName"); setAsc(!asc) }}>Client ↕</th>
+                        <th className={headerCellStyle} onClick={() => { setOrderBy("StartDate"); setAsc(!asc) }}>Start Date ↕</th>
+                        <th className={headerCellStyle} onClick={() => { setOrderBy("Earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
+                        <th className={headerCellStyle} onClick={() => { setOrderBy("Trips"); setAsc(!asc) }}># Trips ↕</th>
                     </tr>
                 </thead>
                 <tbody>
