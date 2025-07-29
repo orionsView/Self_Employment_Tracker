@@ -3,6 +3,9 @@ import NavBar from "../components/NavBar"
 import BarGraph from "../components/BarGraph"
 import { useEffect, useState } from "react"
 import { supabase } from "../supabaseClient"
+
+import lodash from 'lodash';
+
 function TrendPage() {
     // const data: any = [
     //     { name: 'Jan', sales: 400 },
@@ -17,6 +20,29 @@ function TrendPage() {
     const [showExpenses, setShowExpenses]: any = useState(false);
     const [showEarnings, setShowEarnings]: any = useState(false);
     const [showTrend, setShowTrend]: any = useState(false);
+
+
+    // Metrics
+    const [AverageNetIncome, setAverageNetIncome]: any = useState(0);
+    const [AverageExpenses, setAverageExpenses]: any = useState(0);
+    const [AverageEarnings, setAverageEarnings]: any = useState(0);
+    const [TotalNetIncome, setTotalNetIncome]: any = useState(0);
+    const [TotalExpenses, setTotalExpenses]: any = useState(0);
+    const [TotalEarnings, setTotalEarnings]: any = useState(0);
+
+    useEffect(() => {
+        if (displayData.length === 0) return;
+
+        setTotalNetIncome(lodash.sumBy(displayData, 'net_income'));
+        setAverageNetIncome(lodash.meanBy(displayData, 'net_income'));
+
+        setTotalEarnings(lodash.sumBy(displayData, 'earnings'));
+        setAverageEarnings(lodash.meanBy(displayData, 'earnings'));
+
+        setTotalExpenses(lodash.sumBy(displayData, 'expenses'));
+        setAverageExpenses(lodash.meanBy(displayData, 'expenses'));
+    }, [displayData]);
+
     async function handleDataChange() {
         const {
             data: { user },
@@ -130,6 +156,19 @@ function TrendPage() {
                 {/* <LineGraph data={data} /> */}
                 <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
 
+                {/* Useful Metrics */}
+                <div className="flex flex-row justify-between items-center w-[80%] ">
+                    <p className="font-bold text-[4vw]">Useful Metrics</p>
+
+                    <p className="font-bold text-[1vw]">Total Net Income {TotalNetIncome}</p>
+                    <p className="font-bold text-[1vw]">Average Net Income {AverageNetIncome}</p>
+
+                    <p className="font-bold text-[1vw]">Total Expenses {TotalExpenses}</p>
+                    <p className="font-bold text-[1vw]">Average Expenses {AverageExpenses}</p>
+
+                    <p className="font-bold text-[1vw]">Total Earnings {TotalEarnings}</p>
+                    <p className="font-bold text-[1vw]">Average Earnings {AverageEarnings}</p>
+                </div>
             </div>
         </>
     )
