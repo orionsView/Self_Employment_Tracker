@@ -102,10 +102,22 @@ function TrendPage() {
         <>
             <NavBar />
             <Header mainTitle="Trends" subTitle="Understand your data" />
-            {/* ADD DATE RANGE FILTER */}
+
 
 
             <div className="h-[50%] w-[100vw] flex flex-col justify-around items-center">
+                {/* DATE FILTER */}
+                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] `}>
+                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Date Start</p>
+                        <input type="date" id="dateStart" />
+                    </div>
+                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Date End</p>
+                        <input type="date" id="dateEnd" />
+                    </div>
+
+                </div>
                 <div className={`flex flex-row justify-between items-center w-[80%] `}>
                     {/* Graph Type */}
                     <select onChange={(e) => setSelectedGraph(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5" defaultValue={""}>
@@ -154,18 +166,7 @@ function TrendPage() {
                         Submit
                     </button>
                 </div> */}
-                {/* DATE FILTER */}
-                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] `}>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Date Start</p>
-                        <input type="date" id="dateStart" />
-                    </div>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Date End</p>
-                        <input type="date" id="dateEnd" />
-                    </div>
 
-                </div>
 
                 {/* <LineGraph data={data} /> */}
                 <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
