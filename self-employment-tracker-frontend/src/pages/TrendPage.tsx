@@ -176,13 +176,13 @@ function TrendPage() {
                     <p className="font-bold text-[5vw]">Useful Metrics</p>
                     <div className="flex flex-row justify-between items-center w-[80%] ">
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
                             <p className={metricsSmallStyle}>Total Net Income {TotalNetIncome}</p>
                             <p className={metricsSmallStyle}>Total Expenses {TotalExpenses}</p>
                             <p className={metricsSmallStyle}>Total Earnings {TotalEarnings}</p>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
                             <p className={metricsSmallStyle}>Average Net Income {AverageNetIncome}</p>
                             <p className={metricsSmallStyle}>Average Expenses {AverageExpenses}</p>
                             <p className={metricsSmallStyle}>Average Earnings {AverageEarnings}</p>
