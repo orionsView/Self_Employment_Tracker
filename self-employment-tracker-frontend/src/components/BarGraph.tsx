@@ -44,7 +44,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
         }));
     }, [data]);
     return (
-        <ResponsiveContainer width="100%" height={"75%"}>
+        <ResponsiveContainer width="100%" height="100%">
             <BarChart
                 data={mergedData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

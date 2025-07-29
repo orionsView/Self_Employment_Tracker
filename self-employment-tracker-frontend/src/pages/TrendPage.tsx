@@ -176,7 +176,7 @@ function TrendPage() {
 
 
                 {/* <LineGraph data={data} /> */}
-                <div className="h-[70vh] w-[100%]">
+                <div className="w-[100%] min-h-[300px] h-[75vh]">
                     <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
                 </div>
                 {/* Useful Metrics */}
