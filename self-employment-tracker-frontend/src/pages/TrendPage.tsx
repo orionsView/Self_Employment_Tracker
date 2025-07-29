@@ -114,6 +114,11 @@ function TrendPage() {
         handleDataChange();
     }, [selectedGraph, startDate, endDate]);
 
+    function clearDateRange() {
+        setStartDate(null);
+        setEndDate(null);
+    }
+
     const metricsSmallStyle: string = "font-bold text-[2.5vw] text-nowrap";
 
     return (
@@ -128,13 +133,13 @@ function TrendPage() {
                 <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] border-1 p-[1vh] rounded-lg shadow-lg mb-[2vh]`}>
                     <div className="flex flex-row justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap" >Date Start</p>
-                        <input type="date" id="dateStart" onChange={(e) => setStartDate(e.target.value)} />
+                        <input type="date" id="dateStart" onChange={(e) => setStartDate(e.target.value)} value={startDate} />
                     </div>
                     <div className="flex flex-row justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap">Date End</p>
-                        <input type="date" id="dateEnd" onChange={(e) => setEndDate(e.target.value)} />
+                        <input type="date" id="dateEnd" onChange={(e) => setEndDate(e.target.value)} value={endDate} />
                     </div>
-
+                    <p className="text-[3vw] text-nowrap" onClick={clearDateRange}>Clear</p>
                 </div>
                 <div className={`flex flex-row justify-between items-center w-[80%] `}>
                     {/* Graph Type */}
