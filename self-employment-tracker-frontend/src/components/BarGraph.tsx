@@ -16,7 +16,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                 } /> {/* label = "July-week1", etc. */}
                 <YAxis
                     domain={[
-                        0,
+                        (dataMin: number) => Math.floor(dataMin / 100) * 100,
                         (dataMax: number) => Math.ceil((dataMax + 50) / 100) * 100  // round up to nearest 100 with +50 buffer
 
                     ]}
