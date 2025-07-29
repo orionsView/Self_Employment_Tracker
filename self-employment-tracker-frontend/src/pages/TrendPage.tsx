@@ -31,8 +31,8 @@ function TrendPage() {
     const [TotalEarnings, setTotalEarnings]: any = useState(0);
 
     // Date Range
-    const [startDate, setStartDate]: any = useState(null);
-    const [endDate, setEndDate]: any = useState(null);
+    // const [startDate, setStartDate]: any = useState(null);
+    // const [endDate, setEndDate]: any = useState(null);
 
     useEffect(() => {
         if (displayData.length === 0) return;
