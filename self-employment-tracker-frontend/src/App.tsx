@@ -10,8 +10,11 @@ import TrendPage from './pages/TrendPage'
 import SignUpPage from './pages/SignUpPage'
 import ProtectedRoute from './protectedRoute'
 import { AuthProvider } from './authProvider'
+import SetPageTitle from './titleProvider'
 
 function App() {
+  SetPageTitle();
+
   return (
     <AuthProvider>
       <BrowserRouter>
