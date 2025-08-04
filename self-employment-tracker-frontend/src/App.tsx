@@ -13,12 +13,13 @@ import { AuthProvider } from './authProvider'
 import SetPageTitle from './titleProvider'
 
 function App() {
-  SetPageTitle();
+
 
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <SetPageTitle />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="signup" element={<SignUpPage />} />

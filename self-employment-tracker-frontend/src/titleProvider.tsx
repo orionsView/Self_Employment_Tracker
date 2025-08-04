@@ -25,6 +25,8 @@ function SetPageTitle() {
             document.title = pageTitle;
         }
     }, [location]);
+
+    return null
 }
 
 export default SetPageTitle;
