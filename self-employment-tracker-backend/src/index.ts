@@ -9,7 +9,10 @@ const app = express();
 const PORT = 3000;
 
 app.use(cors({
-    origin: 'https://self-employment-tracker-frontend.netlify.app',
+    origin: [
+        'https://self-employment-tracker-frontend.netlify.app',
+        'http://localhost:5173',
+    ],
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
 }));
@@ -19,7 +22,7 @@ app.use(express.json());
 
 // Example route
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello i!');
+    res.json({ message: 'Hello i!' });
 });
 
 // Example POST route
@@ -80,15 +83,19 @@ const client = new OpenAI({
 });
 
 
-app.get("/getRecommendations", async () => {
+app.post("/getRecommendations", async (req, res) => {
+    const { data, suggestionType } = req.body;
 
+    const prompt = `Give the user the following analysis: ${suggestionType}. 
+    Provide a 2 sentence analysis based on this data set: ${JSON.stringify(data)}`
+
+    console.log(`prompt: ${prompt}`);
 
     const response = await client.responses.create({
-        model: "gpt-4.1",
-        input: "Write a one-sentence bedtime story about a unicorn.",
+        model: "gpt-4",
+        input: prompt,
     });
 
-    console.log(response.output_text);
-
-
+    // Wrap the output in an object
+    res.json({ output: response.output_text });
 });

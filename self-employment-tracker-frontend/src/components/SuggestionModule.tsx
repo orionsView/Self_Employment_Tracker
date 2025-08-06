@@ -1,30 +1,39 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
-function SuggestionModule() {
-    const [suggestionType, setSuggestionType] = useState<string>();
-    const [userData, setUserData] = useState<any>(null);
+function SuggestionModule({ data }: any) {
+    const [suggestionType, setSuggestionType] = useState<string>("");
+    const [suggestion, setSuggestion] = useState<string>("Select an option and hit \"Get Suggestion\".");
 
-    useEffect(() => {
-        getData();
-    }, []);
+    // useEffect(() => {
+    //     getData();
+    // }, []);
 
-    async function getData() {
-        const user = await supabase.auth.getUser();
-        const { data, error } = await supabase.rpc('get_user_job_summary    ', {
-            user_uuid: user.data.user?.id
+
+
+    async function getSuggestion() {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+
+
+
+        // Use the freshly fetched data directly
+        const response = await fetch(`${backendUrl}/getRecommendations`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                data,
+                suggestionType
+            })
         });
-        if (error) {
-            console.error("Error fetching financial data:", error.message);
-        } else {
-            setUserData(data);
-
-        }
+        const result = await response.json();
+        setSuggestion(result.output);
     }
 
+
     useEffect(() => {
-        console.log('userData:', userData);
-    }, [userData]);
+        console.log('suggestion:', suggestion);
+    }, [suggestion]);
 
     return (
         <>
@@ -36,8 +45,10 @@ function SuggestionModule() {
                 <option>Trip Analysis</option>
             </select>
 
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={getSuggestion}>Get Suggestion</button>
+
             <div className="border p-4 mt-4 w-[95%] mb-4">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vitae corrupti nihil deserunt harum et assumenda ad veniam accusantium dolor exercitationem. Minima, mollitia soluta. Voluptates voluptas, earum nobis eum minima cupiditate.
+                <p>{typeof suggestion === "string" ? suggestion : JSON.stringify(suggestion)}</p>
             </div>
 
         </>
