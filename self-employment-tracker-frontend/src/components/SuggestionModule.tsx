@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../supabaseClient";
 
 function SuggestionModule({ data }: any) {
     const [suggestionType, setSuggestionType] = useState<string>("");
