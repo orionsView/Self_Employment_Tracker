@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import OpenAI from "openai";
+
 dotenv.config();
 
 const app = express();
@@ -68,4 +70,25 @@ app.get("/shortlinkToLonglink", async (req, res) => {
     // console.log("Redirected to:", location);
 
     res.json({ longUrl });
+});
+
+
+
+// AI RECOMMENDATIONS
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+
+app.get("/getRecommendations", async () => {
+
+
+    const response = await client.responses.create({
+        model: "gpt-4.1",
+        input: "Write a one-sentence bedtime story about a unicorn.",
+    });
+
+    console.log(response.output_text);
+
+
 });

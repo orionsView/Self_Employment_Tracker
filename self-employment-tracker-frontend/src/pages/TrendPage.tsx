@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../supabaseClient"
 
 import lodash from 'lodash';
+import SuggestionModule from "../components/SuggestionModule"
 
 function TrendPage() {
     // const data: any = [
@@ -193,7 +194,7 @@ function TrendPage() {
                 </div>
                 {/* Useful Metrics */}
                 <div className="flex flex-col justify-between items-center w-[100%] ">
-                    <p className="font-bold text-[5vw]">Useful Metrics</p>
+                    <p className="font-bold text-[5vw] mb-4">Useful Metrics</p>
                     <div className="flex flex-row justify-around items-center w-[100%] ">
 
                         <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
@@ -211,6 +212,10 @@ function TrendPage() {
 
 
                     </div>
+                </div>
+                <div className="flex flex-col justify-between items-center w-[100%] mt-8">
+                    <p className="font-bold text-[5vw] mb-4">Personalized Suggestion</p>
+                    <SuggestionModule />
                 </div>
             </div >
         </>

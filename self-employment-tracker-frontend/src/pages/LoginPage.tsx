@@ -12,17 +12,21 @@ function LoginPage() {
     const logoClassName: string = "w-30"
 
 
+
+
     const handleGoogleLogin = async () => {
+        // Use window.location.origin for dynamic base URL
+        const redirectUrl = `${window.location.origin}/menu`;
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: 'https://self-employment-tracker-frontend.netlify.app/menu'
+                redirectTo: redirectUrl
             }
-
-        })
+        });
 
         if (error) {
-            console.error('Google login error:', error.message)
+            console.error('Google login error:', error.message);
         }
     }
 
