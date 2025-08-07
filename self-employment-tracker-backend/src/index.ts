@@ -92,7 +92,7 @@ app.post("/getRecommendations", async (req, res) => {
     console.log(`prompt: ${prompt}`);
 
     const response = await client.responses.create({
-        model: "gpt-4",
+        model: "gpt-4.1-mini",
         input: prompt,
     });
 

@@ -11,6 +11,7 @@ function SuggestionModule({ data }: any) {
 
 
     async function getSuggestion() {
+        setSuggestion("Loading...");
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 

@@ -10,32 +10,48 @@ type DataPoint = {
     expenses?: number;
 };
 
-function calculateLinearRegression(data: DataPoint[]) {
-    const n = data.length;
-    const x = data.map((_, i) => i);
-    const y = data.map(d => d.net_income);
+// function calculateLinearRegression(data: DataPoint[]) {
+//     const n = data.length;
+//     const x = data.map((_, i) => i);
+//     const y = data.map(d => d.net_income);
 
-    const sumX = x.reduce((a, b) => a + b, 0);
-    const sumY = y.reduce((a, b) => a + b, 0);
-    const sumXY = x.reduce((acc, xi, i) => acc + xi * y[i], 0);
-    const sumX2 = x.reduce((acc, xi) => acc + xi * xi, 0);
+//     const sumX = x.reduce((a, b) => a + b, 0);
+//     const sumY = y.reduce((a, b) => a + b, 0);
+//     const sumXY = x.reduce((acc, xi, i) => acc + xi * y[i], 0);
+//     const sumX2 = x.reduce((acc, xi) => acc + xi * xi, 0);
 
-    const denominator = n * sumX2 - sumX * sumX;
-    if (denominator === 0) return null;
+//     const denominator = n * sumX2 - sumX * sumX;
+//     if (denominator === 0) return null;
 
-    const m = (n * sumXY - sumX * sumY) / denominator;
-    const b = (sumY - m * sumX) / n;
+//     const m = (n * sumXY - sumX * sumY) / denominator;
+//     const b = (sumY - m * sumX) / n;
 
-    // Generate trend line data points
-    return x.map(xi => ({
-        index: xi,
-        value: m * xi + b,
-    }));
+//     // Generate trend line data points
+//     return x.map(xi => ({
+//         index: xi,
+//         value: m * xi + b,
+//     }));
+// }
+
+function calculateRollingAverage(data: DataPoint[], windowSize = 5) {
+    if (data.length === 0) return null;
+    const result = [];
+    for (let i = 0; i < data.length; i++) {
+        const start = Math.max(0, i - windowSize + 1);
+        const window = data.slice(start, i + 1);
+        const avg = window.reduce((sum, d) => sum + d.net_income, 0) / window.length;
+        result.push({
+            index: i,
+            value: avg,
+        });
+    }
+    return result;
 }
 
 export default function BarGraph({ data, showExpenses = false, showEarnings = false, showTrend = false }: { data: any, showExpenses?: boolean, showEarnings?: boolean, showTrend?: boolean }) {
     const mergedData = useMemo(() => {
-        const linePoints = calculateLinearRegression(data);
+        // const linePoints = calculateLinearRegression(data);
+        const linePoints = calculateRollingAverage(data);
         if (!linePoints) return data;
 
         return data.map((item: any, i: number) => ({
