@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import OpenAI from "openai";
+import { Tiktoken } from "js-tiktoken/lite";
 
 dotenv.config();
 
@@ -78,6 +79,7 @@ app.get("/shortlinkToLonglink", async (req, res) => {
 
 
 // AI RECOMMENDATIONS
+
 const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -89,12 +91,28 @@ app.post("/getRecommendations", async (req, res) => {
     const prompt = `Give the user the following analysis: ${suggestionType}. 
     Provide a 2 sentence analysis based on this data set: ${JSON.stringify(data)}`
 
-    console.log(`prompt: ${prompt}`);
+    const result = await fetch(`https://tiktoken.pages.dev/js/o200k_base.json`);
+    const o200k_base = await result.json();
+    const enc = new Tiktoken(o200k_base);
+    const numTokens = enc.encode(prompt).length;
+
+    console.log(`Prompt: ${prompt}`);
+    console.log(`Number of tokens: ${numTokens}`);
+
+
+
+
 
     const response = await client.responses.create({
-        model: "gpt-4.1-mini",
+        model: "gpt-5-mini",
         input: prompt,
     });
+
+    const encResponse = new Tiktoken(o200k_base);
+    const numTokensResponse = encResponse.encode(response.output_text).length;
+
+    console.log(`Response: ${response.output_text}`);
+    console.log(`Number of tokens: ${numTokensResponse}`);
 
     // Wrap the output in an object
     res.json({ output: response.output_text });
