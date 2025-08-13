@@ -43,8 +43,13 @@ function InputJobsPage() {
     const [numberOfTrips, setNumberOfTrips]: any = useState(0);
     const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
 
-    async function handleSubmit() {
+    const [submitProcessing, setSubmitProcessing]: any = useState(false);
 
+    async function handleSubmit() {
+        if (submitProcessing) {
+            return;
+        }
+        setSubmitProcessing(true);
 
         // Get current user
         const {
@@ -54,6 +59,8 @@ function InputJobsPage() {
 
         if (userError || !user) {
             console.error('User not authenticated', userError);
+            alert('User not authenticated');
+            setSubmitProcessing(false);
             return;
         }
 
@@ -71,12 +78,11 @@ function InputJobsPage() {
             });
             if (clientError) {
                 console.error('Client insert failed:', clientError);
+                alert('Client insert failed');
+                setSubmitProcessing(false);
                 return;
             }
-            // console.log('Client inserted:', { ID: newClientId, FirstName: firstName, LastName: lastName, UserID: user.id }, 'client id is now', inputData.clientId);
         }
-
-
 
         const jobId = uuidv4();
 
@@ -93,15 +99,12 @@ function InputJobsPage() {
         if (jobError) {
             console.log('inserting job', inputData);
             console.error('Job insert failed:', jobError);
-
+            alert('Job insert failed');
+            setSubmitProcessing(false);
             return;
         }
 
-
-
         // Insert trips
-
-
         const tripInserts = await Promise.all(inputData.trips.map(async (trip) => {
             if (trip.distance) {
                 return {
@@ -123,15 +126,14 @@ function InputJobsPage() {
             }
         }));
 
-
         const { error: tripError } = await supabase.from('Trip').insert(tripInserts);
         if (tripError) {
             console.error('Trip insert failed:', tripError);
             console.log('Trip insert failed with:', tripInserts);
+            alert('Trip insert failed');
+            setSubmitProcessing(false);
             return;
         }
-
-
 
         const paymentId = uuidv4();
         const expenseId = uuidv4();
@@ -143,6 +145,8 @@ function InputJobsPage() {
 
         if (error) {
             console.error('Error fetching payment method ID:', error)
+            alert('Error fetching payment method ID');
+            setSubmitProcessing(false);
         } else { // got payment method id
             const deafultPaymentMethodId = data[0].ID;
             const { error: paymentError } = await supabase.from('Payment').insert({
@@ -155,6 +159,8 @@ function InputJobsPage() {
 
             if (paymentError) {
                 console.error('Payment insert failed:', paymentError);
+                alert('Payment insert failed');
+                setSubmitProcessing(false);
                 return;
             }
 
@@ -170,17 +176,15 @@ function InputJobsPage() {
 
             if (expenseError) {
                 console.error('Expense insert failed:', expenseError);
+                alert('Expense insert failed');
+                setSubmitProcessing(false);
                 return;
             }
-
-            console.log('Job, trips, payment, and expense created successfully!');
-            window.location.href = "/menu";
-            alert('Job, trips, payment, and expense created successfully!');
         }
-
-
-
-
+        console.log('Job, trips, payment, and expense created successfully!');
+        window.location.href = "/menu";
+        alert('Job, trips, payment, and expense created successfully!');
+        setSubmitProcessing(false);
     }
 
     async function getTripDistanceFromShortLink(shortLink: string) {
@@ -314,7 +318,10 @@ function InputJobsPage() {
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
                     <div className="flex flex-row justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap">Trips</p>
-                        <input type="number" id="hoursWorked" onChange={(event) => { setNumberOfTrips(event.target.value); }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        <input type="number" id="hoursWorked" onChange={(event) => {
+                            const numTrips = parseInt(event.target.value);
+                            if (numTrips > 0 && numTrips < 30) { setNumberOfTrips(numTrips); }
+                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                     </div>
                 </div>
             </div>
@@ -407,7 +414,7 @@ function InputJobsPage() {
             {/* Submit Button */}
             <div className="flex justify-center items-center  h-[10%]">
                 <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Submit
+                    {submitProcessing ? "Submitting..." : "Submit"}
                 </button>
             </div>
         </>

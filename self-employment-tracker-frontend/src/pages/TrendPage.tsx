@@ -214,7 +214,7 @@ function TrendPage() {
                     </div>
                 </div>
                 <div className="flex flex-col justify-between items-center w-[100%] mt-8">
-                    <p className="font-bold text-[5vw] mb-4">Personalized Suggestion</p>
+                    <p className="font-bold text-[5vw] mb-4">Personalized Insight</p>
                     <SuggestionModule data={displayData} />
                 </div>
             </div >
