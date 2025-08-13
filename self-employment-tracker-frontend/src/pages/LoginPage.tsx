@@ -4,7 +4,8 @@ import TextInputField from "../components/TextInputField"
 import type { style } from "../components/TextInputField"
 import { useState } from "react"
 import GoogleLogo from '../assets/google-logo.svg'
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
+import NavBar from "../components/NavBar"
 
 type inputType = { email: string, password: string }
 function LoginPage() {
@@ -57,6 +58,7 @@ function LoginPage() {
 
     return (
         <>
+            <NavBar showMenu={false} />
             <div className="flex flex-col items-center h-screen">
                 <Header mainTitle="Login" subTitle="Select a provider!" />
 

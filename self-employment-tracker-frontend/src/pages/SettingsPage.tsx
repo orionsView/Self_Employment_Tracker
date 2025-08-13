@@ -2,6 +2,7 @@ import Header from "../components/Header"
 import NavBar from "../components/NavBar"
 import { useEffect, useState } from "react"
 import { supabase } from '../supabaseClient'
+import { useNavigate } from "react-router-dom"
 
 
 type response = {
@@ -9,15 +10,19 @@ type response = {
     useMi: boolean,
     use12hr: boolean,
     useRecs: boolean,
-    useDarkMode: boolean
+    useDarkMode: boolean,
+    AIFocus: string
 }
 function SettingsPage() {
+    const navigate = useNavigate();
+
     const [selectedOptions, setSelectedOptions]: any = useState<response>({
-        defaultGraph: "",
+        defaultGraph: "None Selected",
         useMi: true,
         use12hr: true,
         useRecs: true,
-        useDarkMode: false
+        useDarkMode: false,
+        AIFocus: "None Selected"
     });
     async function handleSubmit() {
         const {
@@ -39,12 +44,18 @@ function SettingsPage() {
             timeUnits: selectedOptions.use12hr ? "12" : "24",
             adviceLLM: selectedOptions.useRecs,
             darkMode: selectedOptions.useDarkMode,
+            AIFocus: selectedOptions.AIFocus,
+            timeUpdated: new Date()
         });
 
         if (settingsError) {
             console.error('Settings insert failed:', settingsError);
+            alert("Error updating settings")
             return;
         }
+        navigate("/menu");
+        console.log('Settings updated successfully');
+        alert("Settings updated successfully")
     }
 
     useEffect(() => {
@@ -68,9 +79,10 @@ function SettingsPage() {
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5"
                             defaultValue=""
                         >
-                            <option value={""} disabled>Select a default</option>
-                            <option>Option 1</option>
-                            <option>Option 2</option>
+                            <option value={""} disabled>Select a graph</option>
+                            <option>Week by Week Income</option>
+                            <option>Month by Month Income</option>
+                            <option>Year by Year Income</option>
                         </select>
                     </div>
 
@@ -96,20 +108,40 @@ function SettingsPage() {
                     </div>
 
                     {/* RECS */}
-                    <div className={`flex flex-row justify-between items-center w-[80%]  ${borderStyle}`}>
+                    <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`} >
 
-                        <p className="text-nowrap text-[4vw]">Recommendations</p>
+                        <div className={`flex flex-row justify-between items-center w-[80%]`}>
 
-                        <div className="flex flex-row justify-center items-center w-[80%] ml-8">
-                            <label className="mr-2" htmlFor="RecsOn">On</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: e.target.checked }))} type="radio" id="RecsOn" name="recs" value="On" defaultChecked={true} />
+                            <p className="text-nowrap text-[4vw]">AI Analysis</p>
+
+                            <div className="flex flex-row justify-center items-center w-[80%] ml-8">
+                                <label className="mr-2" htmlFor="RecsOn">On</label>
+                                <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: e.target.checked }))} type="radio" id="RecsOn" name="recs" value="On" defaultChecked={true} />
+                            </div>
+                            <div className="flex flex-row justify-center items-center w-[80%] ">
+                                <label className="mr-2" htmlFor="RecsOff">Off</label>
+                                <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: !(e.target.checked) }))} type="radio" id="RecsOff" name="recs" value="Off" />
+                            </div>
+
+
                         </div>
-                        <div className="flex flex-row justify-center items-center w-[80%] ">
-                            <label className="mr-2" htmlFor="RecsOff">Off</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: !(e.target.checked) }))} type="radio" id="RecsOff" name="recs" value="Off" />
-                        </div>
-
-
+                        {selectedOptions.useRecs && <div className={`flex flex-row justify-between items-center w-[80%]`}>
+                            <p className="text-[4vw] text-nowrap">AI Focus</p>
+                            <select
+                                onChange={(e) => setSelectedOptions((selectedOptions: any) => ({
+                                    ...selectedOptions,
+                                    AIFocus: e.target.value
+                                }))}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5"
+                                defaultValue=""
+                            >
+                                <option value={""} disabled>Select an option</option>
+                                <option>Past Analysis</option>
+                                <option>Future Prediction</option>
+                                <option>General Suggestions</option>
+                                <option>All Three</option>
+                            </select>
+                        </div>}
                     </div>
 
                     {/* DARK MODE */}

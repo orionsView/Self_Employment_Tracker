@@ -1,6 +1,6 @@
 import FistLogo from "../assets/fist-logo.svg"
 import MenuLogo from "../assets/menu-logo.svg"
-function NavBar() {
+function NavBar({ showMenu = true }: { showMenu?: boolean }) {
     return (
         <>
             <div className="flex justify-between items-center w-[100%] h-[10%] border-b-2">
@@ -9,7 +9,7 @@ function NavBar() {
                     <p className="text-[6vw] font-bold">Punch The Clock</p>
                 </div>
 
-                <a href="/menu"><img className="w-12" src={MenuLogo} alt="menu" /></a>
+                {showMenu && <a href="/menu"><img className="w-12" src={MenuLogo} alt="menu" /></a>}
             </div>
         </>
     )
