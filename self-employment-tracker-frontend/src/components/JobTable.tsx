@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"
 import { supabase } from "../supabaseClient";
 
 type jobObj = {
+    JobID: string;
     JobName: string;            // The job ID
     ClientName: string;    // Combined FirstName + LastName
     StartDate: string;     // TimeEntered date string
@@ -70,9 +72,10 @@ function JobTable() {
                     StartDate: new Date(job.TimeEntered).toLocaleDateString(),  // format date nicely
                     Earnings: job.total_earnings,
                     Trips: job.trip_count,
+                    JobID: job.JobID
                 }));
 
-
+                console.log(`jobObjs: ${JSON.stringify(jobObjs)}`);
                 setJobs(jobObjs);
             }
 
@@ -117,6 +120,7 @@ function JobTable() {
         console.log(jobs)
     }, [jobs])
 
+    const navigate = useNavigate();
 
     const headerCellStyle: string = "border-2 border-black";
     const cellStyle: string = "border border-black";
@@ -137,7 +141,7 @@ function JobTable() {
                     <tbody>
                         {
                             jobs.map((job, index) => (
-                                <tr key={`${job.JobName}-${index}`}>
+                                <tr key={`${job.JobName}-${index}`} onClick={() => navigate(`/logged/moreInfo/${job.JobID}`)}>
                                     <td className={cellStyle}>{job.JobName}</td>
                                     <td className={cellStyle}>{job.ClientName}</td>
                                     <td className={cellStyle}>{job.StartDate}</td>

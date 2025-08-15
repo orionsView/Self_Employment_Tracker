@@ -11,6 +11,7 @@ import SignUpPage from './pages/SignUpPage'
 import ProtectedRoute from './protectedRoute'
 import { AuthProvider } from './authProvider'
 import SetPageTitle from './titleProvider'
+import LoggedJobInfoPage from './pages/ViewLoggedJobPage'
 
 function App() {
 
@@ -36,6 +37,9 @@ function App() {
           } />
           <Route path="/logged/view" element={
             <ProtectedRoute><ViewLoggedJobsPage /></ProtectedRoute>
+          } />
+          <Route path="/logged/moreInfo/:jobID" element={
+            <ProtectedRoute><LoggedJobInfoPage /></ProtectedRoute>
           } />
           <Route path="/log" element={
             <ProtectedRoute><InputJobsPage /></ProtectedRoute>
