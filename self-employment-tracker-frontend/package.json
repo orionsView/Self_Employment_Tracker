@@ -15,6 +15,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.50.3",
     "@tailwindcss/vite": "^4.1.10",
+    "framer-motion": "^12.23.12",
     "gh-pages": "^6.3.0",
     "lodash": "^4.17.21",
     "openai": "^5.12.0",
