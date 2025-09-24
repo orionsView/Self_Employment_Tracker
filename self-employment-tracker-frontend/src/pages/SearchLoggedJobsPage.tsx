@@ -2,9 +2,11 @@ import NavBar from "../components/NavBar"
 import Header from "../components/Header"
 import ClientSelector from "../components/ClientSelector"
 import { useState } from "react"
+import DateRangePicker from '../components/DateRangePicker'
+import { BorderCard } from '../constants/ui'
 function SearchLoggedJobsPage() {
 
-    const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
+    const borderStyle: string = BorderCard;
     const [selectedOptions, setSelectedOptions]: any = useState([]);
     const [startDate, setStartDate]: any = useState(null);
     const [endDate, setEndDate]: any = useState(null);
@@ -31,14 +33,7 @@ function SearchLoggedJobsPage() {
             </div>
             {/* DATE FILTER */}
             <div className={`flex justify-between flex-col items-center w-[80%] h-[40%] ${borderStyle}`}>
-                <div className="flex flex-row justify-between items-center w-[80%] ">
-                    <p className="text-[4vw] text-nowrap">Date Start</p>
-                    <input type="date" id="dateStart" onChange={(event) => setStartDate(event.target.value)} />
-                </div>
-                <div className="flex flex-row justify-between items-center w-[80%] ">
-                    <p className="text-[4vw] text-nowrap">Date End</p>
-                    <input type="date" id="dateEnd" onChange={(event) => setEndDate(event.target.value)} />
-                </div>
+                <DateRangePicker startDate={startDate} endDate={endDate} onChangeStart={setStartDate} onChangeEnd={setEndDate} />
             </div>
 
 

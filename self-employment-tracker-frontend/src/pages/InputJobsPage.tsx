@@ -6,6 +6,7 @@ import { supabase } from '../supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import TextInputField from "../components/TextInputField";
 import type { style } from "../components/TextInputField";
+import { InputBase, BorderCard, LabelText } from '../constants/ui'
 
 type input = {
     clientId: string,
@@ -41,7 +42,7 @@ function InputJobsPage() {
         trips: [],
     });
     const [numberOfTrips, setNumberOfTrips]: any = useState(0);
-    const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
+    const borderStyle: string = BorderCard;
 
     const [submitProcessing, setSubmitProcessing]: any = useState(false);
 
@@ -249,8 +250,8 @@ function InputJobsPage() {
 
     const inputTextStyle: style = {
         ContainerStyle: "flex flex-row justify-between items-center w-[100%] ",
-        InputStyle: "w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm ",
-        LabelStyle: "text-[4vw] text-nowrap"
+        InputStyle: InputBase,
+        LabelStyle: LabelText
     }
 
 

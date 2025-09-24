@@ -2,6 +2,7 @@ import Header from "../components/Header"
 import { supabase } from '../supabaseClient'
 import TextInputField from "../components/TextInputField"
 import type { style } from "../components/TextInputField"
+import { InputBase, BorderCard, LabelText } from '../constants/ui'
 import { useState } from "react"
 import GoogleLogo from '../assets/google-logo.svg'
 import { useNavigate } from "react-router-dom"
@@ -49,8 +50,8 @@ function LoginPage() {
 
     const inputTextStyle: style = {
         ContainerStyle: "flex flex-row justify-between items-center w-[100%] ",
-        InputStyle: "w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm ",
-        LabelStyle: "text-[4vw] text-nowrap"
+        InputStyle: InputBase,
+        LabelStyle: LabelText
     }
 
     const [currentInput, setCurrentInput] = useState<inputType>({ email: "", password: "" });
@@ -63,7 +64,7 @@ function LoginPage() {
                 <Header mainTitle="Login" subTitle="Select a provider!" />
 
 
-                <div className="flex flex-col items-center h-[50%] w-[90vw] justify-between border-1 p-[1vh] rounded-lg shadow-lg bg-blue-200 mb-4">
+                <div className={`flex flex-col items-center h-[50%] w-[90vw] justify-between ${BorderCard} bg-blue-200 mb-4`}>
                     {/* Sign In Form */}
                     <div className="flex flex-col h-[50%] w-[100%] items-center justify-between border-1 p-[1vh] rounded-lg shadow-lg">
                         {/* Email */}

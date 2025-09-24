@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import NavBar from "../components/NavBar";
 import { useParams } from "react-router";
 import { supabase } from "../supabaseClient";
 import { useEffect, useState } from "react";
@@ -59,7 +60,7 @@ function LoggedJobInfoPage() {
         const normalized: Job = {
             id: data.Job.ID,
             job_title: data.Job.JobName,
-            job_description: "", // no description in your RPC, maybe add later?
+            job_description: "",
             job_start_date: new Date(data.Job.TimeStarted),
             job_end_date: new Date(data.Job.TimeEnded),
             job_client: {
@@ -78,7 +79,7 @@ function LoggedJobInfoPage() {
             })),
             expenses: data.Expenses.map((e: any) => ({
                 amount: e.Amount,
-                method: e.Method ?? "", // depends on your RPC
+                method: e.Method ?? "",
                 date: new Date(e.TimeSpent ?? Date.now()),
             })),
             earnings: data.Payments.map((p: any) => ({
@@ -92,76 +93,87 @@ function LoggedJobInfoPage() {
     }
 
 
-    const [jobText, setJobText] = useState("");
-    const [clientText, setClientText] = useState("");
-    const [tripText, setTripText] = useState("");
-    const [expenseText, setExpenseText] = useState("");
-    const [earningsText, setEarningsText] = useState("");
+    // Structured state: maps / arrays instead of flattened strings
+    const [jobMap, setJobMap] = useState<Record<string, any> | null>(null);
+    const [clientMap, setClientMap] = useState<Record<string, any> | null>(null);
+    const [tripArray, setTripArray] = useState<Array<Record<string, any>>>([]);
+    const [expenseArray, setExpenseArray] = useState<Array<Record<string, any>>>([]);
+    const [earningsArray, setEarningsArray] = useState<Array<Record<string, any>>>([]);
 
     useEffect(() => {
         if (!jobData) return;
         console.log("jobData: ", jobData)
-        setJobText(
-            `${jobData.job_title} | ${jobData.job_description} | ${jobData.job_start_date} - ${jobData.job_end_date}`
-        );
 
-        setClientText(
-            jobData.job_client
-                ? `${jobData.job_client.first_name} ${jobData.job_client.last_name}`
-                : "No client data found"
-        );
+        // Job summary map
+        setJobMap({
+            title: jobData.job_title,
+            description: jobData.job_description,
+            startDate: jobData.job_start_date?.toLocaleString?.() ?? String(jobData.job_start_date),
+            endDate: jobData.job_end_date?.toLocaleString?.() ?? String(jobData.job_end_date),
+        });
 
+        // Client map
+        setClientMap(jobData.job_client ?? {});
+
+        // Trips as array of maps
         if (!jobData.trips?.length) {
-            setTripText("No trip data found");
+            setTripArray([]);
         } else {
-            setTripText(
-                jobData.trips.map(t =>
-                    `${t.trip_src} - ${t.trip_dst} | ${t.trip_distance} | ${t.trip_gas_price} | ${t.trip_duration} | ${new Date(t.trip_starting_date).toLocaleDateString()}`
-                ).join("\n")
-            );
+            setTripArray(jobData.trips.map(t => ({
+                src: t.trip_src,
+                dst: t.trip_dst,
+                distance: t.trip_distance,
+                gasPrice: t.trip_gas_price,
+                duration: t.trip_duration,
+                startDate: t.trip_starting_date?.toLocaleDateString?.() ?? String(t.trip_starting_date),
+            })));
         }
 
+        // Expenses as array of maps
         if (!jobData.expenses?.length) {
-            setExpenseText("No expense data found");
+            setExpenseArray([]);
         } else {
-            setExpenseText(
-                jobData.expenses.map(e =>
-                    `${e.amount} | ${e.method} | ${new Date(e.date).toLocaleDateString()}`
-                ).join("\n")
-            );
+            setExpenseArray(jobData.expenses.map(e => ({
+                amount: e.amount,
+                method: e.method ?? '',
+                date: e.date?.toLocaleDateString?.() ?? String(e.date),
+            })));
         }
 
+        // Earnings as array of maps
         if (!jobData.earnings?.length) {
-            setEarningsText("No earning data found");
+            setEarningsArray([]);
         } else {
-            setEarningsText(
-                jobData.earnings.map(e =>
-                    `${e.amount} | ${e.method} | ${new Date(e.date).toLocaleDateString()}`
-                ).join("\n")
-            );
+            setEarningsArray(jobData.earnings.map(e => ({
+                amount: e.amount,
+                method: e.method ?? '',
+                date: e.date?.toLocaleDateString?.() ?? String(e.date),
+            })));
         }
 
 
     }, [jobData]);
     useEffect(() => {
-        console.log("jobText: ", jobText);
-        console.log("clientText: ", clientText);
-        console.log("tripText: ", tripText);
-        console.log("expenseText: ", expenseText);
-        console.log("earningsText: ", earningsText);
-    }, [jobText, clientText, tripText, expenseText, earningsText]);
+        // Debug log structured data
+        console.log("jobMap: ", jobMap);
+        console.log("clientMap: ", clientMap);
+        console.log("tripArray: ", tripArray);
+        console.log("expenseArray: ", expenseArray);
+        console.log("earningsArray: ", earningsArray);
+    }, [jobMap, clientMap, tripArray, expenseArray, earningsArray]);
 
 
     return (
         <>
+            <NavBar />
+            <Header mainTitle="Logged Job" />
             <div className="h-[100%] w-[100vw] flex flex-col items-center">
-                <Header mainTitle="Logged Job Info" />
 
-                <InfoDropdown title="Job Details" text={jobText} />
-                <InfoDropdown title="Client" text={clientText} />
-                <InfoDropdown title="Trips" text={tripText} />
-                <InfoDropdown title="Expenses" text={expenseText} />
-                <InfoDropdown title="Earnings" text={earningsText} />
+                <InfoDropdown title="Job Details" text={jobMap ?? {}} />
+                <InfoDropdown title="Client" text={clientMap ?? {}} />
+                <InfoDropdown title="Trips" text={tripArray} />
+                <InfoDropdown title="Expenses" text={expenseArray} />
+                <InfoDropdown title="Earnings" text={earningsArray} />
             </div>
         </>
 

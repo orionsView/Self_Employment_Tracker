@@ -2,6 +2,7 @@ import { supabase } from '../supabaseClient'
 import Header from "../components/Header"
 import TextInputField from '../components/TextInputField'
 import type { style } from '../components/TextInputField'
+import { InputBase, BorderCard, LabelText } from '../constants/ui'
 import { useEffect, useState } from "react"
 import { useNavigate } from 'react-router'
 
@@ -38,8 +39,8 @@ function SignUpPage() {
 
     const textInputStyle: style = {
         ContainerStyle: "flex flex-row justify-between items-center w-[100%] ",
-        InputStyle: "w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm ",
-        LabelStyle: "text-[4vw] text-nowrap"
+        InputStyle: InputBase,
+        LabelStyle: LabelText
     }
 
 
@@ -84,7 +85,7 @@ function SignUpPage() {
 
                 <Header mainTitle="Sign Up" subTitle='Fill out the form to sign up' />
                 {/* Sign In Form */}
-                <div className="flex flex-col h-[30%] w-[80%] items-center justify-between border-1 p-[1vh] rounded-lg shadow-lg" >
+                <div className={`flex flex-col h-[30%] w-[80%] items-center justify-between ${BorderCard}`} >
                     {/* Email */}
                     <TextInputField
                         Label="Email"
