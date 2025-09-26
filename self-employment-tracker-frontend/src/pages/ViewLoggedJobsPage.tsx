@@ -5,7 +5,7 @@ function ViewLoggedJobsPage() {
     return (
         <>
             <NavBar />
-            <Header mainTitle="Logged Jobs" />
+            <Header mainTitle="Logged Jobs" subTitle="Click a job to view details" />
 
             <JobTable />
         </>

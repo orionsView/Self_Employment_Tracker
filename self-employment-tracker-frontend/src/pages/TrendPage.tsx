@@ -78,7 +78,8 @@ function TrendPage() {
 
                 } else {
                     console.log(`data: ${JSON.stringify(data)}`);
-                    setDisplayData(data);
+                    const filtered = (data || []).filter((d: any) => d.label != null && d.label !== "null");
+                    setDisplayData(filtered);
                 }
                 break;
             case "Month by Month Income":
@@ -93,7 +94,8 @@ function TrendPage() {
                     console.error('Error fetching income summary:', monthError)
                 } else {
                     console.log(`data: ${JSON.stringify(monthData)}`);
-                    setDisplayData(monthData);
+                    const filtered = (monthData || []).filter((d: any) => d.label != null && d.label !== "null");
+                    setDisplayData(filtered);
                 }
                 break;
             case "Year by Year Income":
@@ -108,11 +110,18 @@ function TrendPage() {
                     console.error('Error fetching income summary:', yearError)
                 } else {
                     console.log(`data: ${JSON.stringify(yearData)}`);
-                    setDisplayData(yearData);
+                    const filtered = (yearData || []).filter((d: any) => d.label != null && d.label !== "null");
+                    setDisplayData(filtered);
                 }
                 break;
         }
+
+        // console.log(`updated displayData: ${JSON.stringify(displayData)}`);
     }
+
+    useEffect(() => {
+        console.log(`displayDataChnages: ${JSON.stringify(displayData)}`);
+    }, [displayData]);
 
     useEffect(() => {
         handleDataChange();

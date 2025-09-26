@@ -7,7 +7,7 @@ type jobObj = {
     JobName: string;            // The job ID
     ClientName: string;    // Combined FirstName + LastName
     StartDate: string;     // TimeEntered date string
-    Earnings: number;      // total_earnings
+    NetEarnings: number;      // total_earnings
     Trips: number;         // trip_count
 };
 
@@ -70,7 +70,7 @@ function JobTable() {
                     JobName: job.JobName,
                     ClientName: `${job.FirstName} ${job.LastName}`,
                     StartDate: new Date(job.TimeEntered).toLocaleDateString(),  // format date nicely
-                    Earnings: job.total_earnings,
+                    NetEarnings: job.net_earnings,
                     Trips: job.trip_count,
                     JobID: job.JobID
                 }));
@@ -134,7 +134,7 @@ function JobTable() {
                             <th className={headerCellStyle} onClick={() => { setOrderBy("TimeEntered"); setAsc(!asc) }}>Job ↕</th>
                             <th className={headerCellStyle} onClick={() => { setOrderBy("FirstName"); setAsc(!asc) }}>Client ↕</th>
                             <th className={headerCellStyle} onClick={() => { setOrderBy("TimeStarted"); setAsc(!asc) }}>Start Date ↕</th>
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("total_earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("net_earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
                             <th className={headerCellStyle} onClick={() => { setOrderBy("trip_count"); setAsc(!asc) }}># Trips ↕</th>
                         </tr>
                     </thead>
@@ -145,7 +145,7 @@ function JobTable() {
                                     <td className={cellStyle}>{job.JobName}</td>
                                     <td className={cellStyle}>{job.ClientName}</td>
                                     <td className={cellStyle}>{job.StartDate}</td>
-                                    <td className={cellStyle}>{job.Earnings}</td>
+                                    <td className={cellStyle}>{job.NetEarnings}</td>
                                     <td className={cellStyle}>{job.Trips}</td>
                                 </tr>
                             ))

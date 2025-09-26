@@ -16,14 +16,33 @@ type response = {
 function SettingsPage() {
     const navigate = useNavigate();
 
-    const [selectedOptions, setSelectedOptions]: any = useState<response>({
-        defaultGraph: "None Selected",
-        useMi: true,
-        use12hr: true,
-        useRecs: true,
-        useDarkMode: false,
-        AIFocus: "None Selected"
-    });
+    const getInitialOptions = (): response => {
+        const stored = localStorage.getItem("UserSettings");
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                return {
+                    defaultGraph: parsed.defaultGraph ?? "None Selected",
+                    useMi: parsed.useMi ?? true,
+                    use12hr: parsed.use12hr ?? true,
+                    useRecs: parsed.useRecs ?? true,
+                    useDarkMode: parsed.useDarkMode ?? false,
+                    AIFocus: parsed.AIFocus ?? "None Selected"
+                };
+            } catch {
+                // fallback to defaults if parsing fails
+            }
+        }
+        return {
+            defaultGraph: "None Selected",
+            useMi: true,
+            use12hr: true,
+            useRecs: true,
+            useDarkMode: false,
+            AIFocus: "None Selected"
+        };
+    };
+    const [selectedOptions, setSelectedOptions]: any = useState<response>(getInitialOptions());
     async function handleSubmit() {
         const {
             data: { user },
@@ -53,6 +72,10 @@ function SettingsPage() {
             alert("Error updating settings")
             return;
         }
+
+        if (localStorage.getItem("UserSettings") !== null) {
+            localStorage.setItem("UserSettings", JSON.stringify(selectedOptions));
+        }
         navigate("/menu");
         console.log('Settings updated successfully');
         alert("Settings updated successfully")
@@ -61,6 +84,12 @@ function SettingsPage() {
     useEffect(() => {
         console.log(selectedOptions);
     }), [selectedOptions]
+
+    useEffect(() => {
+        if (localStorage.getItem("UserSettings") !== null) {
+            setSelectedOptions(JSON.parse(localStorage.getItem("UserSettings") || ""));
+        }
+    }, []);
     const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
     return (
         <>
@@ -68,7 +97,7 @@ function SettingsPage() {
             <div className="flex flex-col items-center h-[90%]">
                 <Header mainTitle="Settings" subTitle="Customize your experience" />
                 <div className="h-[60%] w-[100vw] flex flex-col justify-between items-center">
-                    {/* DEFAULT GRAPH */}
+                    {/* DEFAULT GRAPH
                     <div className={`flex flex-row justify-between items-center w-[80%]  ${borderStyle}`}>
                         <p className="text-[4vw] text-nowrap">Default Graph</p>
                         <select
@@ -84,7 +113,7 @@ function SettingsPage() {
                             <option>Month by Month Income</option>
                             <option>Year by Year Income</option>
                         </select>
-                    </div>
+                    </div> */}
 
                     {/* UNITS */}
                     <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
@@ -94,16 +123,16 @@ function SettingsPage() {
                         <div className="flex flex-row justify-center items-center w-[100%] ">
 
                             <label className="mr-2" htmlFor="Miles">Miles</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useMi: e.target.checked }))} type="radio" id="Miles" name="distanceUnits" value="Miles" defaultChecked={true} />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useMi: true }))} type="radio" id="Miles" name="distanceUnits" value="Miles" checked={selectedOptions.useMi === true} />
                             <label className="mr-2 ml-8" htmlFor="Kilometers">Kilometers</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useMi: !(e.target.checked) }))} type="radio" id="Kilometers" name="distanceUnits" value="Kilometers" />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useMi: false }))} type="radio" id="Kilometers" name="distanceUnits" value="Kilometers" checked={selectedOptions.useMi === false} />
                         </div>
                         <div className="flex flex-row justify-center items-center w-[100%] ">
 
                             <label className="mr-2" htmlFor="12HR">12-HR</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, use12hr: e.target.checked }))} type="radio" id="12HR" name="timeUnits" value="12HR" defaultChecked={true} />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, use12hr: true }))} type="radio" id="12HR" name="timeUnits" value="12HR" checked={selectedOptions.use12hr === true} />
                             <label className="mr-2 ml-8" htmlFor="24HR">24-HR</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, use12hr: !(e.target.checked) }))} type="radio" id="24HR" name="timeUnits" value="24HR" />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, use12hr: false }))} type="radio" id="24HR" name="timeUnits" value="24HR" checked={selectedOptions.use12hr === false} />
                         </div>
                     </div>
 
@@ -116,11 +145,11 @@ function SettingsPage() {
 
                             <div className="flex flex-row justify-center items-center w-[80%] ml-8">
                                 <label className="mr-2" htmlFor="RecsOn">On</label>
-                                <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: e.target.checked }))} type="radio" id="RecsOn" name="recs" value="On" defaultChecked={true} />
+                                <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: true }))} type="radio" id="RecsOn" name="recs" value="On" checked={selectedOptions.useRecs === true} />
                             </div>
                             <div className="flex flex-row justify-center items-center w-[80%] ">
                                 <label className="mr-2" htmlFor="RecsOff">Off</label>
-                                <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: !(e.target.checked) }))} type="radio" id="RecsOff" name="recs" value="Off" />
+                                <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: false }))} type="radio" id="RecsOff" name="recs" value="Off" checked={selectedOptions.useRecs === false} />
                             </div>
 
 
@@ -133,13 +162,13 @@ function SettingsPage() {
                                     AIFocus: e.target.value
                                 }))}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5"
-                                defaultValue=""
+                                value={selectedOptions.AIFocus}
                             >
                                 <option value={""} disabled>Select an option</option>
                                 <option>Past Analysis</option>
                                 <option>Future Prediction</option>
                                 <option>General Suggestions</option>
-                                <option>All Three</option>
+                                {/* <option>All Three</option> */}
                             </select>
                         </div>}
                     </div>
@@ -151,11 +180,11 @@ function SettingsPage() {
 
                         <div className="flex flex-row justify-center items-center w-[80%] ml-8">
                             <label className="mr-2" htmlFor="DarkOn">On</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useDarkMode: e.target.checked }))} type="radio" id="DarkOn" name="Dark" value="On" />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useDarkMode: true }))} type="radio" id="DarkOn" name="Dark" value="On" checked={selectedOptions.useDarkMode === true} />
                         </div>
                         <div className="flex flex-row justify-center items-center w-[80%] ">
                             <label className="mr-2" htmlFor="DarkOff">Off</label>
-                            <input onChange={(e) => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useDarkMode: !(e.target.checked) }))} type="radio" id="DarkOff" name="Dark" value="Off" defaultChecked={true} />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useDarkMode: false }))} type="radio" id="DarkOff" name="Dark" value="Off" checked={selectedOptions.useDarkMode === false} />
                         </div>
                     </div>
 
