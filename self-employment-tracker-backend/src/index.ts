@@ -13,6 +13,7 @@ app.use(cors({
     origin: [
         'https://self-employment-tracker-frontend.netlify.app',
         'http://localhost:5173',
+        'https://self-employment-tracker-backend-l9ew7c8y7.vercel.app'
     ],
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
@@ -32,9 +33,13 @@ app.post('/api/data', (req: Request, res: Response) => {
     res.json({ message: 'Data received', data: req.body });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server is running on http://localhost:${PORT}`);
+// });
+
+import serverless from "serverless-http";
+
+export const handler = serverless(app);
 
 
 app.get("/distance", async (req, res) => {
