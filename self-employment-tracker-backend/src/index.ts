@@ -122,3 +122,6 @@ app.post("/getRecommendations", async (req, res) => {
     // Wrap the output in an object
     res.json({ output: response.output_text });
 });
+
+
+export default serverless(app);
