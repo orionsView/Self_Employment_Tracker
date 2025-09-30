@@ -85,12 +85,12 @@ app.get("/shortlinkToLonglink", async (req, res) => {
 
 // AI RECOMMENDATIONS
 
-const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
 
 
 app.post("/getRecommendations", async (req, res) => {
+    const client = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
     const { data, suggestionType } = req.body;
 
     const prompt = `Give the user the following analysis: ${suggestionType}. 

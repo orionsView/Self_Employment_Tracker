@@ -12,27 +12,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.handler = void 0;
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
+const openai_1 = __importDefault(require("openai"));
+const lite_1 = require("js-tiktoken/lite");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = 3000;
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: [
+        'https://self-employment-tracker-frontend.netlify.app',
+        'http://localhost:5173',
+        'https://self-employment-tracker-backend-l9ew7c8y7.vercel.app'
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+}));
 // Middleware to parse JSON
 app.use(express_1.default.json());
 // Example route
 app.get('/', (req, res) => {
-    res.send('Hello i!');
+    res.json({ message: 'Hello i!' });
 });
 // Example POST route
 app.post('/api/data', (req, res) => {
     console.log(req.body);
     res.json({ message: 'Data received', data: req.body });
 });
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server is running on http://localhost:${PORT}`);
+// });
+const serverless_http_1 = __importDefault(require("serverless-http"));
+exports.handler = (0, serverless_http_1.default)(app);
 app.get("/distance", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log("test");
     const start = req.query.start;
@@ -62,3 +75,29 @@ app.get("/shortlinkToLonglink", (req, res) => __awaiter(void 0, void 0, void 0, 
     // console.log("Redirected to:", location);
     res.json({ longUrl });
 }));
+// AI RECOMMENDATIONS
+const client = new openai_1.default({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+app.post("/getRecommendations", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, suggestionType } = req.body;
+    const prompt = `Give the user the following analysis: ${suggestionType}. 
+    Provide a 2 sentence analysis based on this data set: ${JSON.stringify(data)}`;
+    const result = yield fetch(`https://tiktoken.pages.dev/js/o200k_base.json`);
+    const o200k_base = yield result.json();
+    const enc = new lite_1.Tiktoken(o200k_base);
+    const numTokens = enc.encode(prompt).length;
+    console.log(`Prompt: ${prompt}`);
+    console.log(`Number of tokens: ${numTokens}`);
+    const response = yield client.responses.create({
+        model: "gpt-5-mini",
+        input: prompt,
+    });
+    const encResponse = new lite_1.Tiktoken(o200k_base);
+    const numTokensResponse = encResponse.encode(response.output_text).length;
+    console.log(`Response: ${response.output_text}`);
+    console.log(`Number of tokens: ${numTokensResponse}`);
+    // Wrap the output in an object
+    res.json({ output: response.output_text });
+}));
+exports.default = (0, serverless_http_1.default)(app);
