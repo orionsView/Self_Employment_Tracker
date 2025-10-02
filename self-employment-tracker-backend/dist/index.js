@@ -76,28 +76,41 @@ app.get("/shortlinkToLonglink", (req, res) => __awaiter(void 0, void 0, void 0, 
     res.json({ longUrl });
 }));
 // AI RECOMMENDATIONS
-const client = new openai_1.default({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// import { Tiktoken } from "js-tiktoken/lite";
+// import OpenAI from "openai";
+let enc = null;
+let o200k_base = null;
 app.post("/getRecommendations", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { data, suggestionType } = req.body;
-    const prompt = `Give the user the following analysis: ${suggestionType}. 
+    try {
+        // ✅ Lazy load tokenizer only once
+        if (!enc) {
+            console.log("Loading tokenizer...");
+            const result = yield fetch("https://tiktoken.pages.dev/js/o200k_base.json");
+            o200k_base = yield result.json();
+            enc = new lite_1.Tiktoken(o200k_base);
+        }
+        const client = new openai_1.default({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+        const { data, suggestionType } = req.body;
+        const prompt = `Give the user the following analysis: ${suggestionType}. 
     Provide a 2 sentence analysis based on this data set: ${JSON.stringify(data)}`;
-    const result = yield fetch(`https://tiktoken.pages.dev/js/o200k_base.json`);
-    const o200k_base = yield result.json();
-    const enc = new lite_1.Tiktoken(o200k_base);
-    const numTokens = enc.encode(prompt).length;
-    console.log(`Prompt: ${prompt}`);
-    console.log(`Number of tokens: ${numTokens}`);
-    const response = yield client.responses.create({
-        model: "gpt-5-mini",
-        input: prompt,
-    });
-    const encResponse = new lite_1.Tiktoken(o200k_base);
-    const numTokensResponse = encResponse.encode(response.output_text).length;
-    console.log(`Response: ${response.output_text}`);
-    console.log(`Number of tokens: ${numTokensResponse}`);
-    // Wrap the output in an object
-    res.json({ output: response.output_text });
+        // ✅ Safe because enc is guaranteed initialized
+        const numTokens = enc.encode(prompt).length;
+        console.log(`Prompt: ${prompt}`);
+        console.log(`Number of tokens: ${numTokens}`);
+        const response = yield client.responses.create({
+            model: "gpt-5-mini",
+            input: prompt,
+        });
+        const numTokensResponse = enc.encode(response.output_text).length;
+        console.log(`Response: ${response.output_text}`);
+        console.log(`Number of tokens: ${numTokensResponse}`);
+        res.json({ output: response.output_text });
+    }
+    catch (err) {
+        console.error("Error in /getRecommendations:", err);
+        res.status(500).json({ error: "Failed to get recommendations" });
+    }
 }));
 exports.default = (0, serverless_http_1.default)(app);

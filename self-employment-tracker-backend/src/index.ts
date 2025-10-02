@@ -87,41 +87,54 @@ app.get("/shortlinkToLonglink", async (req, res) => {
 
 
 
+// import { Tiktoken } from "js-tiktoken/lite";
+// import OpenAI from "openai";
+
+let enc: Tiktoken | null = null;
+let o200k_base: any = null;
+
 app.post("/getRecommendations", async (req, res) => {
-    const client = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-    const { data, suggestionType } = req.body;
+    try {
+        // ✅ Lazy load tokenizer only once
+        if (!enc) {
+            console.log("Loading tokenizer...");
+            const result = await fetch("https://tiktoken.pages.dev/js/o200k_base.json");
+            o200k_base = await result.json();
+            enc = new Tiktoken(o200k_base);
+        }
 
-    const prompt = `Give the user the following analysis: ${suggestionType}. 
-    Provide a 2 sentence analysis based on this data set: ${JSON.stringify(data)}`
+        const client = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
 
-    const result = await fetch(`https://tiktoken.pages.dev/js/o200k_base.json`);
-    const o200k_base = await result.json();
-    const enc = new Tiktoken(o200k_base);
-    const numTokens = enc.encode(prompt).length;
+        const { data, suggestionType } = req.body;
 
-    console.log(`Prompt: ${prompt}`);
-    console.log(`Number of tokens: ${numTokens}`);
+        const prompt = `Give the user the following analysis: ${suggestionType}. 
+    Provide a 2 sentence analysis based on this data set: ${JSON.stringify(data)}`;
 
+        // ✅ Safe because enc is guaranteed initialized
+        const numTokens = enc.encode(prompt).length;
 
+        console.log(`Prompt: ${prompt}`);
+        console.log(`Number of tokens: ${numTokens}`);
 
+        const response = await client.responses.create({
+            model: "gpt-5-mini",
+            input: prompt,
+        });
 
+        const numTokensResponse = enc.encode(response.output_text).length;
 
-    const response = await client.responses.create({
-        model: "gpt-5-mini",
-        input: prompt,
-    });
+        console.log(`Response: ${response.output_text}`);
+        console.log(`Number of tokens: ${numTokensResponse}`);
 
-    const encResponse = new Tiktoken(o200k_base);
-    const numTokensResponse = encResponse.encode(response.output_text).length;
-
-    console.log(`Response: ${response.output_text}`);
-    console.log(`Number of tokens: ${numTokensResponse}`);
-
-    // Wrap the output in an object
-    res.json({ output: response.output_text });
+        res.json({ output: response.output_text });
+    } catch (err) {
+        console.error("Error in /getRecommendations:", err);
+        res.status(500).json({ error: "Failed to get recommendations" });
+    }
 });
+
 
 
 export default serverless(app);
