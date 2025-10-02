@@ -40,11 +40,6 @@ app.post('/api/data', (req: Request, res: Response) => {
 //     console.log(`Server is running on http://localhost:${PORT}`);
 // });
 
-import serverless from "serverless-http";
-
-export const handler = serverless(app);
-
-
 app.get("/distance", async (req, res) => {
     // console.log("test");
     const start = req.query.start;
@@ -140,4 +135,7 @@ app.post("/getRecommendations", async (req, res) => {
 
 
 
+// Export for serverless deployment
+import serverless from "serverless-http";
+export const handler = serverless(app);
 export default serverless(app);

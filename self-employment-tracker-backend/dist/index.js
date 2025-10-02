@@ -19,6 +19,7 @@ const cors_1 = __importDefault(require("cors"));
 const openai_1 = __importDefault(require("openai"));
 const lite_1 = require("js-tiktoken/lite");
 dotenv_1.default.config();
+console.log("Cold start at", new Date().toISOString());
 const app = (0, express_1.default)();
 const PORT = 3000;
 app.use((0, cors_1.default)({
@@ -34,6 +35,7 @@ app.use((0, cors_1.default)({
 app.use(express_1.default.json());
 // Example route
 app.get('/', (req, res) => {
+    console.log("base route");
     res.json({ message: 'Hello i!' });
 });
 // Example POST route
@@ -44,8 +46,6 @@ app.post('/api/data', (req, res) => {
 // app.listen(PORT, () => {
 //     console.log(`Server is running on http://localhost:${PORT}`);
 // });
-const serverless_http_1 = __importDefault(require("serverless-http"));
-exports.handler = (0, serverless_http_1.default)(app);
 app.get("/distance", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log("test");
     const start = req.query.start;
@@ -113,4 +113,7 @@ app.post("/getRecommendations", (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(500).json({ error: "Failed to get recommendations" });
     }
 }));
+// Export for serverless deployment
+const serverless_http_1 = __importDefault(require("serverless-http"));
+exports.handler = (0, serverless_http_1.default)(app);
 exports.default = (0, serverless_http_1.default)(app);
