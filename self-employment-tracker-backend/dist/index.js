@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
@@ -118,26 +117,5 @@ app.post("/getRecommendations", (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(500).json({ error: "Failed to get recommendations" });
     }
 }));
-// Export for serverless deployment
-const serverless_http_1 = __importDefault(require("serverless-http"));
-// Wrap the handler with debugging
-const wrappedApp = (0, serverless_http_1.default)(app);
-const handler = (event, context) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Handler invoked!", new Date().toISOString());
-    console.log("Request method:", event.httpMethod);
-    console.log("Request path:", event.path);
-    try {
-        const result = yield wrappedApp(event, context);
-        console.log("Handler result:", result.statusCode);
-        return result;
-    }
-    catch (error) {
-        console.error("Handler error:", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Internal server error" })
-        };
-    }
-});
-exports.handler = handler;
-exports.default = exports.handler;
+// Export for Vercel serverless deployment
+exports.default = app;
