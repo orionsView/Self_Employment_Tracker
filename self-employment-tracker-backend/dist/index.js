@@ -35,8 +35,13 @@ app.use((0, cors_1.default)({
 app.use(express_1.default.json());
 // Example route
 app.get('/', (req, res) => {
-    console.log("base route");
-    res.json({ message: 'Hello i!' });
+    console.log("base route hit");
+    console.log("Current time:", new Date().toISOString());
+    res.json({
+        message: 'Hello i!',
+        timestamp: new Date().toISOString(),
+        coldStart: 'Should have logged if module initialized'
+    });
 });
 // Example POST route
 app.post('/api/data', (req, res) => {
@@ -115,5 +120,23 @@ app.post("/getRecommendations", (req, res) => __awaiter(void 0, void 0, void 0, 
 }));
 // Export for serverless deployment
 const serverless_http_1 = __importDefault(require("serverless-http"));
-exports.handler = (0, serverless_http_1.default)(app);
-exports.default = (0, serverless_http_1.default)(app);
+// Wrap the handler with debugging
+const wrappedApp = (0, serverless_http_1.default)(app);
+const handler = (event, context) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Handler invoked!", new Date().toISOString());
+    console.log("Event:", JSON.stringify(event, null, 2));
+    try {
+        const result = yield wrappedApp(event, context);
+        console.log("Handler result:", result.statusCode);
+        return result;
+    }
+    catch (error) {
+        console.error("Handler error:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Internal server error" })
+        };
+    }
+});
+exports.handler = handler;
+exports.default = exports.handler;

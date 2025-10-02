@@ -26,8 +26,13 @@ app.use(express.json());
 
 // Example route
 app.get('/', (req: Request, res: Response) => {
-    console.log("base route");
-    res.json({ message: 'Hello i!' });
+    console.log("base route hit");
+    console.log("Current time:", new Date().toISOString());
+    res.json({ 
+        message: 'Hello i!',
+        timestamp: new Date().toISOString(),
+        coldStart: 'Should have logged if module initialized'
+    });
 });
 
 // Example POST route
@@ -137,5 +142,24 @@ app.post("/getRecommendations", async (req, res) => {
 
 // Export for serverless deployment
 import serverless from "serverless-http";
-export const handler = serverless(app);
-export default serverless(app);
+
+// Wrap the handler with debugging
+const wrappedApp = serverless(app);
+
+export const handler = async (event: any, context: any) => {
+    console.log("Handler invoked!", new Date().toISOString());
+    console.log("Event:", JSON.stringify(event, null, 2));
+    try {
+        const result = await wrappedApp(event, context);
+        console.log("Handler result:", (result as any).statusCode);
+        return result;
+    } catch (error) {
+        console.error("Handler error:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Internal server error" })
+        };
+    }
+};
+
+export default handler;
