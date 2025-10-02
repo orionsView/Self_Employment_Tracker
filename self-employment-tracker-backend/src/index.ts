@@ -26,7 +26,7 @@ app.use(express.json());
 
 // Example route
 app.get('/', (req: Request, res: Response) => {
-    console.log("test");
+    console.log("base route");
     res.json({ message: 'Hello i!' });
 });
 
