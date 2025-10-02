@@ -6,6 +6,8 @@ import { Tiktoken } from "js-tiktoken/lite";
 
 dotenv.config();
 
+console.log("Cold start at", new Date().toISOString());
+
 const app = express();
 const PORT = 3000;
 
@@ -24,6 +26,7 @@ app.use(express.json());
 
 // Example route
 app.get('/', (req: Request, res: Response) => {
+    console.log("test");
     res.json({ message: 'Hello i!' });
 });
 
