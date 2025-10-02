@@ -124,7 +124,8 @@ const serverless_http_1 = __importDefault(require("serverless-http"));
 const wrappedApp = (0, serverless_http_1.default)(app);
 const handler = (event, context) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Handler invoked!", new Date().toISOString());
-    console.log("Event:", JSON.stringify(event, null, 2));
+    console.log("Request method:", event.httpMethod);
+    console.log("Request path:", event.path);
     try {
         const result = yield wrappedApp(event, context);
         console.log("Handler result:", result.statusCode);

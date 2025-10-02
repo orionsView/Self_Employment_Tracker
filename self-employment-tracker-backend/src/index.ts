@@ -148,7 +148,8 @@ const wrappedApp = serverless(app);
 
 export const handler = async (event: any, context: any) => {
     console.log("Handler invoked!", new Date().toISOString());
-    console.log("Event:", JSON.stringify(event, null, 2));
+    console.log("Request method:", event.httpMethod);
+    console.log("Request path:", event.path);
     try {
         const result = await wrappedApp(event, context);
         console.log("Handler result:", (result as any).statusCode);
