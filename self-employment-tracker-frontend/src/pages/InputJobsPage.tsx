@@ -1,12 +1,13 @@
 import Header from "../components/Header"
 import NavBar from "../components/NavBar"
 import ClientSelector from "../components/ClientSelector"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from '../supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import TextInputField from "../components/TextInputField";
 import type { style } from "../components/TextInputField";
 import { InputBase, BorderCard, LabelText } from '../constants/ui'
+import { add, set } from "lodash";
 
 type input = {
     clientId: string,
@@ -46,11 +47,22 @@ function InputJobsPage() {
 
     const [submitProcessing, setSubmitProcessing]: any = useState(false);
 
+
+    const [addingNewClient, setAddingNewClient]: any = useState(false);
+    const [validNewClient, setValidNewClient]: any = useState(false);
+
     async function handleSubmit() {
+        console.log("submitting: ", addingNewClient, validNewClient);
         if (submitProcessing) {
             return;
         }
         setSubmitProcessing(true);
+
+        if (addingNewClient && !validNewClient) {
+            setSubmitProcessing(false);
+            alert('Make sure you have filled out all required fields correctly');
+            return;
+        }
 
         // Get current user
         const {
@@ -66,7 +78,18 @@ function InputJobsPage() {
         }
 
         const newClientId = uuidv4();
-        if (inputData.newClientName !== "") {
+        const jobId = uuidv4();
+
+
+        if (inputData.clientId === "add_new_client") {
+            // // Defensive check: ensure the new client name is valid before inserting
+            // const nameIsValid = /^(?!\s*$)[a-zA-Z\s.'-]+$/.test(inputData.newClientName);
+            // if (!nameIsValid) {
+            //     setSubmitProcessing(false);
+            //     alert('New client name is invalid');
+            //     return;
+            // }
+
             setInputData({ ...inputData, clientId: newClientId });
             const names = inputData.newClientName.split(" ");
             const firstName = names[0];
@@ -77,6 +100,7 @@ function InputJobsPage() {
                 LastName: lastName,
                 UserID: user.id
             });
+            console.log('inserting client', inputData);
             if (clientError) {
                 console.error('Client insert failed:', clientError);
                 alert('Client insert failed');
@@ -85,14 +109,17 @@ function InputJobsPage() {
             }
         }
 
-        const jobId = uuidv4();
+        // Use a local clientId variable because `setInputData` is asynchronous
+        // and `inputData.clientId` may still be the sentinel "add_new_client".
+        const clientIdToUse = inputData.clientId === "add_new_client" ? newClientId : (inputData.clientId || newClientId);
+
 
         // Insert job
         const { error: jobError } = await supabase.from('Job').insert({
             ID: jobId,
             UserID: user.id,
             TimeEntered: new Date().toISOString(),
-            ClientID: inputData.clientId || newClientId,
+            ClientID: clientIdToUse,
             HoursWorked: inputData.hours,
             HasBeenEdited: false,
         });
@@ -254,7 +281,21 @@ function InputJobsPage() {
         LabelStyle: LabelText
     }
 
+    useEffect(() => {
+        // console.log(inputData.clientId);
+        setAddingNewClient(inputData.clientId === "add_new_client");
+    }, [inputData]);
 
+    useEffect(() => {
+        console.log("addingNewClient: ", addingNewClient);
+    }, [addingNewClient]);
+
+
+
+
+    useEffect(() => {
+        console.log("validNewClient: ", validNewClient);
+    }, [validNewClient]);
 
     return (
         <>
@@ -264,20 +305,25 @@ function InputJobsPage() {
                 {/*Client Filter*/}
                 <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
                     <p>Use Existing Client</p>
-                    <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} />
-                    <p className="text-[4vw] text-nowrap">OR</p>
-                    <TextInputField
-                        Label="Add New Client"
-                        Type="text"
-                        onChange={(event) => { setInputData({ ...inputData, newClientName: event.target.value }) }}
-                        Placeholder="Enter client name"
-                        Style={inputTextStyle}
-                        currentValue={inputData.newClientName}
-                        setValidity={() => { }}
-                        validationRegex={/ /}
-                        warningMessage=" "
-                        onEnter={() => { }}
-                    />
+                    <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} addNewClientOption={true} />
+                    {addingNewClient && (
+                        <>
+                            <p className="text-[4vw] text-nowrap">OR</p>
+                            <TextInputField
+                                Label="Add New Client"
+                                Type="text"
+                                onChange={(event) => { setInputData({ ...inputData, newClientName: event.target.value }) }}
+                                Placeholder="Enter client name"
+                                Style={inputTextStyle}
+                                currentValue={inputData.newClientName}
+                                setValidity={(valid: boolean) => setValidNewClient(valid)}
+                                validationRegex={/^(?!\s*$)[a-zA-Z\s.'-]+$/}
+                                warningMessage="Please enter a valid client name"
+                                onEnter={() => { }}
+                            />
+                            {/* <p className={`${validNewClient ? 'text-green-600' : 'text-red-600'} text-[3vw] mt-2`}>{validNewClient ? 'Name looks good' : 'Enter a valid client name'}</p> */}
+                        </>
+                    )}
                 </div>
                 {/* DATE FILTER */}
                 <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
@@ -325,99 +371,100 @@ function InputJobsPage() {
                         }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                     </div>
                 </div>
-            </div>
+            </div >
 
 
             {/* Dynamic Trip Inputs */}
-            <div className=" w-[100%] flex flex-col justify-between items-center flex-grow">
-                {Array.from({ length: numberOfTrips }, (_, i) => (
-                    <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
-                        <p className="text-[4vw] text-nowrap">Trip {i + 1}</p>
-                        <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
-                            {/* Start */}
-                            <div className="flex flex-row justify-between items-center w-[80%] ">
-                                <p className="text-[4vw] text-nowrap">Start
+            < div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
+                {
+                    Array.from({ length: numberOfTrips }, (_, i) => (
+                        <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
+                            <p className="text-[4vw] text-nowrap">Trip {i + 1}</p>
+                            <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
+                                {/* Start */}
+                                <div className="flex flex-row justify-between items-center w-[80%] ">
+                                    <p className="text-[4vw] text-nowrap">Start
 
-                                </p>
-                                <input type="text" id={`trip${i}`} onChange={(event) => {
+                                    </p>
+                                    <input type="text" id={`trip${i}`} onChange={(event) => {
+                                        const updatedTrips = [...inputData.trips]; // copy array
+                                        updatedTrips[i] = {
+                                            ...updatedTrips[i],         // copy existing trip
+                                            start: event.target.value // or whichever field you're updating
+                                        };
+                                        setInputData({ ...inputData, trips: updatedTrips });
+                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                </div>
+                                {/* End */}
+                                <div className="flex flex-row justify-between items-center w-[80%] ">
+                                    <p className="text-[4vw] text-nowrap">End</p>
+                                    <input type="text" id={`trip${i}`} onChange={(event) => {
+                                        const updatedTrips = [...inputData.trips]; // copy array
+                                        updatedTrips[i] = {
+                                            ...updatedTrips[i],         // copy existing trip
+                                            end: event.target.value // or whichever field you're updating
+                                        };
+                                        setInputData({ ...inputData, trips: updatedTrips });
+                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                </div>
+
+                                <p className="font-bold">OR</p>
+
+
+                                {/* Distance */}
+                                <div className="flex flex-row justify-between items-center w-[80%] ">
+                                    <p className="text-[4vw] text-nowrap">Distance</p>
+                                    <input type="text" id={`trip${i}`} onChange={(event) => {
+                                        const updatedTrips = [...inputData.trips]; // copy array
+                                        updatedTrips[i] = {
+                                            ...updatedTrips[i],
+                                            distance: parseFloat(event.target.value)
+                                        };
+                                        setInputData({ ...inputData, trips: updatedTrips });
+                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                </div>
+
+                                <p className="font-bold">OR</p>
+
+                                {/* Map Link */}
+                                <div className="flex flex-row justify-between items-center w-[80%] ">
+                                    <p className="text-[4vw] text-nowrap">Map Link</p>
+                                    <input type="text" id={`trip${i}`} onChange={(event) => {
+                                        const updatedTrips = [...inputData.trips]; // copy array
+                                        updatedTrips[i] = {
+                                            ...updatedTrips[i],
+                                            mapLink: event.target.value
+                                        };
+                                        setInputData({ ...inputData, trips: updatedTrips });
+                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                </div>
+
+                            </div>
+
+                            {/* Gas Price */}
+
+                            <div className="flex flex-row justify-between items-center w-[80%] mt-4" >
+                                <p className="text-[4vw] text-nowrap">Gas Price</p>
+                                <input type="text" id="gasPrice" onChange={(event) => {
                                     const updatedTrips = [...inputData.trips]; // copy array
                                     updatedTrips[i] = {
                                         ...updatedTrips[i],         // copy existing trip
-                                        start: event.target.value // or whichever field you're updating
+                                        gasPrice: parseFloat(event.target.value) // or whichever field you're updating
                                     };
                                     setInputData({ ...inputData, trips: updatedTrips });
                                 }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                             </div>
-                            {/* End */}
-                            <div className="flex flex-row justify-between items-center w-[80%] ">
-                                <p className="text-[4vw] text-nowrap">End</p>
-                                <input type="text" id={`trip${i}`} onChange={(event) => {
-                                    const updatedTrips = [...inputData.trips]; // copy array
-                                    updatedTrips[i] = {
-                                        ...updatedTrips[i],         // copy existing trip
-                                        end: event.target.value // or whichever field you're updating
-                                    };
-                                    setInputData({ ...inputData, trips: updatedTrips });
-                                }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                            </div>
-
-                            <p className="font-bold">OR</p>
-
-
-                            {/* Distance */}
-                            <div className="flex flex-row justify-between items-center w-[80%] ">
-                                <p className="text-[4vw] text-nowrap">Distance</p>
-                                <input type="text" id={`trip${i}`} onChange={(event) => {
-                                    const updatedTrips = [...inputData.trips]; // copy array
-                                    updatedTrips[i] = {
-                                        ...updatedTrips[i],
-                                        distance: parseFloat(event.target.value)
-                                    };
-                                    setInputData({ ...inputData, trips: updatedTrips });
-                                }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                            </div>
-
-                            <p className="font-bold">OR</p>
-
-                            {/* Map Link */}
-                            <div className="flex flex-row justify-between items-center w-[80%] ">
-                                <p className="text-[4vw] text-nowrap">Map Link</p>
-                                <input type="text" id={`trip${i}`} onChange={(event) => {
-                                    const updatedTrips = [...inputData.trips]; // copy array
-                                    updatedTrips[i] = {
-                                        ...updatedTrips[i],
-                                        mapLink: event.target.value
-                                    };
-                                    setInputData({ ...inputData, trips: updatedTrips });
-                                }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                            </div>
-
-                        </div>
-
-                        {/* Gas Price */}
-
-                        <div className="flex flex-row justify-between items-center w-[80%] mt-4" >
-                            <p className="text-[4vw] text-nowrap">Gas Price</p>
-                            <input type="text" id="gasPrice" onChange={(event) => {
-                                const updatedTrips = [...inputData.trips]; // copy array
-                                updatedTrips[i] = {
-                                    ...updatedTrips[i],         // copy existing trip
-                                    gasPrice: parseFloat(event.target.value) // or whichever field you're updating
-                                };
-                                setInputData({ ...inputData, trips: updatedTrips });
-                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                        </div>
-                    </div >
-                ))
+                        </div >
+                    ))
                 }
-            </div >
+            </div>
 
             {/* Submit Button */}
-            <div className="flex justify-center items-center  h-[10%]">
-                <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            < div className="flex justify-center items-center  h-[10%]" >
+                <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
                     {submitProcessing ? "Submitting..." : "Submit"}
                 </button>
-            </div>
+            </div >
         </>
     )
 }

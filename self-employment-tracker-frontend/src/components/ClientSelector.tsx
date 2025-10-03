@@ -8,7 +8,8 @@ import { supabase } from '../supabaseClient';
 
 type Props = {
     setSelectedOptions: (selectedOptions: any) => void,
-    selectMultiple: boolean
+    selectMultiple?: boolean,
+    addNewClientOption?: boolean
 }
 
 type client = {
@@ -17,7 +18,7 @@ type client = {
     id: string
 }
 
-function ClientSelector({ setSelectedOptions, selectMultiple }: Props) {
+function ClientSelector({ setSelectedOptions, selectMultiple, addNewClientOption }: Props) {
 
 
     const [clients, setClients] = useState<client[]>([]);
@@ -52,14 +53,31 @@ function ClientSelector({ setSelectedOptions, selectMultiple }: Props) {
         console.log(clients)
     }, [clients])
 
-
+    const newClientOption = {
+        id: 'add_new_client'
+    }
 
 
     return (
         <div className="w-full">
             <Select
-                options={clients.map(client => ({ value: client, label: `${client.FirstName} ${client.LastName}` }))}
-                // value={selectedOptions}
+                options={
+                    (typeof addNewClientOption !== 'undefined' && addNewClientOption)
+                        ? [
+                            {
+                                value: newClientOption,
+                                label: '******** Add New Client ********'
+                            },
+                            ...clients.map(client => ({
+                                value: client,
+                                label: `${client.FirstName} ${client.LastName}`
+                            }))
+                        ]
+                        : clients.map(client => ({
+                            value: client,
+                            label: `${client.FirstName} ${client.LastName}`
+                        }))
+                }
                 onChange={setSelectedOptions}
                 isMulti={selectMultiple}
                 placeholder="Select clients..."

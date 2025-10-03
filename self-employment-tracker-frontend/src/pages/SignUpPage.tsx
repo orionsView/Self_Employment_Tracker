@@ -20,6 +20,7 @@ function SignUpPage() {
     function handleSignUp() {
         if (!(validity.email && validity.password && validity.confirmPassword)) {
             console.log("invalid state: ", validity)
+            alert("Make sure you have filled out all required fields correctly")
         } else {
             supabase.auth.signUp({
                 email: currentInput.email,

@@ -9,7 +9,9 @@ type TextInputFieldProps = {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     currentValue: string,
     warningMessage: string,
-    setValidity: (valid: boolean) => void
+    setValidity: (valid: boolean) => void,
+    // when true, an empty string is treated as valid. Default: false
+    allowEmpty?: boolean,
     onEnter: () => void
 
 }
@@ -24,13 +26,13 @@ function TextInputField(props: TextInputFieldProps) {
     const [warningHidden, setWarningHidden] = useState(true);
 
     useEffect(() => {
-        if (props.currentValue.match(props.validationRegex) || props.currentValue === "") {
-            setWarningHidden(true)
-            props.setValidity(true)
-        } else {
-            setWarningHidden(false)
-        }
-    }, [props.currentValue])
+        const isMatch = !!props.currentValue.match(props.validationRegex);
+        const isEmpty = props.currentValue === "";
+        const valid = isMatch || (isEmpty && !!props.allowEmpty);
+
+        setWarningHidden(valid);
+        props.setValidity(valid);
+    }, [props.currentValue, props.allowEmpty, props.validationRegex])
 
     return (
         <>

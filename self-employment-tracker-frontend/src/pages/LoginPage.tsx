@@ -78,6 +78,7 @@ function LoginPage() {
                             onChange={(e) => { setCurrentInput({ ...currentInput, email: e.target.value }) }}
                             warningMessage=""
                             setValidity={() => { }}
+                            allowEmpty={true}
                             onEnter={handleLogin}
                         />
 
@@ -92,6 +93,7 @@ function LoginPage() {
                             onChange={(e) => { setCurrentInput({ ...currentInput, password: e.target.value }) }}
                             warningMessage=""
                             setValidity={() => { }}
+                            allowEmpty={true}
                             onEnter={handleLogin}
                         />
                         {/* Submit Button */}
