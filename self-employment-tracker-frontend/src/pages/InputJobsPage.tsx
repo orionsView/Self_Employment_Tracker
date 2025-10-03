@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import TextInputField from "../components/TextInputField";
 import type { style } from "../components/TextInputField";
 import { InputBase, BorderCard, LabelText } from '../constants/ui'
-import { add, set } from "lodash";
+// ...existing code...
 
 type input = {
     clientId: string,
@@ -16,8 +16,8 @@ type input = {
     endDate: string,
     job: string,
     hours: number,
-    earnings: number
-    expenses: number
+    earnings: earning[]
+    expenses: expense[]
     trips: trip[]
 }
 
@@ -30,6 +30,19 @@ type trip = {
     mapLink: string
 }
 
+type expense = {
+    amount: number,
+    methodId: string,
+    date: string,
+    desc: string
+}
+
+type earning = {
+    amount: number,
+    methodId: string,
+    date: string,
+}
+
 function InputJobsPage() {
     const [inputData, setInputData] = useState<input>({
         clientId: "",
@@ -38,12 +51,16 @@ function InputJobsPage() {
         endDate: "",
         job: "",
         hours: 0,
-        earnings: 0,
-        expenses: 0,
+        earnings: [],
+        expenses: [],
         trips: [],
     });
+    const [numberOfEarnings, setNumberOfEarnings]: any = useState(0);
     const [numberOfTrips, setNumberOfTrips]: any = useState(0);
+    const [numberOfExpenses, setNumberOfExpenses]: any = useState(0);
     const borderStyle: string = BorderCard;
+
+    const [paymentMethods, setPaymentMethods]: any = useState([]);
 
     const [submitProcessing, setSubmitProcessing]: any = useState(false);
 
@@ -163,8 +180,6 @@ function InputJobsPage() {
             return;
         }
 
-        const paymentId = uuidv4();
-        const expenseId = uuidv4();
         const defaultPaymentMethod = 'Cash';
         const { data, error } = await supabase
             .from('PaymentMethod')
@@ -175,15 +190,34 @@ function InputJobsPage() {
             console.error('Error fetching payment method ID:', error)
             alert('Error fetching payment method ID');
             setSubmitProcessing(false);
-        } else { // got payment method id
-            const deafultPaymentMethodId = data[0].ID;
-            const { error: paymentError } = await supabase.from('Payment').insert({
-                ID: paymentId,
+            return;
+        }
+
+        // determine a default payment method id to use when entries don't specify one
+        let deafultPaymentMethodId: string | null = null;
+        if (data && data.length > 0) {
+            deafultPaymentMethodId = data[0].ID;
+        } else if ((paymentMethods || []).length > 0) {
+            deafultPaymentMethodId = paymentMethods[0].ID;
+        }
+
+        if (!deafultPaymentMethodId) {
+            console.error('No payment methods available to assign to payments/expenses');
+            alert('No payment methods available. Please create one in settings first.');
+            setSubmitProcessing(false);
+            return;
+        }
+        // Insert payments (one per earning entry)
+        if ((inputData.earnings || []).length > 0) {
+            const paymentInserts = (inputData.earnings || []).map((e) => ({
+                ID: uuidv4(),
                 JobID: jobId,
-                Amount: inputData.earnings,
-                TimePayed: new Date().toISOString(),
-                MethodID: deafultPaymentMethodId,
-            });
+                Amount: e.amount,
+                TimePayed: e.date || new Date().toISOString(),
+                MethodID: e.methodId || deafultPaymentMethodId,
+            }));
+
+            const { error: paymentError } = await supabase.from('Payment').insert(paymentInserts);
 
             if (paymentError) {
                 console.error('Payment insert failed:', paymentError);
@@ -191,16 +225,20 @@ function InputJobsPage() {
                 setSubmitProcessing(false);
                 return;
             }
+        }
 
-            // Insert expense
-            const { error: expenseError } = await supabase.from('Expense').insert({
-                ID: expenseId,
+        // Insert expenses (one or more)
+        if ((inputData.expenses || []).length > 0) {
+            const expenseInserts = (inputData.expenses || []).map((exp) => ({
+                ID: uuidv4(),
                 JobID: jobId,
-                Amount: inputData.expenses,
-                TimePayed: new Date().toISOString(),
-                MethodID: deafultPaymentMethodId,
-                Description: 'Auto-entered', // you can customize this
-            });
+                Amount: exp.amount,
+                TimePayed: exp.date || new Date().toISOString(),
+                MethodID: exp.methodId || deafultPaymentMethodId,
+                Description: exp.desc || '',
+            }));
+
+            const { error: expenseError } = await supabase.from('Expense').insert(expenseInserts);
 
             if (expenseError) {
                 console.error('Expense insert failed:', expenseError);
@@ -297,11 +335,24 @@ function InputJobsPage() {
         console.log("validNewClient: ", validNewClient);
     }, [validNewClient]);
 
+    useEffect(() => {
+        // fetch available payment methods for dropdowns
+        async function fetchPaymentMethods() {
+            const { data, error } = await supabase.from('PaymentMethod').select('ID, Method');
+            if (error) {
+                console.error('Error fetching payment methods:', error);
+                return;
+            }
+            setPaymentMethods(data || []);
+        }
+        fetchPaymentMethods();
+    }, []);
+
     return (
         <>
             <NavBar />
             <Header mainTitle="Input Jobs" subTitle="Input your job information here" />
-            <div className="h-[60%] w-[100%] flex flex-col justify-between items-center">
+            <div className="w-[100%] flex flex-col items-center">
                 {/*Client Filter*/}
                 <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
                     <p>Use Existing Client</p>
@@ -317,7 +368,7 @@ function InputJobsPage() {
                                 Style={inputTextStyle}
                                 currentValue={inputData.newClientName}
                                 setValidity={(valid: boolean) => setValidNewClient(valid)}
-                                validationRegex={/^(?!\s*$)[a-zA-Z\s.'-]+$/}
+                                validationRegex={/^(?!\s*$)[a-zA-Z0-9\s.'-]+$/}
                                 warningMessage="Please enter a valid client name"
                                 onEnter={() => { }}
                             />
@@ -337,34 +388,142 @@ function InputJobsPage() {
                     </div>
 
                 </div>
-                {/* Earnings */}
+                {/* Earnings - number selector */}
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Earnings</p>
-                        <input type="number" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, earnings: parseFloat(event.target.value) }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                    <div className="flex flex-col justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Number of Earnings</p>
+                        <input type="number" id="numEarnings" min={0} onChange={(event) => {
+                            const num = parseInt(event.target.value) || 0;
+                            setNumberOfEarnings(num);
+                            const updated = [...(inputData.earnings || [])];
+                            while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '' });
+                            while (updated.length > num) updated.pop();
+                            setInputData({ ...inputData, earnings: updated });
+                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                     </div>
+                </div>
+
+                {/* Dynamic Earnings Inputs */}
+                < div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
+                    {
+                        Array.from({ length: numberOfEarnings }, (_, i) => (
+                            <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
+                                <p className="text-[4vw] text-nowrap">Earning {i + 1}</p>
+                                <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
+                                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                                        <p className="text-[4vw] text-nowrap">Amount</p>
+                                        <input type="number" value={inputData.earnings[i]?.amount ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.earnings || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), amount: parseFloat(e.target.value) || 0 };
+                                            setInputData({ ...inputData, earnings: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                    </div>
+                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                        <p className="text-[4vw] text-nowrap">Payment Method</p>
+                                        <select value={inputData.earnings[i]?.methodId ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.earnings || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), methodId: e.target.value };
+                                            setInputData({ ...inputData, earnings: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " >
+                                            <option value="">Select method</option>
+                                            {paymentMethods.map((m: any) => (
+                                                <option key={m.ID} value={m.ID}>{m.Method}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                        <p className="text-[4vw] text-nowrap">Date</p>
+                                        <input type="date" value={inputData.earnings[i]?.date ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.earnings || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), date: e.target.value };
+                                            setInputData({ ...inputData, earnings: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                    </div>
+                                    {/* earnings have no description field per Payment schema */}
+                                </div>
+                            </div >
+                        ))
+                    }
                 </div>
                 {/* Hrs Worked */}
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Hours</p>
+                    <div className="flex flex-col justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Hours Worked</p>
                         <input type="number" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, hours: parseFloat(event.target.value) }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                     </div>
 
                 </div>
-                {/* Expenses */}
+                {/* Expenses - number selector */}
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Expenses</p>
-                        <input type="number" id="expenses" onChange={(event) => { setInputData({ ...inputData, expenses: parseFloat(event.target.value) }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                    <div className="flex flex-col justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Number of Expenses</p>
+                        <input type="number" id="numExpenses" min={0} onChange={(event) => {
+                            const num = parseInt(event.target.value) || 0;
+                            setNumberOfExpenses(num);
+                            // expand or shrink the expenses array
+                            const updated = [...(inputData.expenses || [])];
+                            while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '', desc: '' });
+                            while (updated.length > num) updated.pop();
+                            setInputData({ ...inputData, expenses: updated });
+                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                     </div>
+                </div>
+
+                {/* Dynamic Expense Inputs */}
+                <div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
+                    {
+                        Array.from({ length: numberOfExpenses }, (_, i) => (
+                            <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
+                                <p className="text-[4vw] text-nowrap">Expense {i + 1}</p>
+                                <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
+                                    <div className="flex flex-row justify-between items-center w-[80%] ">
+                                        <p className="text-[4vw] text-nowrap">Amount</p>
+                                        <input type="number" value={inputData.expenses[i]?.amount ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.expenses || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), amount: parseFloat(e.target.value) || 0 };
+                                            setInputData({ ...inputData, expenses: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                    </div>
+                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                        <p className="text-[4vw] text-nowrap">Payment Method</p>
+                                        <select value={inputData.expenses[i]?.methodId ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.expenses || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), methodId: e.target.value };
+                                            setInputData({ ...inputData, expenses: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " >
+                                            <option value="">Select method</option>
+                                            {paymentMethods.map((m: any) => (
+                                                <option key={m.ID} value={m.ID}>{m.Method}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                        <p className="text-[4vw] text-nowrap">Date</p>
+                                        <input type="date" value={inputData.expenses[i]?.date ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.expenses || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), date: e.target.value };
+                                            setInputData({ ...inputData, expenses: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                    </div>
+                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                        <p className="text-[4vw] text-nowrap">Description</p>
+                                        <input type="text" value={inputData.expenses[i]?.desc ?? ''} onChange={(e) => {
+                                            const updated = [...(inputData.expenses || [])];
+                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), desc: e.target.value };
+                                            setInputData({ ...inputData, expenses: updated });
+                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                    </div>
+                                </div>
+                            </div >
+                        ))
+                    }
                 </div>
 
 
                 {/* Trips */}
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Trips</p>
+                    <div className="flex flex-col justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Number of Trips</p>
                         <input type="number" id="hoursWorked" onChange={(event) => {
                             const numTrips = parseInt(event.target.value);
                             if (numTrips > 0 && numTrips < 30) { setNumberOfTrips(numTrips); }
@@ -375,7 +534,7 @@ function InputJobsPage() {
 
 
             {/* Dynamic Trip Inputs */}
-            < div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
+            <div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
                 {
                     Array.from({ length: numberOfTrips }, (_, i) => (
                         <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
@@ -460,11 +619,11 @@ function InputJobsPage() {
             </div>
 
             {/* Submit Button */}
-            < div className="flex justify-center items-center  h-[10%]" >
+            <div className="flex justify-center items-center mt-6" >
                 <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
                     {submitProcessing ? "Submitting..." : "Submit"}
                 </button>
-            </div >
+            </div>
         </>
     )
 }
