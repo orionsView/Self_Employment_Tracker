@@ -563,10 +563,10 @@ function InputJobsPage() {
                                             start: event.target.value // or whichever field you're updating
                                         };
                                         setInputData({ ...inputData, trips: updatedTrips });
-                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " /> */}
-                            </div>
-                            {/* End */}
-                            {/* <div className="flex flex-row justify-between items-center w-[80%] ">
+                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                </div> */}
+                                {/* End */}
+                                {/* <div className="flex flex-row justify-between items-center w-[80%] ">
                                     <p className="text-[4vw] text-nowrap">End</p>
                                     <input type="text" id={`trip${i}`} onChange={(event) => {
                                         const updatedTrips = [...inputData.trips]; // copy array
@@ -576,28 +576,28 @@ function InputJobsPage() {
                                         };
                                         setInputData({ ...inputData, trips: updatedTrips });
                                     }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                </div> */}
+
+                                <p className="font-bold">OR</p>
+
+
+                                {/* Distance */}
+                                <div className="flex flex-row justify-between items-center w-[80%] ">
+                                    <p className="text-[4vw] text-nowrap">Distance</p>
+                                    <input type="text" id={`trip${i}`} onChange={(event) => {
+                                        const updatedTrips = [...inputData.trips]; // copy array
+                                        updatedTrips[i] = {
+                                            ...updatedTrips[i],
+                                            distance: parseFloat(event.target.value)
+                                        };
+                                        setInputData({ ...inputData, trips: updatedTrips });
+                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                                 </div>
 
-                                <p className="font-bold">OR</p> */}
+                                {/* <p className="font-bold">OR</p> */}
 
-
-                            {/* Distance */}
-                            <div className="flex flex-row justify-between items-center w-[80%] ">
-                                <p className="text-[4vw] text-nowrap">Distance</p>
-                                <input type="text" id={`trip${i}`} onChange={(event) => {
-                                    const updatedTrips = [...inputData.trips]; // copy array
-                                    updatedTrips[i] = {
-                                        ...updatedTrips[i],
-                                        distance: parseFloat(event.target.value)
-                                    };
-                                    setInputData({ ...inputData, trips: updatedTrips });
-                                }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                            </div>
-
-                            {/* <p className="font-bold">OR</p> */}
-
-                            {/* Map Link */}
-                            {/* <div className="flex flex-row justify-between items-center w-[80%] ">
+                                {/* Map Link */}
+                                {/* <div className="flex flex-row justify-between items-center w-[80%] ">
                                     <p className="text-[4vw] text-nowrap">Map Link</p>
                                     <input type="text" id={`trip${i}`} onChange={(event) => {
                                         const updatedTrips = [...inputData.trips]; // copy array
@@ -609,11 +609,11 @@ function InputJobsPage() {
                                     }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                                 </div> */}
 
-                        </div>
+                            </div>
 
-                            {/* Gas Price */ }
+                            {/* Gas Price */}
 
-                        < div className = "flex flex-row justify-between items-center w-[80%] mt-4" >
+                            <div className="flex flex-row justify-between items-center w-[80%] mt-4" >
                                 <p className="text-[4vw] text-nowrap">Gas Price</p>
                                 <input type="text" id="gasPrice" onChange={(event) => {
                                     const updatedTrips = [...inputData.trips]; // copy array
@@ -623,18 +623,18 @@ function InputJobsPage() {
                                     };
                                     setInputData({ ...inputData, trips: updatedTrips });
                                 }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                            </>
-        </div >
+                            </div>
+                        </div >
                     ))
-}
+                }
             </div >
 
-    {/* Submit Button */ }
-    < div className = "flex justify-center items-center mt-6" >
-        <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
-            {submitProcessing ? "Submitting..." : "Submit"}
-        </button>
-            </ >
+            {/* Submit Button */}
+            <div className="flex justify-center items-center mt-6" >
+                <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    {submitProcessing ? "Submitting..." : "Submit"}
+                </button>
+            </div>
         </>
     )
 }
