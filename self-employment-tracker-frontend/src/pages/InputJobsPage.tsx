@@ -12,6 +12,7 @@ import { InputBase, BorderCard, LabelText } from '../constants/ui'
 type input = {
     clientId: string,
     newClientName: string,
+    jobName: string,
     startDate: string,
     endDate: string,
     job: string,
@@ -47,6 +48,7 @@ function InputJobsPage() {
     const [inputData, setInputData] = useState<input>({
         clientId: "",
         newClientName: "",
+        jobName: "",
         startDate: "",
         endDate: "",
         job: "",
@@ -375,6 +377,14 @@ function InputJobsPage() {
                             {/* <p className={`${validNewClient ? 'text-green-600' : 'text-red-600'} text-[3vw] mt-2`}>{validNewClient ? 'Name looks good' : 'Enter a valid client name'}</p> */}
                         </>
                     )}
+                </div>
+                {/* Job Name */}
+                <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
+                    <div className="flex flex-col justify-between items-center w-[80%] ">
+                        <p className="text-[4vw] text-nowrap">Job Name</p>
+                        <input type="number" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, jobName: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                    </div>
+
                 </div>
                 {/* DATE FILTER */}
                 <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
