@@ -25,6 +25,11 @@ function SuggestionModule({ data }: any) {
         // Now read settings (either existing or the one we just stored) and use it
         const settings = localStorage.getItem("UserSettings") || "";
 
+        if (!settings || settings === "undefined") {
+            setSuggestion("No user settings found.");
+            return;
+        }
+
         if (JSON.parse(settings).useRecs === false) {
             setSuggestion("Advice Disabled. Enable advice in settings.");
             return;
@@ -40,7 +45,7 @@ function SuggestionModule({ data }: any) {
 
         if (localStorage.getItem(JSON.stringify(data)) !== null) {
             const cached = localStorage.getItem(JSON.stringify(data));
-            if (cached) {
+            if (cached && cached !== "undefined") { // <-- Added check
                 setSuggestion(JSON.parse(cached).output);
                 console.log("used cached suggestion");
                 return;
