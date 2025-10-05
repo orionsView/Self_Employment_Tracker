@@ -578,7 +578,7 @@ function InputJobsPage() {
                                     }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                                 </div> */}
 
-                                <p className="font-bold">OR</p>
+                                {/* <p className="font-bold">OR</p> */}
 
 
                                 {/* Distance */}
