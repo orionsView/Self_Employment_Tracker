@@ -382,7 +382,7 @@ function InputJobsPage() {
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
                     <div className="flex flex-col justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap">Job Name</p>
-                        <input type="number" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, jobName: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        <input type="text" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, jobName: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                     </div>
 
                 </div>
