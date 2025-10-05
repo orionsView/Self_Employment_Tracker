@@ -594,10 +594,10 @@ function InputJobsPage() {
                                     }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
                                 </div>
 
-                                <p className="font-bold">OR</p>
+                                {/* <p className="font-bold">OR</p> */}
 
                                 {/* Map Link */}
-                                <div className="flex flex-row justify-between items-center w-[80%] ">
+                                {/* <div className="flex flex-row justify-between items-center w-[80%] ">
                                     <p className="text-[4vw] text-nowrap">Map Link</p>
                                     <input type="text" id={`trip${i}`} onChange={(event) => {
                                         const updatedTrips = [...inputData.trips]; // copy array
@@ -607,7 +607,7 @@ function InputJobsPage() {
                                         };
                                         setInputData({ ...inputData, trips: updatedTrips });
                                     }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                </div>
+                                </div> */}
 
                             </div>
 
