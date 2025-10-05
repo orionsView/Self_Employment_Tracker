@@ -9,17 +9,6 @@ function SuggestionModule({ data }: any) {
 
 
     async function getSuggestion() {
-        setSuggestion("Thinking...");
-
-        if (localStorage.getItem(JSON.stringify(data)) !== null) {
-            setSuggestion(JSON.parse(localStorage.getItem(JSON.stringify(data)) || "").output);
-            console.log("used cached suggestion");
-            return;
-        }
-
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-
         if (localStorage.getItem("UserSettings") === null) {
             const {
                 data: { user },
@@ -45,6 +34,19 @@ function SuggestionModule({ data }: any) {
         const suggestionType = settings ? JSON.parse(settings).AIFocus : "Past Results";
         console.log(`settings: ${settings}`);
         console.log(`suggestionType: ${suggestionType}`);
+
+
+        setSuggestion("Thinking...");
+
+        if (localStorage.getItem(JSON.stringify(data)) !== null) {
+            setSuggestion(JSON.parse(localStorage.getItem(JSON.stringify(data)) || "").output);
+            console.log("used cached suggestion");
+            return;
+        }
+
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+
 
 
         // const suggestionType = typeResponse.data[0].SuggestionType
