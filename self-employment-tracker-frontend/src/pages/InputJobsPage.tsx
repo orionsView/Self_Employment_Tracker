@@ -403,7 +403,7 @@ function InputJobsPage() {
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
                     <div className="flex flex-col justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap">Number of Earnings</p>
-                        <input type="number" id="numEarnings" min={0} onChange={(event) => {
+                        <input type="number" id="numEarnings" min={0} max={30} onChange={(event) => {
                             const num = parseInt(event.target.value) || 0;
                             setNumberOfEarnings(num);
                             const updated = [...(inputData.earnings || [])];
@@ -468,7 +468,7 @@ function InputJobsPage() {
                 <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
                     <div className="flex flex-col justify-between items-center w-[80%] ">
                         <p className="text-[4vw] text-nowrap">Number of Expenses</p>
-                        <input type="number" id="numExpenses" min={0} onChange={(event) => {
+                        <input type="number" id="numExpenses" min={0} max={30} onChange={(event) => {
                             const num = parseInt(event.target.value) || 0;
                             setNumberOfExpenses(num);
                             // expand or shrink the expenses array
