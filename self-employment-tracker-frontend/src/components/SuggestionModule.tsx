@@ -39,9 +39,12 @@ function SuggestionModule({ data }: any) {
         setSuggestion("Thinking...");
 
         if (localStorage.getItem(JSON.stringify(data)) !== null) {
-            setSuggestion(JSON.parse(localStorage.getItem(JSON.stringify(data)) || "").output);
-            console.log("used cached suggestion");
-            return;
+            const cached = localStorage.getItem(JSON.stringify(data));
+            if (cached) {
+                setSuggestion(JSON.parse(cached).output);
+                console.log("used cached suggestion");
+                return;
+            }
         }
 
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
