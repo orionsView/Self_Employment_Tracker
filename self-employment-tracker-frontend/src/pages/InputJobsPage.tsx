@@ -141,6 +141,7 @@ function InputJobsPage() {
             ClientID: clientIdToUse,
             HoursWorked: inputData.hours,
             HasBeenEdited: false,
+            JobName: inputData.jobName || "Untitled Job"
         });
 
         if (jobError) {
