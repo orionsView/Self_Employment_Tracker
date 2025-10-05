@@ -18,7 +18,7 @@ function SettingsPage() {
 
     const getInitialOptions = (): response => {
         const stored = localStorage.getItem("UserSettings");
-        if (stored) {
+        if (stored && stored !== "undefined") {
             try {
                 const parsed = JSON.parse(stored);
                 return {
@@ -87,7 +87,7 @@ function SettingsPage() {
 
     useEffect(() => {
         const userSettings = localStorage.getItem("UserSettings");
-        if (userSettings) {
+        if (userSettings && userSettings !== "undefined") {
             setSelectedOptions(JSON.parse(userSettings));
         }
     }, []);
