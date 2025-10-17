@@ -13,6 +13,7 @@ import SubmitButton from "../components/SubmitButton";
 type input = {
     clientId: string,
     newClientName: string,
+    jobName: string,
     startDate: string,
     endDate: string,
     job: string,
@@ -48,6 +49,7 @@ function InputJobsPage() {
     const [inputData, setInputData] = useState<input>({
         clientId: "",
         newClientName: "",
+        jobName: "",
         startDate: "",
         endDate: "",
         job: "",
@@ -141,6 +143,7 @@ function InputJobsPage() {
             ClientID: clientIdToUse,
             HoursWorked: inputData.hours,
             HasBeenEdited: false,
+            JobName: inputData.jobName || "Untitled Job"
         });
 
         if (jobError) {

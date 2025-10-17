@@ -20,7 +20,7 @@ function SettingsPage() {
 
     const getInitialOptions = (): response => {
         const stored = localStorage.getItem("UserSettings");
-        if (stored) {
+        if (stored && stored !== "undefined") {
             try {
                 const parsed = JSON.parse(stored);
                 return {
@@ -75,7 +75,7 @@ function SettingsPage() {
             return;
         }
 
-        if (localStorage.getItem("UserSettings") !== null) {
+        if (typeof localStorage !== "undefined" && localStorage.getItem("UserSettings") !== null) {
             localStorage.setItem("UserSettings", JSON.stringify(selectedOptions));
         }
         navigate("/menu");
@@ -88,8 +88,9 @@ function SettingsPage() {
     }), [selectedOptions]
 
     useEffect(() => {
-        if (localStorage.getItem("UserSettings") !== null) {
-            setSelectedOptions(JSON.parse(localStorage.getItem("UserSettings") || ""));
+        const userSettings = localStorage.getItem("UserSettings");
+        if (userSettings && userSettings !== "undefined") {
+            setSelectedOptions(JSON.parse(userSettings));
         }
     }, []);
     // const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";

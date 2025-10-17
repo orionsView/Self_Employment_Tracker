@@ -9,18 +9,7 @@ function SuggestionModule({ data }: any) {
 
 
     async function getSuggestion() {
-        setSuggestion("Thinking...");
-
-        if (localStorage.getItem(JSON.stringify(data)) !== null) {
-            setSuggestion(JSON.parse(localStorage.getItem(JSON.stringify(data)) || "").output);
-            console.log("used cached suggestion");
-            return;
-        }
-
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-
-        if (localStorage.getItem("UserSettings") === null) {
+        if (localStorage.getItem("UserSettings") === null || localStorage.getItem("UserSettings") === "undefined") {
             const {
                 data: { user },
             } = await supabase.auth.getUser()
@@ -36,6 +25,7 @@ function SuggestionModule({ data }: any) {
         // Now read settings (either existing or the one we just stored) and use it
         const settings = localStorage.getItem("UserSettings") || "";
 
+
         if (JSON.parse(settings).useRecs === false) {
             setSuggestion("Advice Disabled. Enable advice in settings.");
             return;
@@ -45,6 +35,22 @@ function SuggestionModule({ data }: any) {
         const suggestionType = settings ? JSON.parse(settings).AIFocus : "Past Results";
         console.log(`settings: ${settings}`);
         console.log(`suggestionType: ${suggestionType}`);
+
+
+        setSuggestion("Thinking...");
+
+        if (localStorage.getItem(JSON.stringify(data)) !== null) {
+            const cached = localStorage.getItem(JSON.stringify(data));
+            if (cached && cached !== "undefined") { // <-- Added check
+                setSuggestion(JSON.parse(cached).output);
+                console.log("used cached suggestion");
+                return;
+            }
+        }
+
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+
 
 
         // const suggestionType = typeResponse.data[0].SuggestionType
