@@ -421,7 +421,9 @@ function InputJobsPage() {
                         <div className="flex flex-col justify-between items-center w-[80%] ">
                             <p className="text-[4vw] text-nowrap">Number of Earnings</p>
                             <input type="number" id="numEarnings" min={0} max={20} onChange={(event) => {
-                                const num = parseInt(event.target.value) || 0;
+                                let num = parseInt(event.target.value) || 0;
+                                if (num < 0) num = 0;
+                                if (num > 20) num = 20;
                                 setNumberOfEarnings(num);
                                 const updated = [...(inputData.earnings || [])];
                                 while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '' });
@@ -479,7 +481,9 @@ function InputJobsPage() {
                         <div className="flex flex-col justify-between items-center w-[80%] ">
                             <p className="text-[4vw] text-nowrap">Number of Expenses</p>
                             <input type="number" id="numExpenses" min={0} max={20} onChange={(event) => {
-                                const num = parseInt(event.target.value) || 0;
+                                let num = parseInt(event.target.value) || 0;
+                                if (num < 0) num = 0;
+                                if (num > 20) num = 20;
                                 setNumberOfExpenses(num);
                                 // expand or shrink the expenses array
                                 const updated = [...(inputData.expenses || [])];
@@ -554,7 +558,9 @@ function InputJobsPage() {
                                 min={0}
                                 max={20}
                                 onChange={(event) => {
-                                    const num = parseInt(event.target.value) || 0;
+                                    let num = parseInt(event.target.value) || 0;
+                                    if (num < 0) num = 0;
+                                    if (num > 20) num = 20;
                                     setNumberOfTrips(num);
                                     const updated = [...(inputData.trips || [])];
                                     while (updated.length < num)
