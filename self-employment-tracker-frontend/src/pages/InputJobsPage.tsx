@@ -383,6 +383,14 @@ function InputJobsPage() {
                             </>
                         )}
                     </div>
+                    {/* Job Name */}
+                    <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
+                        <div className="flex flex-col justify-between items-center w-[80%] ">
+                            <p className="text-[4vw] text-nowrap">Job Name</p>
+                            <input type="text" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, jobName: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        </div>
+                    </div>
+
                     {/* DATE FILTER */}
                     <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
                         <div className="flex flex-row justify-between items-center w-[80%] ">
@@ -412,7 +420,7 @@ function InputJobsPage() {
                     <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
                         <div className="flex flex-col justify-between items-center w-[80%] ">
                             <p className="text-[4vw] text-nowrap">Number of Earnings</p>
-                            <input type="number" id="numEarnings" min={0} onChange={(event) => {
+                            <input type="number" id="numEarnings" min={0} max={20} onChange={(event) => {
                                 const num = parseInt(event.target.value) || 0;
                                 setNumberOfEarnings(num);
                                 const updated = [...(inputData.earnings || [])];
@@ -470,7 +478,7 @@ function InputJobsPage() {
                     <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
                         <div className="flex flex-col justify-between items-center w-[80%] ">
                             <p className="text-[4vw] text-nowrap">Number of Expenses</p>
-                            <input type="number" id="numExpenses" min={0} onChange={(event) => {
+                            <input type="number" id="numExpenses" min={0} max={20} onChange={(event) => {
                                 const num = parseInt(event.target.value) || 0;
                                 setNumberOfExpenses(num);
                                 // expand or shrink the expenses array
@@ -544,6 +552,7 @@ function InputJobsPage() {
                                 type="number"
                                 id="numTrips"
                                 min={0}
+                                max={20}
                                 onChange={(event) => {
                                     const num = parseInt(event.target.value) || 0;
                                     setNumberOfTrips(num);
