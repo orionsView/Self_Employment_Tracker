@@ -46,6 +46,7 @@ function Menu() {
                     <a href="/log" className={linkClassName}>New Job</a>
                     <a href="/logged/search" className={linkClassName}>Logged Jobs</a>
                     <a href="/trends" className={linkClassName}>Trends</a>
+                    <a href="export" className={linkClassName}>Export</a>
                     <a href="/settings" className={linkClassName}>Settings</a>
                     <p onClick={handleLogout} className={linkClassName}>Logout</p>
                 </div>

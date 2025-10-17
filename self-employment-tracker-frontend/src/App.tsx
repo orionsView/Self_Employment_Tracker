@@ -12,6 +12,7 @@ import ProtectedRoute from './protectedRoute'
 import { AuthProvider } from './authProvider'
 import SetPageTitle from './titleProvider'
 import LoggedJobInfoPage from './pages/ViewLoggedJobPage'
+import ExportPage from './pages/ExportPage'
 
 function App() {
 
@@ -46,6 +47,9 @@ function App() {
           } />
           <Route path="/trends" element={
             <ProtectedRoute><TrendPage /></ProtectedRoute>
+          } />
+          <Route path="/export" element={
+            <ProtectedRoute><ExportPage /></ProtectedRoute>
           } />
 
 

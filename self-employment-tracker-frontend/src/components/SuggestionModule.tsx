@@ -50,6 +50,8 @@ function SuggestionModule({ data }: any) {
 
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+         console.log("backend url: ", backendUrl);
+
 
 
 
