@@ -134,94 +134,97 @@ function TrendPage() {
 
     const metricsSmallStyle: string = MetricsSmallStyle;
 
+    // console.log);
+
     return (
         <>
             <NavBar />
             <Header mainTitle="Trends" subTitle="Understand your data" />
 
 
+            <div className="flex flex-col justify-between items-center w-[100%]">
+                <div className={`${BorderCard}`}>
+                    {/* DATE FILTER */}
+                    <div className={`flex justify-between flex-col items-center w-[80%] h-[20%] p-2`}>
+                        <DateRangePicker startDate={startDate} endDate={endDate} onChangeStart={setStartDate} onChangeEnd={setEndDate} />
+                        <p className="text-[3vw] text-nowrap text-red-500" onClick={clearDateRange}>Clear</p>
+                    </div>
+                    <div className={`flex flex-row justify-between items-center w-[80%] `}>
+                        {/* Graph Type */}
+                        <select onChange={(e) => setSelectedGraph(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5" defaultValue={""}>
+                            <option value={""} disabled>Select a graph</option>
+                            <option>Week by Week Income</option>
+                            <option>Month by Month Income</option>
+                            <option>Year by Year Income</option>
+                        </select>
 
-            <div className="h-[50%] w-[100vw] flex flex-col justify-around items-center">
-                {/* DATE FILTER */}
-                <div className={`flex justify-between flex-col items-center w-[80%] h-[20%] ${BorderCard} mb-[2vh]`}>
-                    <DateRangePicker startDate={startDate} endDate={endDate} onChangeStart={setStartDate} onChangeEnd={setEndDate} />
-                    <p className="text-[3vw] text-nowrap text-red-500" onClick={clearDateRange}>Clear</p>
-                </div>
-                <div className={`flex flex-row justify-between items-center w-[80%] `}>
-                    {/* Graph Type */}
-                    <select onChange={(e) => setSelectedGraph(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5" defaultValue={""}>
-                        <option value={""} disabled>Select a graph</option>
-                        <option>Week by Week Income</option>
-                        <option>Month by Month Income</option>
-                        <option>Year by Year Income</option>
-                    </select>
+                        {/* Detail Level */}
+                        <div className="flex flex-col items-center" >
+                            <div >
+                                <label htmlFor="showExpenses" className="mr-2">Show Expenses</label>
+                                <input type="checkbox"
+                                    id="showExpenses"
+                                    name="showExpenses"
+                                    checked={showExpenses}
+                                    onChange={() => setShowExpenses(!showExpenses)}
+                                    className="mr-2" />
+                            </div>
+                            <div >
+                                <label htmlFor="showEarnings " className="mr-2">Show Earnings</label>
+                                <input type="checkbox"
+                                    id="showEarnings"
+                                    name="showEarnings"
+                                    checked={showEarnings}
+                                    onChange={() => setShowEarnings(!showEarnings)}
+                                    className="mr-2" />
+                            </div>
+                            {/* Show Trend */}
+                            <div >
+                                <label htmlFor="showTrend" className="mr-2">Show Trend</label>
+                                <input type="checkbox"
+                                    id="showTrend"
+                                    name="showTrend"
+                                    checked={showTrend}
+                                    onChange={() => setShowTrend(!showTrend)}
+                                    className="mr-2" />
+                            </div>
+                        </div>
 
-                    {/* Detail Level */}
-                    <div className="flex flex-col items-center" >
-                        <div >
-                            <label htmlFor="showExpenses" className="mr-2">Show Expenses</label>
-                            <input type="checkbox"
-                                id="showExpenses"
-                                name="showExpenses"
-                                checked={showExpenses}
-                                onChange={() => setShowExpenses(!showExpenses)}
-                                className="mr-2" />
-                        </div>
-                        <div >
-                            <label htmlFor="showEarnings " className="mr-2">Show Earnings</label>
-                            <input type="checkbox"
-                                id="showEarnings"
-                                name="showEarnings"
-                                checked={showEarnings}
-                                onChange={() => setShowEarnings(!showEarnings)}
-                                className="mr-2" />
-                        </div>
-                        {/* Show Trend */}
-                        <div >
-                            <label htmlFor="showTrend" className="mr-2">Show Trend</label>
-                            <input type="checkbox"
-                                id="showTrend"
-                                name="showTrend"
-                                checked={showTrend}
-                                onChange={() => setShowTrend(!showTrend)}
-                                className="mr-2" />
-                        </div>
                     </div>
 
-                </div>
 
 
-
-                {/* <LineGraph data={data} /> */}
-                <div className="w-[100%] min-h-[300px] h-[75vh]">
-                    <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
-                </div>
-                {/* Useful Metrics */}
-                <div className="flex flex-col justify-between items-center w-[100%] ">
-                    <p className="font-bold text-[5vw] mb-4">Useful Metrics</p>
-                    <div className="flex flex-row justify-around items-center w-[100%] ">
-
-                        <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
-                            <p className={metricsSmallStyle}>Total Net Income {TotalNetIncome}</p>
-                            <p className={metricsSmallStyle}>Total Expenses {TotalExpenses}</p>
-                            <p className={metricsSmallStyle}>Total Earnings {TotalEarnings}</p>
-                        </div>
-
-                        <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
-                            <p className={metricsSmallStyle}>Average Net Income {AverageNetIncome}</p>
-                            <p className={metricsSmallStyle}>Average Expenses {AverageExpenses}</p>
-                            <p className={metricsSmallStyle}>Average Earnings {AverageEarnings}</p>
-                        </div>
-
-
-
+                    {/* <LineGraph data={data} /> */}
+                    <div className="w-[100%] min-h-[300px] h-[50vh]">
+                        <BarGraph data={displayData} showExpenses={showExpenses} showEarnings={showEarnings} showTrend={showTrend} />
                     </div>
-                </div>
-                <div className="flex flex-col justify-between items-center w-[100%] mt-8">
-                    <p className="font-bold text-[5vw] mb-4">Personalized Insight</p>
-                    <SuggestionModule data={displayData} />
-                </div>
-            </div >
+                    {/* Useful Metrics */}
+                    <div className="flex flex-col justify-between items-center w-[100%] ">
+                        <p className="font-bold text-[5vw] mb-4">Useful Metrics</p>
+                        <div className="flex flex-row justify-around items-center w-[100%] ">
+
+                            <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
+                                <p className={metricsSmallStyle}>Total Net Income {TotalNetIncome}</p>
+                                <p className={metricsSmallStyle}>Total Expenses {TotalExpenses}</p>
+                                <p className={metricsSmallStyle}>Total Earnings {TotalEarnings}</p>
+                            </div>
+
+                            <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
+                                <p className={metricsSmallStyle}>Average Net Income {AverageNetIncome}</p>
+                                <p className={metricsSmallStyle}>Average Expenses {AverageExpenses}</p>
+                                <p className={metricsSmallStyle}>Average Earnings {AverageEarnings}</p>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                    <div className="flex flex-col justify-between items-center w-[100%] mt-8">
+                        <p className="font-bold text-[5vw] mb-4">Personalized Insight</p>
+                        <SuggestionModule data={displayData} />
+                    </div>
+                </div >
+            </div>
         </>
     )
 }

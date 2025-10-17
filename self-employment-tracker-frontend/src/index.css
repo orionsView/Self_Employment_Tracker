@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --color-backgroundColor: #dcdcdd;
+  --color-textColor: #04080f;
+  --color-mainColor: #1b6c83;
+  --color-secondaryColor: #36c2da;
+  --color-tertiaryColor: #aeebf3;
+}
+
 * {
     @apply font-serif;
 }
@@ -16,5 +24,6 @@ body {
 }
 
 html{
-    @apply bg-slate-200;
+    @apply bg-backgroundColor;
 }
+

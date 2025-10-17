@@ -4,6 +4,7 @@ import ClientSelector from "../components/ClientSelector"
 import { useState } from "react"
 import DateRangePicker from '../components/DateRangePicker'
 import { BorderCard } from '../constants/ui'
+import SubmitButton from "../components/SubmitButton"
 function SearchLoggedJobsPage() {
 
     const borderStyle: string = BorderCard;
@@ -25,20 +26,24 @@ function SearchLoggedJobsPage() {
     return (<>
         <NavBar />
         <Header mainTitle="Search Logs" />
-        <div className="h-[50%] w-[100vw] flex flex-col justify-between items-center">
-            {/*Client Filter*/}
-            <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
-                <p>Sort By Client</p>
-                <ClientSelector setSelectedOptions={setSelectedOptions} selectMultiple={true} />
-            </div>
-            {/* DATE FILTER */}
-            <div className={`flex justify-between flex-col items-center w-[80%] h-[40%] ${borderStyle}`}>
+        <div className={`h-[40%] w-[100vw] flex flex-col justify-between items-center `}>
+            <div className={`h-[100%] w-[80%] flex flex-col justify-evenly items-center ${borderStyle}`}>
+
+                {/*Client Filter*/}
+                <div className={`flex flex-col justify-between items-center w-[80%]`}>
+                    <p>Sort By Client</p>
+                    <ClientSelector setSelectedOptions={setSelectedOptions} selectMultiple={true} />
+                </div>
+                {/* DATE FILTER */}
+                {/* <div className={`flex justify-between flex-col items-center w-[80%] ${borderStyle}`}> */}
                 <DateRangePicker startDate={startDate} endDate={endDate} onChangeStart={setStartDate} onChangeEnd={setEndDate} />
-            </div>
+                {/* </div> */}
 
 
-            <button className="bg-black text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>Search</button>
-        </div >
+                {/* <button className="bg-black text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>Search</button> */}
+                <SubmitButton text="Search" onClick={handleSubmit} />
+            </div >
+        </div>
     </>)
 }
 

@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar"
 import Header from "../components/Header"
 import { supabase } from '../supabaseClient'
 import { useEffect, useState } from "react"
+import { BorderCard } from "../constants/ui"
 
 function Menu() {
     async function handleLogout() {
@@ -15,12 +16,13 @@ function Menu() {
         window.location.href = "/login"
     }
 
-    const linkClassName: string = "text-[5vw] italic color-black"
+    const linkClassName: string = "text-[5vw] italic p-8 text-nowrap";
     const [userName, setUserName]: any = useState<string>("");
 
     useEffect(() => {
         getUserName()
     }, [])
+
 
     async function getUserName() {
         const {
@@ -40,11 +42,13 @@ function Menu() {
             <NavBar showMenu={false} />
             <Header mainTitle="Menu" subTitle={userName === "" ? "Hello!" : `Hello, ${userName}!`} />
             <div className="h-[50%] w-[100vw] flex flex-col justify-between items-center">
-                <a href="/log" className={linkClassName}>New Job</a>
-                <a href="/logged/search" className={linkClassName}>Logged Jobs</a>
-                <a href="/trends" className={linkClassName}>Trends</a>
-                <a href="/settings" className={linkClassName}>Settings</a>
-                <p onClick={handleLogout} className={linkClassName}>Logout</p>
+                <div className={`${BorderCard}`}>
+                    <a href="/log" className={linkClassName}>New Job</a>
+                    <a href="/logged/search" className={linkClassName}>Logged Jobs</a>
+                    <a href="/trends" className={linkClassName}>Trends</a>
+                    <a href="/settings" className={linkClassName}>Settings</a>
+                    <p onClick={handleLogout} className={linkClassName}>Logout</p>
+                </div>
             </div>
         </>
     )

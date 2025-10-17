@@ -81,7 +81,7 @@ function ClientSelector({ setSelectedOptions, selectMultiple, addNewClientOption
                 onChange={setSelectedOptions}
                 isMulti={selectMultiple}
                 placeholder="Select clients..."
-                className="text-sm"
+                className="text-sm text-textColor"
             />
         </div>
     );

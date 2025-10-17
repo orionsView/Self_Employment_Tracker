@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import TextInputField from "../components/TextInputField";
 import type { style } from "../components/TextInputField";
 import { InputBase, BorderCard, LabelText } from '../constants/ui'
+import SubmitButton from "../components/SubmitButton";
 // ...existing code...
 
 type input = {
@@ -58,7 +59,8 @@ function InputJobsPage() {
     const [numberOfEarnings, setNumberOfEarnings]: any = useState(0);
     const [numberOfTrips, setNumberOfTrips]: any = useState(0);
     const [numberOfExpenses, setNumberOfExpenses]: any = useState(0);
-    const borderStyle: string = BorderCard;
+    const borderStyle: string = "p-[1vh] flex flex-col items-center w-[90vw] justify-between mb-4 ";
+
 
     const [paymentMethods, setPaymentMethods]: any = useState([]);
 
@@ -351,278 +353,316 @@ function InputJobsPage() {
     return (
         <>
             <NavBar />
-            <Header mainTitle="Input Jobs" subTitle="Input your job information here" />
-            <div className="w-[100%] flex flex-col items-center">
-                {/*Client Filter*/}
-                <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
-                    <p>Use Existing Client</p>
-                    <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} addNewClientOption={true} />
-                    {addingNewClient && (
-                        <>
-                            <p className="text-[4vw] text-nowrap">OR</p>
-                            <TextInputField
-                                Label="Add New Client"
-                                Type="text"
-                                onChange={(event) => { setInputData({ ...inputData, newClientName: event.target.value }) }}
-                                Placeholder="Enter client name"
-                                Style={inputTextStyle}
-                                currentValue={inputData.newClientName}
-                                setValidity={(valid: boolean) => setValidNewClient(valid)}
-                                validationRegex={/^(?!\s*$)[a-zA-Z0-9\s.'-]+$/}
-                                warningMessage="Please enter a valid client name"
-                                onEnter={() => { }}
+            <div className="flex flex-col items-center h-[90%] w-[100%]">
+
+                <Header mainTitle="Input Jobs" subTitle="Input your job information here" />
+                <div className={`${BorderCard} `}>
+                    {/*Client Filter*/}
+                    <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
+                        <p>Use Existing Client</p>
+                        <ClientSelector setSelectedOptions={(event) => { setInputData({ ...inputData, clientId: event.value.id }) }} selectMultiple={false} addNewClientOption={true} />
+                        {addingNewClient && (
+                            <>
+                                <p className="text-[4vw] text-nowrap">OR</p>
+                                <TextInputField
+                                    Label="Add New Client"
+                                    Type="text"
+                                    onChange={(event) => { setInputData({ ...inputData, newClientName: event.target.value }) }}
+                                    Placeholder="Enter client name"
+                                    Style={inputTextStyle}
+                                    currentValue={inputData.newClientName}
+                                    setValidity={(valid: boolean) => setValidNewClient(valid)}
+                                    validationRegex={/^(?!\s*$)[a-zA-Z0-9\s.'-]+$/}
+                                    warningMessage="Please enter a valid client name"
+                                    onEnter={() => { }}
+                                />
+                                {/* <p className={`${validNewClient ? 'text-green-600' : 'text-red-600'} text-[3vw] mt-2`}>{validNewClient ? 'Name looks good' : 'Enter a valid client name'}</p> */}
+                            </>
+                        )}
+                    </div>
+                    {/* DATE FILTER */}
+                    <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
+                        <div className="flex flex-row justify-between items-center w-[80%] ">
+                            <p className="text-[4vw] text-nowrap">Date Start</p>
+                            <input type="date" id="dateStart" onChange={(event) => { setInputData({ ...inputData, startDate: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        </div>
+                        <div className="flex flex-row justify-between items-center w-[80%] ">
+                            <p className="text-[4vw] text-nowrap">Date End</p>
+                            <input type="date" id="dateEnd" onChange={(event) => { setInputData({ ...inputData, endDate: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        </div>
+
+                    </div>
+                    {/* Hrs Worked */}
+                    <TextInputField
+                        Label="Hours Worked"
+                        Type="number"
+                        onChange={(event) => {
+                            const num = parseFloat(event.target.value) || 0;
+                            setInputData({ ...inputData, hours: num });
+                        }}
+                        // Placeholder="Enter hours worked"
+                        Style={{ ContainerStyle: `${borderStyle}`, InputStyle: "w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm", LabelStyle: "text-[4vw] text-nowrap" }}
+                    />
+
+
+                    {/* Earnings - number selector */}
+                    <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
+                        <div className="flex flex-col justify-between items-center w-[80%] ">
+                            <p className="text-[4vw] text-nowrap">Number of Earnings</p>
+                            <input type="number" id="numEarnings" min={0} onChange={(event) => {
+                                const num = parseInt(event.target.value) || 0;
+                                setNumberOfEarnings(num);
+                                const updated = [...(inputData.earnings || [])];
+                                while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '' });
+                                while (updated.length > num) updated.pop();
+                                setInputData({ ...inputData, earnings: updated });
+                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        </div>
+                    </div>
+
+                    {/* Dynamic Earnings Inputs */}
+                    < div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
+                        {
+                            Array.from({ length: numberOfEarnings }, (_, i) => (
+                                <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
+                                    <p className="text-[4vw] text-nowrap">Earning {i + 1}</p>
+                                    <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
+                                        <div className="flex flex-row justify-between items-center w-[80%] ">
+                                            <p className="text-[4vw] text-nowrap">Amount</p>
+                                            <input type="number" value={inputData.earnings[i]?.amount ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.earnings || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), amount: parseFloat(e.target.value) || 0 };
+                                                setInputData({ ...inputData, earnings: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                            <p className="text-[4vw] text-nowrap">Payment Method</p>
+                                            <select value={inputData.earnings[i]?.methodId ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.earnings || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), methodId: e.target.value };
+                                                setInputData({ ...inputData, earnings: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " >
+                                                <option value="">Select method</option>
+                                                {paymentMethods.map((m: any) => (
+                                                    <option key={m.ID} value={m.ID}>{m.Method}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                            <p className="text-[4vw] text-nowrap">Date</p>
+                                            <input type="date" value={inputData.earnings[i]?.date ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.earnings || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), date: e.target.value };
+                                                setInputData({ ...inputData, earnings: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        </div>
+                                        {/* earnings have no description field per Payment schema */}
+                                    </div>
+                                </div >
+                            ))
+                        }
+                    </div>
+
+                    {/* Expenses - number selector */}
+                    <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
+                        <div className="flex flex-col justify-between items-center w-[80%] ">
+                            <p className="text-[4vw] text-nowrap">Number of Expenses</p>
+                            <input type="number" id="numExpenses" min={0} onChange={(event) => {
+                                const num = parseInt(event.target.value) || 0;
+                                setNumberOfExpenses(num);
+                                // expand or shrink the expenses array
+                                const updated = [...(inputData.expenses || [])];
+                                while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '', desc: '' });
+                                while (updated.length > num) updated.pop();
+                                setInputData({ ...inputData, expenses: updated });
+                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        </div>
+                    </div>
+
+                    {/* Dynamic Expense Inputs */}
+                    <div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
+                        {
+                            Array.from({ length: numberOfExpenses }, (_, i) => (
+                                <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
+                                    <p className="text-[4vw] text-nowrap">Expense {i + 1}</p>
+                                    <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
+                                        <div className="flex flex-row justify-between items-center w-[80%] ">
+                                            <p className="text-[4vw] text-nowrap">Amount</p>
+                                            <input type="number" value={inputData.expenses[i]?.amount ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.expenses || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), amount: parseFloat(e.target.value) || 0 };
+                                                setInputData({ ...inputData, expenses: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                            <p className="text-[4vw] text-nowrap">Payment Method</p>
+                                            <select value={inputData.expenses[i]?.methodId ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.expenses || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), methodId: e.target.value };
+                                                setInputData({ ...inputData, expenses: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " >
+                                                <option value="">Select method</option>
+                                                {paymentMethods.map((m: any) => (
+                                                    <option key={m.ID} value={m.ID}>{m.Method}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                            <p className="text-[4vw] text-nowrap">Date</p>
+                                            <input type="date" value={inputData.expenses[i]?.date ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.expenses || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), date: e.target.value };
+                                                setInputData({ ...inputData, expenses: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        </div>
+                                        <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                            <p className="text-[4vw] text-nowrap">Description</p>
+                                            <input type="text" value={inputData.expenses[i]?.desc ?? ''} onChange={(e) => {
+                                                const updated = [...(inputData.expenses || [])];
+                                                updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), desc: e.target.value };
+                                                setInputData({ ...inputData, expenses: updated });
+                                            }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        </div>
+                                    </div>
+                                </div >
+                            ))
+                        }
+                    </div>
+
+
+
+
+
+                    {/* Trips - number selector */}
+                    <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
+                        <div className="flex flex-col justify-between items-center w-[80%] ">
+                            <p className="text-[4vw] text-nowrap">Number of Trips</p>
+                            <input
+                                type="number"
+                                id="numTrips"
+                                min={0}
+                                onChange={(event) => {
+                                    const num = parseInt(event.target.value) || 0;
+                                    setNumberOfTrips(num);
+                                    const updated = [...(inputData.trips || [])];
+                                    while (updated.length < num)
+                                        updated.push({
+                                            start: '',
+                                            end: '',
+                                            distance: 0,
+                                            carId: '',
+                                            gasPrice: 0,
+                                            mapLink: '',
+                                        });
+                                    while (updated.length > num) updated.pop();
+                                    setInputData({ ...inputData, trips: updated });
+                                }}
+                                className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
                             />
-                            {/* <p className={`${validNewClient ? 'text-green-600' : 'text-red-600'} text-[3vw] mt-2`}>{validNewClient ? 'Name looks good' : 'Enter a valid client name'}</p> */}
-                        </>
-                    )}
-                </div>
-                {/* DATE FILTER */}
-                <div className={`flex justify-between flex-col items-center w-[80%] h-[15%] ${borderStyle}`}>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Date Start</p>
-                        <input type="date" id="dateStart" onChange={(event) => { setInputData({ ...inputData, startDate: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                    </div>
-                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Date End</p>
-                        <input type="date" id="dateEnd" onChange={(event) => { setInputData({ ...inputData, endDate: event.target.value }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                        </div>
                     </div>
 
-                </div>
-                {/* Earnings - number selector */}
-                <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-col justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Number of Earnings</p>
-                        <input type="number" id="numEarnings" min={0} onChange={(event) => {
-                            const num = parseInt(event.target.value) || 0;
-                            setNumberOfEarnings(num);
-                            const updated = [...(inputData.earnings || [])];
-                            while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '' });
-                            while (updated.length > num) updated.pop();
-                            setInputData({ ...inputData, earnings: updated });
-                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                    </div>
-                </div>
-
-                {/* Dynamic Earnings Inputs */}
-                < div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
-                    {
-                        Array.from({ length: numberOfEarnings }, (_, i) => (
-                            <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
-                                <p className="text-[4vw] text-nowrap">Earning {i + 1}</p>
+                    {/* Dynamic Trip Inputs */}
+                    <div className="w-[100%] flex flex-col justify-between items-center flex-grow">
+                        {Array.from({ length: numberOfTrips }, (_, i) => (
+                            <div
+                                key={i}
+                                className={`mt-4 flex justify-center flex-col items-center w-[80%] ${borderStyle}`}
+                            >
+                                <p className="text-[4vw] text-nowrap">Trip {i + 1}</p>
                                 <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
-                                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                                        <p className="text-[4vw] text-nowrap">Amount</p>
-                                        <input type="number" value={inputData.earnings[i]?.amount ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.earnings || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), amount: parseFloat(e.target.value) || 0 };
-                                            setInputData({ ...inputData, earnings: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                    {/* Start */}
+                                    <div className="flex flex-row justify-between items-center w-[80%]">
+                                        <p className="text-[4vw] text-nowrap">Start</p>
+                                        <input
+                                            type="text"
+                                            value={inputData.trips[i]?.start ?? ''}
+                                            onChange={(e) => {
+                                                const updated = [...(inputData.trips || [])];
+                                                updated[i] = { ...(updated[i] || {}), start: e.target.value };
+                                                setInputData({ ...inputData, trips: updated });
+                                            }}
+                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
+                                        />
                                     </div>
+
+                                    {/* End */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
-                                        <p className="text-[4vw] text-nowrap">Payment Method</p>
-                                        <select value={inputData.earnings[i]?.methodId ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.earnings || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), methodId: e.target.value };
-                                            setInputData({ ...inputData, earnings: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " >
-                                            <option value="">Select method</option>
-                                            {paymentMethods.map((m: any) => (
-                                                <option key={m.ID} value={m.ID}>{m.Method}</option>
-                                            ))}
-                                        </select>
+                                        <p className="text-[4vw] text-nowrap">End</p>
+                                        <input
+                                            type="text"
+                                            value={inputData.trips[i]?.end ?? ''}
+                                            onChange={(e) => {
+                                                const updated = [...(inputData.trips || [])];
+                                                updated[i] = { ...(updated[i] || {}), end: e.target.value };
+                                                setInputData({ ...inputData, trips: updated });
+                                            }}
+                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
+                                        />
                                     </div>
+
+                                    <p className="font-bold">OR</p>
+
+                                    {/* Distance */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
-                                        <p className="text-[4vw] text-nowrap">Date</p>
-                                        <input type="date" value={inputData.earnings[i]?.date ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.earnings || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), date: e.target.value };
-                                            setInputData({ ...inputData, earnings: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        <p className="text-[4vw] text-nowrap">Distance</p>
+                                        <input
+                                            type="number"
+                                            value={inputData.trips[i]?.distance ?? ''}
+                                            onChange={(e) => {
+                                                const updated = [...(inputData.trips || [])];
+                                                updated[i] = { ...(updated[i] || {}), distance: parseFloat(e.target.value) || 0 };
+                                                setInputData({ ...inputData, trips: updated });
+                                            }}
+                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
+                                        />
                                     </div>
-                                    {/* earnings have no description field per Payment schema */}
-                                </div>
-                            </div >
-                        ))
-                    }
-                </div>
-                {/* Hrs Worked */}
-                <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-col justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Hours Worked</p>
-                        <input type="number" id="hoursWorked" onChange={(event) => { setInputData({ ...inputData, hours: parseFloat(event.target.value) }) }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                    </div>
 
-                </div>
-                {/* Expenses - number selector */}
-                <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-col justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Number of Expenses</p>
-                        <input type="number" id="numExpenses" min={0} onChange={(event) => {
-                            const num = parseInt(event.target.value) || 0;
-                            setNumberOfExpenses(num);
-                            // expand or shrink the expenses array
-                            const updated = [...(inputData.expenses || [])];
-                            while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '', desc: '' });
-                            while (updated.length > num) updated.pop();
-                            setInputData({ ...inputData, expenses: updated });
-                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                    </div>
-                </div>
+                                    <p className="font-bold">OR</p>
 
-                {/* Dynamic Expense Inputs */}
-                <div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
-                    {
-                        Array.from({ length: numberOfExpenses }, (_, i) => (
-                            <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
-                                <p className="text-[4vw] text-nowrap">Expense {i + 1}</p>
-                                <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
-                                    <div className="flex flex-row justify-between items-center w-[80%] ">
-                                        <p className="text-[4vw] text-nowrap">Amount</p>
-                                        <input type="number" value={inputData.expenses[i]?.amount ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.expenses || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), amount: parseFloat(e.target.value) || 0 };
-                                            setInputData({ ...inputData, expenses: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                    </div>
+                                    {/* Map Link */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
-                                        <p className="text-[4vw] text-nowrap">Payment Method</p>
-                                        <select value={inputData.expenses[i]?.methodId ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.expenses || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), methodId: e.target.value };
-                                            setInputData({ ...inputData, expenses: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " >
-                                            <option value="">Select method</option>
-                                            {paymentMethods.map((m: any) => (
-                                                <option key={m.ID} value={m.ID}>{m.Method}</option>
-                                            ))}
-                                        </select>
+                                        <p className="text-[4vw] text-nowrap">Map Link</p>
+                                        <input
+                                            type="text"
+                                            value={inputData.trips[i]?.mapLink ?? ''}
+                                            onChange={(e) => {
+                                                const updated = [...(inputData.trips || [])];
+                                                updated[i] = { ...(updated[i] || {}), mapLink: e.target.value };
+                                                setInputData({ ...inputData, trips: updated });
+                                            }}
+                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
+                                        />
                                     </div>
+
+                                    {/* Gas Price */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
-                                        <p className="text-[4vw] text-nowrap">Date</p>
-                                        <input type="date" value={inputData.expenses[i]?.date ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.expenses || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), date: e.target.value };
-                                            setInputData({ ...inputData, expenses: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                    </div>
-                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
-                                        <p className="text-[4vw] text-nowrap">Description</p>
-                                        <input type="text" value={inputData.expenses[i]?.desc ?? ''} onChange={(e) => {
-                                            const updated = [...(inputData.expenses || [])];
-                                            updated[i] = { ...(updated[i] || { amount: 0, methodId: '', date: '', desc: '' }), desc: e.target.value };
-                                            setInputData({ ...inputData, expenses: updated });
-                                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
+                                        <p className="text-[4vw] text-nowrap">Gas Price</p>
+                                        <input
+                                            type="number"
+                                            value={inputData.trips[i]?.gasPrice ?? ''}
+                                            onChange={(e) => {
+                                                const updated = [...(inputData.trips || [])];
+                                                updated[i] = { ...(updated[i] || {}), gasPrice: parseFloat(e.target.value) || 0 };
+                                                setInputData({ ...inputData, trips: updated });
+                                            }}
+                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
+                                        />
                                     </div>
                                 </div>
-                            </div >
-                        ))
-                    }
-                </div>
-
-
-                {/* Trips */}
-                <div className={`flex justify-center flex-col items-center w-[80%] h-[10%] ${borderStyle}`}>
-                    <div className="flex flex-col justify-between items-center w-[80%] ">
-                        <p className="text-[4vw] text-nowrap">Number of Trips</p>
-                        <input type="number" id="hoursWorked" onChange={(event) => {
-                            const numTrips = parseInt(event.target.value);
-                            if (numTrips > 0 && numTrips < 30) { setNumberOfTrips(numTrips); }
-                        }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                    </div>
-                </div>
-            </div >
-
-
-            {/* Dynamic Trip Inputs */}
-            <div className=" w-[100%] flex flex-col justify-between items-center flex-grow" >
-                {
-                    Array.from({ length: numberOfTrips }, (_, i) => (
-                        <div key={i} className={`mt-4 flex justify-center flex-col items-center w-[80%]  ${borderStyle}`}>
-                            <p className="text-[4vw] text-nowrap">Trip {i + 1}</p>
-                            <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
-                                {/* Start */}
-                                <div className="flex flex-row justify-between items-center w-[80%] ">
-                                    <p className="text-[4vw] text-nowrap">Start
-
-                                    </p>
-                                    <input type="text" id={`trip${i}`} onChange={(event) => {
-                                        const updatedTrips = [...inputData.trips]; // copy array
-                                        updatedTrips[i] = {
-                                            ...updatedTrips[i],         // copy existing trip
-                                            start: event.target.value // or whichever field you're updating
-                                        };
-                                        setInputData({ ...inputData, trips: updatedTrips });
-                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                </div>
-                                {/* End */}
-                                <div className="flex flex-row justify-between items-center w-[80%] ">
-                                    <p className="text-[4vw] text-nowrap">End</p>
-                                    <input type="text" id={`trip${i}`} onChange={(event) => {
-                                        const updatedTrips = [...inputData.trips]; // copy array
-                                        updatedTrips[i] = {
-                                            ...updatedTrips[i],         // copy existing trip
-                                            end: event.target.value // or whichever field you're updating
-                                        };
-                                        setInputData({ ...inputData, trips: updatedTrips });
-                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                </div>
-
-                                <p className="font-bold">OR</p>
-
-
-                                {/* Distance */}
-                                <div className="flex flex-row justify-between items-center w-[80%] ">
-                                    <p className="text-[4vw] text-nowrap">Distance</p>
-                                    <input type="text" id={`trip${i}`} onChange={(event) => {
-                                        const updatedTrips = [...inputData.trips]; // copy array
-                                        updatedTrips[i] = {
-                                            ...updatedTrips[i],
-                                            distance: parseFloat(event.target.value)
-                                        };
-                                        setInputData({ ...inputData, trips: updatedTrips });
-                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                </div>
-
-                                <p className="font-bold">OR</p>
-
-                                {/* Map Link */}
-                                <div className="flex flex-row justify-between items-center w-[80%] ">
-                                    <p className="text-[4vw] text-nowrap">Map Link</p>
-                                    <input type="text" id={`trip${i}`} onChange={(event) => {
-                                        const updatedTrips = [...inputData.trips]; // copy array
-                                        updatedTrips[i] = {
-                                            ...updatedTrips[i],
-                                            mapLink: event.target.value
-                                        };
-                                        setInputData({ ...inputData, trips: updatedTrips });
-                                    }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                                </div>
-
                             </div>
+                        ))}
+                    </div>
 
-                            {/* Gas Price */}
 
-                            <div className="flex flex-row justify-between items-center w-[80%] mt-4" >
-                                <p className="text-[4vw] text-nowrap">Gas Price</p>
-                                <input type="text" id="gasPrice" onChange={(event) => {
-                                    const updatedTrips = [...inputData.trips]; // copy array
-                                    updatedTrips[i] = {
-                                        ...updatedTrips[i],         // copy existing trip
-                                        gasPrice: parseFloat(event.target.value) // or whichever field you're updating
-                                    };
-                                    setInputData({ ...inputData, trips: updatedTrips });
-                                }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
-                            </div>
-                        </div >
-                    ))
-                }
-            </div>
-
-            {/* Submit Button */}
-            <div className="flex justify-center items-center mt-6" >
-                <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    {/* Submit Button */}
+                    <div className="flex justify-center items-center mt-6" >
+                        <SubmitButton disabled={(addingNewClient && !validNewClient) || submitProcessing} text={submitProcessing ? "Submitting..." : "Submit"} onClick={handleSubmit} />
+                        {/* <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
                     {submitProcessing ? "Submitting..." : "Submit"}
-                </button>
+                    </button> */}
+                    </div>
+                </div >
             </div>
         </>
     )

@@ -7,6 +7,7 @@ import { useState } from "react"
 import GoogleLogo from '../assets/google-logo.svg'
 import { useNavigate } from "react-router-dom"
 import NavBar from "../components/NavBar"
+import SubmitButton from "../components/SubmitButton"
 
 type inputType = { email: string, password: string }
 function LoginPage() {
@@ -27,12 +28,15 @@ function LoginPage() {
             }
         });
 
+        console.log('Google login with: ', redirectUrl);
+
         if (error) {
             console.error('Google login error:', error.message);
         }
     }
 
     function handleLogin() {
+        console.log("submitting login")
         supabase.auth.signInWithPassword({
             email: currentInput.email,
             password: currentInput.password
@@ -49,7 +53,7 @@ function LoginPage() {
     }
 
     const inputTextStyle: style = {
-        ContainerStyle: "flex flex-row justify-between items-center w-[100%] ",
+        ContainerStyle: "flex flex-col items-center w-[100%] ",
         InputStyle: InputBase,
         LabelStyle: LabelText
     }
@@ -60,13 +64,13 @@ function LoginPage() {
     return (
         <>
             <NavBar showMenu={false} />
-            <div className="flex flex-col items-center h-screen">
-                <Header mainTitle="Login" subTitle="Select a provider!" />
+            <div className="flex flex-col items-center h-[90%] w-[100%]">
+                <Header mainTitle="Login" subTitle="Enter information/Sign in with Google" />
 
 
-                <div className={`flex flex-col items-center h-[50%] w-[90vw] justify-between ${BorderCard} bg-blue-200 mb-4`}>
+                <div className={`flex flex-col items-center h-[50%] w-[90vw] justify-between mb-4 `}>
                     {/* Sign In Form */}
-                    <div className="flex flex-col h-[50%] w-[100%] items-center justify-between border-1 p-[1vh] rounded-lg shadow-lg">
+                    <div className={`flex flex-col h-[50%] w-[100%] items-center justify-between rounded-lg ${BorderCard}`}>
                         {/* Email */}
                         <TextInputField
                             Label="Email"
@@ -98,20 +102,18 @@ function LoginPage() {
                         />
                         {/* Submit Button */}
                         <div className="flex justify-center items-center ">
-                            <button onClick={handleLogin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Submit
-                            </button>
+                            <SubmitButton onClick={handleLogin} text="Sign In" disabled={false} />
                         </div>
                     </div>
 
-                    <p className="font-bold text-[5vw]">OR</p>
+                    {/* <p className="font-bold text-[5vw]">OR</p> */}
 
-                    <img className={`${logoClassName} border-1 p-[1vh] rounded-lg shadow-lg`} src={GoogleLogo} alt="Google logo" onClick={handleGoogleLogin} />
+                    <img className={`${logoClassName} `} src={GoogleLogo} alt="Google logo" onClick={handleGoogleLogin} />
                     {/* <img className={logoClassName} src="/src/assets/facebook-logo.svg" alt="Facebook logo" onClick={handleFacebookClick} />
                     <img className={logoClassName} src="/src/assets/linkedin-logo.svg" alt="Linkedin logo" onClick={handleLinkedinClick} />
                     <img className={logoClassName} src="/src/assets/apple-logo.svg" alt="Apple logo" onClick={handleAppleClick} /> */}
+                    <p className="text-[4vw] text-nowrap text-mainColor " onClick={() => { window.location.href = "/signup" }}>Don't have an account?</p>
                 </div>
-                <p className="text-[4vw] text-nowrap text-blue-500" onClick={() => { window.location.href = "/signup" }}>Don't have an account?</p>
 
             </div>
         </>

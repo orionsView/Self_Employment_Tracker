@@ -122,13 +122,13 @@ function JobTable() {
 
     const navigate = useNavigate();
 
-    const headerCellStyle: string = "border-2 border-black";
-    const cellStyle: string = "border border-black";
+    const headerCellStyle: string = "border-2 border-textColor text-nowrap p-1 pb-2 pt-2 bg-secondaryColor text-backgroundColor font-bold";
+    const cellStyle: string = "border border-textColor text-nowrap p-1 bg-mainColor text-tertiaryColor";
     return (
         <>
             <div className="w-full overflow-x-auto">
 
-                <table className="min-w-[200%] border-collapse border border-black">
+                <table className="border-collapse border border-black">
                     <thead>
                         <tr className="border border-black">
                             <th className={headerCellStyle} onClick={() => { setOrderBy("TimeEntered"); setAsc(!asc) }}>Job ↕</th>

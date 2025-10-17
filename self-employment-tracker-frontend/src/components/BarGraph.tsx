@@ -49,6 +49,12 @@ function calculateRollingAverage(data: DataPoint[], windowSize = 5) {
 }
 
 export default function BarGraph({ data, showExpenses = false, showEarnings = false, showTrend = false }: { data: any, showExpenses?: boolean, showEarnings?: boolean, showTrend?: boolean }) {
+    const mainGraphColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--color-secondaryColor')
+        .trim();
+
+    console.log("mainGraphColor", mainGraphColor);
+
     const mergedData = useMemo(() => {
         // const linePoints = calculateLinearRegression(data);
         const linePoints = calculateRollingAverage(data);
@@ -63,10 +69,12 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
         <ResponsiveContainer width="100%" height="100%">
             <BarChart
                 data={mergedData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+
+            // margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" tick={{ textAnchor: 'middle', fontSize: 12 }
+                <XAxis dataKey="label" tick={{ textAnchor: 'middle', fontSize: 12, fill: 'white' }
                     // tickFormatter={(value: string) => value.slice(0, 3)
                 } /> {/* label = "July-week1", etc. */}
                 <YAxis
@@ -80,15 +88,16 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                     ]}
                     allowDataOverflow={true}
                     tickFormatter={(value) => `$${value.toLocaleString()}`}
+                    tick={{ fontSize: 12, fill: 'white' }}
                 />
 
                 <Tooltip />
                 <Legend />
                 <ReferenceLine y={0} stroke="#000" strokeWidth={1} />
-                <Bar dataKey="net_income" fill="#82ca9d" name="Net Income" />
+                <Bar dataKey="net_income" fill={mainGraphColor} name="Net Income" />
                 {/* Optional: show both earnings & expenses for context */}
-                {showEarnings && <Bar dataKey="earnings" fill="#8884d8" name="Earnings" />}
-                {showExpenses && <Bar dataKey="expenses" fill="#ff7373" name="Expenses" />}
+                {showEarnings && <Bar dataKey="earnings" fill="#43af3fff" name="Earnings" />}
+                {showExpenses && <Bar dataKey="expenses" fill="red" name="Expenses" />}
 
                 {/* Trend line */}
                 {showTrend && <Line

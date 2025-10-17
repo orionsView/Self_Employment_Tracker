@@ -3,6 +3,8 @@ import NavBar from "../components/NavBar"
 import { useEffect, useState } from "react"
 import { supabase } from '../supabaseClient'
 import { useNavigate } from "react-router-dom"
+import { BorderCard } from "../constants/ui"
+import SubmitButton from "../components/SubmitButton"
 
 
 type response = {
@@ -90,13 +92,14 @@ function SettingsPage() {
             setSelectedOptions(JSON.parse(localStorage.getItem("UserSettings") || ""));
         }
     }, []);
-    const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
+    // const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
+    const borderStyle: string = BorderCard;
     return (
         <>
             <NavBar />
             <div className="flex flex-col items-center h-[90%]">
                 <Header mainTitle="Settings" subTitle="Customize your experience" />
-                <div className="h-[60%] w-[100vw] flex flex-col justify-between items-center">
+                <div className={`h-[60%] w-[80%] flex flex-col justify-between items-center ${borderStyle}`}>
                     {/* DEFAULT GRAPH
                     <div className={`flex flex-row justify-between items-center w-[80%]  ${borderStyle}`}>
                         <p className="text-[4vw] text-nowrap">Default Graph</p>
@@ -116,10 +119,10 @@ function SettingsPage() {
                     </div> */}
 
                     {/* UNITS */}
-                    <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`}>
-                        <div className="flex flex-row justify-top items-center w-[100%] ">
-                            <p className="text-[4vw] text-nowrap">Units</p>
-                        </div>
+                    <div className={`flex flex-col justify-between items-center w-[80%] `}>
+                        {/* <div className="flex flex-row justify-top items-center w-[100%] "> */}
+                        <p className="text-[6vw] text-nowrap mb-4 font-bold">Units</p>
+                        {/* </div> */}
                         <div className="flex flex-row justify-center items-center w-[100%] ">
 
                             <label className="mr-2" htmlFor="Miles">Miles</label>
@@ -137,24 +140,24 @@ function SettingsPage() {
                     </div>
 
                     {/* RECS */}
-                    <div className={`flex flex-col justify-between items-center w-[80%] ${borderStyle}`} >
+                    <div className={`flex flex-col justify-between items-center w-[80%] `} >
 
-                        <div className={`flex flex-row justify-between items-center w-[80%]`}>
+                        <div className={`flex flex-row justify-between items-center w-[100%]`}>
 
                             <p className="text-nowrap text-[4vw]">AI Analysis</p>
 
-                            <div className="flex flex-row justify-center items-center w-[80%] ml-8">
+                            <div className="flex flex-row justify-center items-center w-[100%] ml-8">
                                 <label className="mr-2" htmlFor="RecsOn">On</label>
                                 <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: true }))} type="radio" id="RecsOn" name="recs" value="On" checked={selectedOptions.useRecs === true} />
                             </div>
-                            <div className="flex flex-row justify-center items-center w-[80%] ">
+                            <div className="flex flex-row justify-center items-center w-[100%] ">
                                 <label className="mr-2" htmlFor="RecsOff">Off</label>
                                 <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useRecs: false }))} type="radio" id="RecsOff" name="recs" value="Off" checked={selectedOptions.useRecs === false} />
                             </div>
 
 
                         </div>
-                        {selectedOptions.useRecs && <div className={`flex flex-row justify-between items-center w-[80%]`}>
+                        {selectedOptions.useRecs && <div className={`flex flex-row justify-between items-center w-[100%]`}>
                             <p className="text-[4vw] text-nowrap">AI Focus</p>
                             <select
                                 onChange={(e) => setSelectedOptions((selectedOptions: any) => ({
@@ -174,7 +177,7 @@ function SettingsPage() {
                     </div>
 
                     {/* DARK MODE */}
-                    <div className={`flex flex-row justify-between items-center w-[80%]  ${borderStyle}`}>
+                    <div className={`flex flex-row justify-between items-center w-[80%]  `}>
 
                         <p className="text-nowrap text-[4vw]">Dark Mode</p>
 
@@ -195,11 +198,12 @@ function SettingsPage() {
                     </div> */}
 
                     {/* Submit Button */}
-                    <div className="flex justify-center items-center  h-[10%]">
+                    {/* <div className="flex justify-center items-center  h-[10%]">
                         <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Submit
                         </button>
-                    </div>
+                    </div> */}
+                    <SubmitButton onClick={handleSubmit} text="Submit" />
                 </div>
             </div >
         </>
