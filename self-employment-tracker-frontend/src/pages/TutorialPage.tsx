@@ -34,7 +34,10 @@ function TutorialPage() {
                         text="Here, personal data can be downloaded as an Excel sheet. The export can be filtered by clients or time range, or the data can be downloaded in full."
                     />
 
+                    <div className="text-tertiaryColor bg-mainColor rounded-3xl p-4">Thank you for checking out <span className="italic">Punch The Clock</span>! If you have any questions, comments or concerns, please feel free to reach out at <a href="mailto:davidhunterphillips03@gmail.com" className="text-secondaryColor">davidhunterphillips03@gmail.com</a></div>
+
                 </div>
+
             </div>
         </>
     )
