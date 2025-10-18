@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { BorderCard } from "../constants/ui";
 
 type InfoText = string | Record<string, any> | Array<Record<string, any>>;
 
@@ -22,11 +23,11 @@ function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
     // }, []);
 
     return (
-        <div ref={containerRef} className="w-full">
+        <div ref={containerRef} className="w-[100%] pb-4">
             {/* Trigger */}
             <div
                 onClick={() => setIsOpen((prev) => !prev)}
-                className="cursor-pointer p-3 bg-blue-500 text-white rounded-lg"
+                className={`${BorderCard} w-[100%] text-tertiaryColor `}
             >
                 {title}
             </div>
@@ -39,7 +40,7 @@ function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
                         animate={{ opacity: 1, maxHeight: 500 }} // big enough to fit content
                         exit={{ opacity: 1, maxHeight: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
-                        className="overflow-hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-700"
+                        className="overflow-hidden mt-2 bg-tertiaryColor border border-gray-200 rounded-lg shadow-lg p-4 text-textColor"
                     >
                         {typeof text === 'string' ? (
                             <p>{text}</p>

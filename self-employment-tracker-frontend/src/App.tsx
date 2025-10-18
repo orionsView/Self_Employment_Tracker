@@ -13,6 +13,7 @@ import { AuthProvider } from './authProvider'
 import SetPageTitle from './titleProvider'
 import LoggedJobInfoPage from './pages/ViewLoggedJobPage'
 import ExportPage from './pages/ExportPage'
+import TutorialPage from './pages/TutorialPage'
 
 function App() {
 
@@ -51,6 +52,7 @@ function App() {
           <Route path="/export" element={
             <ProtectedRoute><ExportPage /></ProtectedRoute>
           } />
+          <Route path="/tutorial" element={<ProtectedRoute><TutorialPage /></ProtectedRoute>} />
 
 
           <Route path="/" element={<LoginPage />} />

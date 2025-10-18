@@ -123,8 +123,8 @@ function JobTable() {
 
     const navigate = useNavigate();
 
-    const headerCellStyle: string = "border-2 border-textColor text-nowrap p-1 pb-2 pt-2 bg-secondaryColor text-backgroundColor font-bold";
-    const cellStyle: string = "border border-textColor text-nowrap p-1 bg-mainColor text-tertiaryColor";
+    const headerCellStyle: string = "border-2 border-textColor text-nowrap p-1 pb-2 pt-2 text-tertiaryColor bg-mainColor font-bold";
+    const cellStyle: string = "border border-textColor text-nowrap p-1 bg-tertiaryColor text-textColor";
     return (
         <>
             <div className="w-full overflow-x-auto">
