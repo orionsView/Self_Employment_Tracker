@@ -40,7 +40,7 @@ function Menu() {
     return (
         <>
             <NavBar showMenu={false} />
-            <Header mainTitle="Menu" subTitle={userName === "" ? "Hello!" : `Hello, ${userName}!`} />
+            <Header mainTitle="Menu" subTitle={userName === "" || userName === undefined ? "Hello!" : `Hello, ${userName}!`} />
             <div className="h-[50%] w-[100vw] flex flex-col justify-between items-center">
                 <div className={`${BorderCard}`}>
                     <a href="/log" className={linkClassName}>New Job</a>

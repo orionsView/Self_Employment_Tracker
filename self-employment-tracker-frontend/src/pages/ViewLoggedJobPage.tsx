@@ -168,12 +168,14 @@ function LoggedJobInfoPage() {
             <NavBar />
             <Header mainTitle="Logged Job" />
             <div className="h-[100%] w-[100vw] flex flex-col items-center">
+                <div className=" w-[80%] flex flex-col items-center">
 
-                <InfoDropdown title="Job Details" text={jobMap ?? {}} />
-                <InfoDropdown title="Client" text={clientMap ?? {}} />
-                <InfoDropdown title="Trips" text={tripArray} />
-                <InfoDropdown title="Expenses" text={expenseArray} />
-                <InfoDropdown title="Earnings" text={earningsArray} />
+                    <InfoDropdown title="Job Details" text={jobMap ?? {}} />
+                    <InfoDropdown title="Client" text={clientMap ?? {}} />
+                    <InfoDropdown title="Trips" text={tripArray} />
+                    <InfoDropdown title="Expenses" text={expenseArray} />
+                    <InfoDropdown title="Earnings" text={earningsArray} />
+                </div>
             </div>
         </>
 

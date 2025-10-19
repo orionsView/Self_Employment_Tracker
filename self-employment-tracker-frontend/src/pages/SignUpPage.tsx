@@ -31,7 +31,8 @@ function SignUpPage() {
                     alert("Make sure you are using a valid email address")
                 } else {
                     console.log('Sign up successful');
-                    navigate("/login");
+                    window.location.href = "/login";
+                    alert('Account Created Successfully!');
                 }
             });
         }

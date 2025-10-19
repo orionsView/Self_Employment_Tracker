@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 type TextInputFieldProps = {
     Placeholder?: string,
@@ -24,18 +24,30 @@ export type style = {
 
 function TextInputField(props: TextInputFieldProps) {
     const [warningHidden, setWarningHidden] = useState(true);
+    const lastValidity = useRef<boolean | null>(null);
+
 
     useEffect(() => {
-        if (!props.validationRegex || !props.currentValue || !props.setValidity) {
-            return;
-        }
-        const isMatch = !!props.currentValue.match(props.validationRegex);
+        // console.log("Validating input field:", props);
+        if (!props.validationRegex || !props.setValidity) return;
+
+        const isMatch = !!props.currentValue?.match(props.validationRegex);
         const isEmpty = props.currentValue === "";
         const valid = isMatch || (isEmpty && !!props.allowEmpty);
 
-        setWarningHidden(valid);
-        props.setValidity(valid);
-    }, [props.currentValue, props.allowEmpty, props.validationRegex])
+        // Only update if the visibility actually changes
+        setWarningHidden((prev) => {
+            if (prev === valid) return prev;
+            return valid;
+        });
+
+        // Only call setValidity if it actually changed
+        if (lastValidity.current !== valid) {
+            lastValidity.current = valid;
+            props.setValidity(valid);
+        }
+    }, [props.currentValue, props.allowEmpty, props.validationRegex]);
+
 
     return (
         <>
