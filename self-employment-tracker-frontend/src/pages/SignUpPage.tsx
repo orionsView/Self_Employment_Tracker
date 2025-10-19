@@ -4,7 +4,7 @@ import TextInputField from '../components/TextInputField'
 import type { style } from '../components/TextInputField'
 import { InputBase, BorderCard, LabelText } from '../constants/ui'
 import { useEffect, useState } from "react"
-import { useNavigate } from 'react-router'
+// import { useNavigate } from 'react-router'
 
 type inputType = {
     email: string,
@@ -76,7 +76,7 @@ function SignUpPage() {
         console.log(currentInput);
     }, [currentInput.password])
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
 
 
