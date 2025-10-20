@@ -1,10 +1,11 @@
 import Header from "../components/Header"
 import NavBar from "../components/NavBar"
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { supabase } from '../supabaseClient'
 import { useNavigate } from "react-router-dom"
 import { BorderCard } from "../constants/ui"
 import SubmitButton from "../components/SubmitButton"
+import { get } from "lodash"
 
 
 type response = {
@@ -12,9 +13,16 @@ type response = {
     useMi: boolean,
     use12hr: boolean,
     useRecs: boolean,
-    useDarkMode: boolean,
+    darkMode: darkModeOptions,
     AIFocus: string
 }
+
+enum darkModeOptions {
+    True = "true",
+    False = "false",
+    UseSystem = "useSystem"
+}
+
 function SettingsPage() {
     const navigate = useNavigate();
 
@@ -23,12 +31,20 @@ function SettingsPage() {
         if (stored && stored !== "undefined") {
             try {
                 const parsed = JSON.parse(stored);
+                // console.log("parsed: ", parsed);
+                let parseDarkMode;
+                console.log("parsed.darkMode: ", parsed.darkMode);
+                if (parsed.darkMode === "true") parseDarkMode = darkModeOptions.True;
+                else if (parsed.darkMode === "false") parseDarkMode = darkModeOptions.False;
+                else if (parsed.darkMode === "useSystem") parseDarkMode = darkModeOptions.UseSystem;
+                else parseDarkMode = undefined
+                    ;
                 return {
                     defaultGraph: parsed.defaultGraph ?? "None Selected",
                     useMi: parsed.useMi ?? true,
                     use12hr: parsed.use12hr ?? true,
                     useRecs: parsed.useRecs ?? true,
-                    useDarkMode: parsed.useDarkMode ?? false,
+                    darkMode: parseDarkMode ?? darkModeOptions.False,
                     AIFocus: parsed.AIFocus ?? "None Selected"
                 };
             } catch {
@@ -40,7 +56,7 @@ function SettingsPage() {
             useMi: true,
             use12hr: true,
             useRecs: true,
-            useDarkMode: false,
+            darkMode: darkModeOptions.False,
             AIFocus: "None Selected"
         };
     };
@@ -64,7 +80,7 @@ function SettingsPage() {
             distanceUnits: selectedOptions.useMi ? "MI" : "KM",
             timeUnits: selectedOptions.use12hr ? "12" : "24",
             adviceLLM: selectedOptions.useRecs,
-            darkMode: selectedOptions.useDarkMode,
+            darkMode: selectedOptions.darkMode,
             AIFocus: selectedOptions.AIFocus,
             timeUpdated: new Date()
         });
@@ -88,10 +104,12 @@ function SettingsPage() {
     }), [selectedOptions]
 
     useEffect(() => {
-        const userSettings = localStorage.getItem("UserSettings");
-        if (userSettings && userSettings !== "undefined") {
-            setSelectedOptions(JSON.parse(userSettings));
-        }
+        // const userSettings = localStorage.getItem("UserSettings");
+        // if (userSettings && userSettings !== "undefined") {
+        //     setSelectedOptions(JSON.parse(userSettings));
+        // } 
+
+        getInitialOptions();
     }, []);
     // const borderStyle: string = "border-1 p-[1vh] rounded-lg shadow-lg";
     const borderStyle: string = BorderCard;
@@ -184,11 +202,15 @@ function SettingsPage() {
 
                         <div className="flex flex-row justify-center items-center w-[80%] ml-8">
                             <label className="mr-2" htmlFor="DarkOn">On</label>
-                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useDarkMode: true }))} type="radio" id="DarkOn" name="Dark" value="On" checked={selectedOptions.useDarkMode === true} />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, darkMode: darkModeOptions.True }))} type="radio" id="DarkOn" name="Dark" value="On" checked={selectedOptions.darkMode === darkModeOptions.True} />
                         </div>
                         <div className="flex flex-row justify-center items-center w-[80%] ">
                             <label className="mr-2" htmlFor="DarkOff">Off</label>
-                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, useDarkMode: false }))} type="radio" id="DarkOff" name="Dark" value="Off" checked={selectedOptions.useDarkMode === false} />
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, darkMode: darkModeOptions.False }))} type="radio" id="DarkOff" name="Dark" value="Off" checked={selectedOptions.darkMode === darkModeOptions.False} />
+                        </div>
+                        <div className="flex flex-row justify-center items-center w-[80%] ">
+                            <label className="mr-2" htmlFor="UseSystem">Use Syetem Theme</label>
+                            <input onChange={() => setSelectedOptions((selectedOptions: any) => ({ ...selectedOptions, darkMode: darkModeOptions.UseSystem }))} type="radio" id="useSystem" name="Dark" value="Off" checked={selectedOptions.darkMode === darkModeOptions.UseSystem} />
                         </div>
                     </div>
 

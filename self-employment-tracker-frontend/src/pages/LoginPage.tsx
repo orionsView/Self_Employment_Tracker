@@ -11,6 +11,8 @@ import SubmitButton from "../components/SubmitButton"
 
 type inputType = { email: string, password: string }
 function LoginPage() {
+
+
     const navigate = useNavigate();
     const logoClassName: string = "w-30"
 
