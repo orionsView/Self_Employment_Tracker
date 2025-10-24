@@ -1,11 +1,10 @@
 import Header from "../components/Header"
 import NavBar from "../components/NavBar"
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from '../supabaseClient'
 import { useNavigate } from "react-router-dom"
 import { BorderCard } from "../constants/ui"
 import SubmitButton from "../components/SubmitButton"
-import { get } from "lodash"
 
 
 type response = {
@@ -91,9 +90,9 @@ function SettingsPage() {
             return;
         }
 
-        if (typeof localStorage !== "undefined" && localStorage.getItem("UserSettings") !== null) {
-            localStorage.setItem("UserSettings", JSON.stringify(selectedOptions));
-        }
+
+        localStorage.setItem("UserSettings", JSON.stringify(selectedOptions));
+
         navigate("/menu");
         console.log('Settings updated successfully');
         alert("Settings updated successfully")

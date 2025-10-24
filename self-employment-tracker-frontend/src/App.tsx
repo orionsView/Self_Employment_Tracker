@@ -16,7 +16,7 @@ import ExportPage from './pages/ExportPage'
 import TutorialPage from './pages/TutorialPage'
 
 function App() {
-
+  console.log("system theme is", window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
 
   return (
     <AuthProvider>
