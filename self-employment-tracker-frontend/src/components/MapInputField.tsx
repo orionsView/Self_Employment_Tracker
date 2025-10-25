@@ -1,6 +1,6 @@
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import L from "leaflet";
 
 // Fix marker icons (important for Vite, React, or CRA)
