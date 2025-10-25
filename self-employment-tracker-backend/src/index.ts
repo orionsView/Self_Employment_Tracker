@@ -180,12 +180,18 @@ app.get("/getDistanceFromCoordinates", async (req: Request, res: Response) => {
         const data = await response.json();
         console.log(`data: ${JSON.stringify(data)}`);
 
-        if (data.features && data.features.properties && data.features.properties.summary) {
-            const distanceMeters = data.features.properties.summary.distance;
+        if (
+            data.features &&
+            Array.isArray(data.features) &&
+            data.features.length > 0 &&
+            data.features[0].properties &&
+            data.features[0].properties.summary
+        ) {
+            const distanceMeters = data.features[0].properties.summary.distance;
             res.json({ distanceKm: distanceMeters / 1000 });
+        } else {
+            res.status(500).json({ error: "No route found" });
         }
-
-        res.status(500).json({ error: "No route found", data: data });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server error" });
