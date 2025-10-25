@@ -164,6 +164,20 @@ function InputJobsPage() {
                     Distance: trip.distance,
                     GasPrice: trip.gasPrice ?? 0,
                 };
+            } else if (trip.src && trip.dest) {
+                const backendUrl = import.meta.env.VITE_BACKEND_URL
+                const { distance } = await fetch(`${backendUrl}/getDistanceFromCoordinates?start=${trip.src}&end=${trip.dest}`).then((res) => res.json());
+
+
+                return {
+                    ID: uuidv4(),
+                    JobID: jobId,
+                    Distance: distance,
+                    GasPrice: trip.gasPrice ?? 0,
+                    Src: trip.src,
+                    Dst: trip.dest
+                };
+
             }
             // } else if (trip.mapLink) {
             //     const { distance, source, destination } = await getTripDistanceFromShortLink(trip.mapLink);
