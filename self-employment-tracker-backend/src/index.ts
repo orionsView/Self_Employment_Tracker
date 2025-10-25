@@ -173,13 +173,14 @@ app.get("/getDistanceFromCoordinates", async (req: Request, res: Response) => {
         });
 
         const data = await response.json();
+        console.log(`data: ${JSON.stringify(data)}`);
 
         if (data.routes && data.routes.length > 0) {
             const distanceMeters = data.routes[0].summary.distance;
             res.json({ distanceKm: distanceMeters / 1000 });
         }
 
-        res.status(500).json({ error: "No route found" });
+        res.status(500).json({ error: "No route found", data: data });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Server error" });
