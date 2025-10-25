@@ -161,16 +161,21 @@ app.get("/getDistanceFromCoordinates", async (req: Request, res: Response) => {
             "Content-Type": "application/json",
         };
 
-        const response = await fetch("https://api.openrouteservice.org/v2/directions", {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-                coordinates: [
-                    [src[1], src[0]], // ORS expects [lng, lat]
-                    [dest[1], dest[0]]
-                ]
-            })
-        });
+        const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${src[1]},${src[0]}&end=${dest[1]},${dest[0]}`;
+        console.log(`fetching' ${url}`);
+
+        const response = await fetch(url);
+
+        // const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+        //     method: "POST",
+        //     headers,
+        //     body: JSON.stringify({
+        //         coordinates: [
+        //             [src[1], src[0]], // ORS expects [lng, lat]
+        //             [dest[1], dest[0]]
+        //         ]
+        //     })
+        // });
 
         const data = await response.json();
         console.log(`data: ${JSON.stringify(data)}`);
