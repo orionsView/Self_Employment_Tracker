@@ -1,6 +1,6 @@
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import L from "leaflet";
 
 // Fix marker icons (important for Vite, React, or CRA)
@@ -14,9 +14,10 @@ L.Icon.Default.mergeOptions({
         "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-function MapInputField() {
+type LatLng = [number, number];
+
+function MapInputField(props: any) {
     // const position: [number, number] = [47.6062, -122.3321];
-    type LatLng = [number, number];
 
     const ClickHandler: React.FC<{ onSelect: (pos: LatLng) => void }> = ({ onSelect }) => {
         useMapEvents({
@@ -28,17 +29,30 @@ function MapInputField() {
     };
 
 
-    const [markers, setMarkers] = useState<LatLng[]>([]);
+
+
+    // useEffect(() => {
+    //     console.log("markers: ", markers);
+    // }, [markers]);
+
+    // const [clickCount, setClickCount] = useState(0);
 
     const handleSelect = (pos: LatLng) => {
-        setMarkers((prev) => {
-            if (prev.length >= 2) {
-                // Reset if already have two
-                return [pos];
-            }
-            return [...prev, pos];
-        });
+        // If both locations are set, reset both to null first
+        if (props.location1 && props.location2) {
+            props.setLocation1(null);
+            props.setLocation2(null);
+            return; // exit so next click will be treated as first point
+        }
+
+        // Otherwise, set the first empty location
+        if (!props.location1) {
+            props.setLocation1(pos);
+        } else if (!props.location2) {
+            props.setLocation2(pos);
+        }
     };
+
 
     return (
         <MapContainer
@@ -59,11 +73,18 @@ function MapInputField() {
             />
             <ClickHandler onSelect={handleSelect} />
 
-            {markers.map((pos, idx) => (
-                <Marker key={idx} position={pos}>
-                    <Popup>{idx === 0 ? "Start Point" : "End Point"}</Popup>
+            {props.location1 &&
+                <Marker key={`Location1-${props.location1[0]}-${props.location1[1]}`} position={props.location1}>
+                    <Popup>{"Start Point"}</Popup>
                 </Marker>
-            ))}
+            }
+
+            {props.location2 &&
+                <Marker key={`Location2-${props.location2[0]}-${props.location2[1]}`} position={props.location2}>
+                    <Popup>{"End Point"}</Popup>
+                </Marker>
+            }
+
         </MapContainer>
     );
 

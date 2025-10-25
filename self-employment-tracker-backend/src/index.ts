@@ -28,7 +28,7 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
     console.log("base route hit");
     console.log("Current time:", new Date().toISOString());
-    res.json({ 
+    res.json({
         message: 'Hello i!',
         timestamp: new Date().toISOString(),
         coldStart: 'Should have logged if module initialized'
@@ -45,44 +45,44 @@ app.post('/api/data', (req: Request, res: Response) => {
 //     console.log(`Server is running on http://localhost:${PORT}`);
 // });
 
-app.get("/distance", async (req, res) => {
-    // console.log("test");
-    const start = req.query.start;
-    const end = req.query.end;
+// app.get("/distance", async (req, res) => {
+//     // console.log("test");
+//     const start = req.query.start;
+//     const end = req.query.end;
 
-    const { GOOGLE_MAPS_API_KEY: apiKey } = process.env;
-
-
-
-    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(start as string)}&destination=${encodeURIComponent(end as string)}&key=${apiKey}`;
-    console.log(`fetching' ${url}`);
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch distance." });
-    }
-});
+//     const { GOOGLE_MAPS_API_KEY: apiKey } = process.env;
 
 
-app.get("/shortlinkToLonglink", async (req, res) => {
-    const shortLinkRaw = req.query.shortLink;
-    console.log(`shortLinkRaw: ${shortLinkRaw}`);
 
-    const response = await fetch(shortLinkRaw as string, {
-        method: "GET",
-        redirect: "manual",
-    });
-    console.log(`response' ${response}`);
+//     const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(start as string)}&destination=${encodeURIComponent(end as string)}&key=${apiKey}`;
+//     console.log(`fetching' ${url}`);
 
-    const longUrl = response.headers.get("Location");
-    console.log(`longUrl: ${longUrl}`);
-    // console.log("Redirected to:", location);
+//     try {
+//         const response = await fetch(url);
+//         const data = await response.json();
+//         res.json(data);
+//     } catch (err) {
+//         res.status(500).json({ error: "Failed to fetch distance." });
+//     }
+// });
 
-    res.json({ longUrl });
-});
+
+// app.get("/shortlinkToLonglink", async (req, res) => {
+//     const shortLinkRaw = req.query.shortLink;
+//     console.log(`shortLinkRaw: ${shortLinkRaw}`);
+
+//     const response = await fetch(shortLinkRaw as string, {
+//         method: "GET",
+//         redirect: "manual",
+//     });
+//     console.log(`response' ${response}`);
+
+//     const longUrl = response.headers.get("Location");
+//     console.log(`longUrl: ${longUrl}`);
+//     // console.log("Redirected to:", location);
+
+//     res.json({ longUrl });
+// });
 
 
 
@@ -137,6 +137,54 @@ app.post("/getRecommendations", async (req, res) => {
         res.status(500).json({ error: "Failed to get recommendations" });
     }
 });
+
+type LatLng = [number, number];
+
+
+app.get("/getDistanceFromCoordinates", async (req: Request, res: Response) => {
+    try {
+        const srcStr = req.query.start as string; // expected "lat,lng"
+        const destStr = req.query.end as string;
+
+        if (!srcStr || !destStr) {
+            res.status(400).json({ error: "Missing start or end coordinates" });
+        }
+
+        const src: LatLng = srcStr.split(",").map(Number) as LatLng;
+        const dest: LatLng = destStr.split(",").map(Number) as LatLng;
+
+        const apiKey = process.env.VITE_ORS_API_KEY;
+        if (!apiKey) res.status(500).json({ error: "ORS API key not set" });
+
+        const headers: Record<string, string> = {
+            "Authorization": apiKey as string,
+            "Content-Type": "application/json",
+        };
+
+        const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                coordinates: [
+                    [src[1], src[0]], // ORS expects [lng, lat]
+                    [dest[1], dest[0]]
+                ]
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.routes && data.routes.length > 0) {
+            const distanceMeters = data.routes[0].summary.distance;
+            res.json({ distanceKm: distanceMeters / 1000 });
+        }
+
+        res.status(500).json({ error: "No route found" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+})
 
 
 

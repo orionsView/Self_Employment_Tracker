@@ -9,7 +9,7 @@ import type { style } from "../components/TextInputField";
 import { InputBase, BorderCard, LabelText } from '../constants/ui'
 import SubmitButton from "../components/SubmitButton";
 import MapInputField from "../components/MapInputField";
-// ...existing code...
+
 
 type input = {
     clientId: string,
@@ -24,10 +24,13 @@ type input = {
     trips: trip[]
 }
 
+type LatLng = [number, number] | null;
 type trip = {
     distance: number,
     carId: string,
-    gasPrice: number
+    gasPrice: number,
+    src: LatLng,
+    dest: LatLng
 }
 
 type expense = {
@@ -326,6 +329,7 @@ function InputJobsPage() {
     useEffect(() => {
         // console.log(inputData.clientId);
         setAddingNewClient(inputData.clientId === "add_new_client");
+        console.log("trip 1: ", inputData.trips[0]);
     }, [inputData]);
 
     useEffect(() => {
@@ -566,7 +570,9 @@ function InputJobsPage() {
                                         updated.push({
                                             distance: 0,
                                             carId: '',
-                                            gasPrice: 0
+                                            gasPrice: 0,
+                                            src: null,
+                                            dest: null
                                         });
                                     while (updated.length > num) updated.pop();
                                     setInputData({ ...inputData, trips: updated });
@@ -635,7 +641,24 @@ function InputJobsPage() {
                                     <p className="font-bold">OR</p>
 
                                     {/* Map Link */}
-                                    <MapInputField />
+                                    <MapInputField
+                                        location1={inputData.trips[i].src ?? null}
+                                        setLocation1={(src: [number, number] | null) => {
+                                            setInputData(prev => {
+                                                const updatedTrips = [...prev.trips];
+                                                updatedTrips[i] = { ...updatedTrips[i], src }; // clone trip object
+                                                return { ...prev, trips: updatedTrips };
+                                            });
+                                        }}
+                                        location2={inputData.trips[i].dest ?? null}
+                                        setLocation2={(dest: [number, number] | null) => {
+                                            setInputData(prev => {
+                                                const updatedTrips = [...prev.trips];
+                                                updatedTrips[i] = { ...updatedTrips[i], dest }; // clone trip object
+                                                return { ...prev, trips: updatedTrips };
+                                            });
+                                        }}
+                                    />
 
                                     {/* Gas Price */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
