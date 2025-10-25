@@ -180,7 +180,7 @@ app.get("/getDistanceFromCoordinates", async (req: Request, res: Response) => {
         const data = await response.json();
         console.log(`data: ${JSON.stringify(data)}`);
 
-        if (data.routes && data.routes.length > 0) {
+        if (data.summary && data.summary.distance) {
             const distanceMeters = data.routes[0].summary.distance;
             res.json({ distanceKm: distanceMeters / 1000 });
         }
