@@ -161,7 +161,7 @@ app.get("/getDistanceFromCoordinates", async (req: Request, res: Response) => {
             "Content-Type": "application/json",
         };
 
-        const response = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
+        const response = await fetch("https://api.openrouteservice.org/v2/directions", {
             method: "POST",
             headers,
             body: JSON.stringify({
