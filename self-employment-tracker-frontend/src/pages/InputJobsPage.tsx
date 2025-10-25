@@ -8,6 +8,7 @@ import TextInputField from "../components/TextInputField";
 import type { style } from "../components/TextInputField";
 import { InputBase, BorderCard, LabelText } from '../constants/ui'
 import SubmitButton from "../components/SubmitButton";
+import MapInputField from "../components/MapInputField";
 // ...existing code...
 
 type input = {
@@ -24,12 +25,9 @@ type input = {
 }
 
 type trip = {
-    start: string,
-    end: string,
     distance: number,
     carId: string,
     gasPrice: number
-    mapLink: string
 }
 
 type expense = {
@@ -163,17 +161,18 @@ function InputJobsPage() {
                     Distance: trip.distance,
                     GasPrice: trip.gasPrice ?? 0,
                 };
-            } else if (trip.mapLink) {
-                const { distance, source, destination } = await getTripDistanceFromShortLink(trip.mapLink);
-                return {
-                    ID: uuidv4(),
-                    JobID: jobId,
-                    Distance: distance,
-                    GasPrice: trip.gasPrice ?? 0,
-                    Src: source,
-                    Dst: destination
-                };
             }
+            // } else if (trip.mapLink) {
+            //     const { distance, source, destination } = await getTripDistanceFromShortLink(trip.mapLink);
+            //     return {
+            //         ID: uuidv4(),
+            //         JobID: jobId,
+            //         Distance: distance,
+            //         GasPrice: trip.gasPrice ?? 0,
+            //         Src: source,
+            //         Dst: destination
+            //     };
+            // }
         }));
 
         const { error: tripError } = await supabase.from('Trip').insert(tripInserts);
@@ -258,65 +257,65 @@ function InputJobsPage() {
         setSubmitProcessing(false);
     }
 
-    async function getTripDistanceFromShortLink(shortLink: string) {
-        console.log(`getting trip distance from short link: ${shortLink}`);
+    // async function getTripDistanceFromShortLink(shortLink: string) {
+    //     console.log(`getting trip distance from short link: ${shortLink}`);
 
-        // const longLink = await getLongUrl(shortLink);
+    //     // const longLink = await getLongUrl(shortLink);
 
-        const longLink = await getLongLinkFromShortLink(shortLink);
+    //     const longLink = await getLongLinkFromShortLink(shortLink);
 
-        const { source, destination } = parseGoogleMapsUrl(longLink);
+    //     const { source, destination } = parseGoogleMapsUrl(longLink);
 
-        console.log(`source: ${source}`);
-        console.log(`destination: ${destination}`);
-
-
-        const distance = await getDistanceFromLocations(source || "", destination || "");
-        console.log(`distance: ${distance}`);
-        return { distance, source, destination };
-    }
-    function parseGoogleMapsUrl(url: string) {
-        const regex = /\/maps\/dir\/([^/]+)\/([^/?#]+)/;
-        const match = url.match(regex);
-
-        if (!match || match.length < 3) {
-            return { error: "Unable to parse source and destination" };
-        }
-
-        const source = decodeURIComponent(match[1]);
-        const destination = decodeURIComponent(match[2]);
-
-        return { source, destination };
-    }
-
-    async function getLongLinkFromShortLink(shortLink: string) {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL
-        const urlToFetch = `${backendUrl}/shortlinkToLonglink?shortLink=${shortLink}`
-
-        const response = await fetch(urlToFetch);
-        const jsonResponse = await response.json();
-
-        const longUrl = jsonResponse.longUrl
-
-        console.log(`longUrl: ${longUrl}`);
-
-        return longUrl;
-    }
+    //     console.log(`source: ${source}`);
+    //     console.log(`destination: ${destination}`);
 
 
+    //     const distance = await getDistanceFromLocations(source || "", destination || "");
+    //     console.log(`distance: ${distance}`);
+    //     return { distance, source, destination };
+    // }
+    // function parseGoogleMapsUrl(url: string) {
+    //     const regex = /\/maps\/dir\/([^/]+)\/([^/?#]+)/;
+    //     const match = url.match(regex);
 
-    async function getDistanceFromLocations(dest: string, src: string) {
+    //     if (!match || match.length < 3) {
+    //         return { error: "Unable to parse source and destination" };
+    //     }
 
-        const backendUrl = import.meta.env.VITE_BACKEND_URL
+    //     const source = decodeURIComponent(match[1]);
+    //     const destination = decodeURIComponent(match[2]);
 
-        const url = `${backendUrl}/distance?start=${src}&end=${dest}`;
+    //     return { source, destination };
+    // }
 
-        const response = await fetch(url);
-        const data = await response.json();
+    // async function getLongLinkFromShortLink(shortLink: string) {
+    //     const backendUrl = import.meta.env.VITE_BACKEND_URL
+    //     const urlToFetch = `${backendUrl}/shortlinkToLonglink?shortLink=${shortLink}`
 
-        // Return distance in meters
-        return data.routes[0].legs[0].distance.value;
-    }
+    //     const response = await fetch(urlToFetch);
+    //     const jsonResponse = await response.json();
+
+    //     const longUrl = jsonResponse.longUrl
+
+    //     console.log(`longUrl: ${longUrl}`);
+
+    //     return longUrl;
+    // }
+
+
+
+    // async function getDistanceFromLocations(dest: string, src: string) {
+
+    //     const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+    //     const url = `${backendUrl}/distance?start=${src}&end=${dest}`;
+
+    //     const response = await fetch(url);
+    //     const data = await response.json();
+
+    //     // Return distance in meters
+    //     return data.routes[0].legs[0].distance.value;
+    // }
 
     const inputTextStyle: style = {
         ContainerStyle: "flex flex-row justify-between items-center w-[100%] ",
@@ -565,12 +564,9 @@ function InputJobsPage() {
                                     const updated = [...(inputData.trips || [])];
                                     while (updated.length < num)
                                         updated.push({
-                                            start: '',
-                                            end: '',
                                             distance: 0,
                                             carId: '',
-                                            gasPrice: 0,
-                                            mapLink: '',
+                                            gasPrice: 0
                                         });
                                     while (updated.length > num) updated.pop();
                                     setInputData({ ...inputData, trips: updated });
@@ -589,7 +585,7 @@ function InputJobsPage() {
                             >
                                 <p className="text-[4vw] text-nowrap">Trip {i + 1}</p>
                                 <div className={`flex flex-col justify-between items-center w-[100%] ${borderStyle}`}>
-                                    {/* Start */}
+                                    {/* Start
                                     <div className="flex flex-row justify-between items-center w-[80%]">
                                         <p className="text-[4vw] text-nowrap">Start</p>
                                         <input
@@ -604,7 +600,7 @@ function InputJobsPage() {
                                         />
                                     </div>
 
-                                    {/* End */}
+                                    {/* End }
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
                                         <p className="text-[4vw] text-nowrap">End</p>
                                         <input
@@ -617,7 +613,7 @@ function InputJobsPage() {
                                             }}
                                             className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
                                         />
-                                    </div>
+                                    </div> */}
 
                                     <p className="font-bold">OR</p>
 
@@ -639,19 +635,7 @@ function InputJobsPage() {
                                     <p className="font-bold">OR</p>
 
                                     {/* Map Link */}
-                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
-                                        <p className="text-[4vw] text-nowrap">Map Link</p>
-                                        <input
-                                            type="text"
-                                            value={inputData.trips[i]?.mapLink ?? ''}
-                                            onChange={(e) => {
-                                                const updated = [...(inputData.trips || [])];
-                                                updated[i] = { ...(updated[i] || {}), mapLink: e.target.value };
-                                                setInputData({ ...inputData, trips: updated });
-                                            }}
-                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
-                                        />
-                                    </div>
+                                    <MapInputField />
 
                                     {/* Gas Price */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
@@ -676,9 +660,6 @@ function InputJobsPage() {
                     {/* Submit Button */}
                     <div className="flex justify-center items-center mt-6" >
                         <SubmitButton disabled={(addingNewClient && !validNewClient) || submitProcessing} text={submitProcessing ? "Submitting..." : "Submit"} onClick={handleSubmit} />
-                        {/* <button disabled={(addingNewClient && !validNewClient) || submitProcessing} onClick={handleSubmit} className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${((addingNewClient && !validNewClient) || submitProcessing) ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                    {submitProcessing ? "Submitting..." : "Submit"}
-                    </button> */}
                     </div>
                 </div >
             </div>
