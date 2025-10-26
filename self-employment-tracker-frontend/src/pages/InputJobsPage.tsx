@@ -166,8 +166,12 @@ function InputJobsPage() {
                 };
             } else if (trip.src && trip.dest) {
                 const backendUrl = import.meta.env.VITE_BACKEND_URL
-                const { distance } = await fetch(`${backendUrl}/getDistanceFromCoordinates?start=${trip.src}&end=${trip.dest}`).then((res) => res.json());
-
+                const fullUrl = `${backendUrl}/getDistanceFromCoordinates?start=${trip.src}&end=${trip.dest}`
+                console.log('fullUrl', fullUrl);
+                const data = await fetch(fullUrl);
+                const response = await data.json();
+                const distance = response.distanceKm;
+                console.log('distance', distance);
 
                 return {
                     ID: uuidv4(),
