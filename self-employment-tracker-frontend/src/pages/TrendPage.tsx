@@ -142,7 +142,7 @@ function TrendPage() {
             <Header mainTitle="Trends" subTitle="Understand your data" />
 
 
-            <div className="flex flex-col justify-between items-center w-[100%]">
+            <div className="flex flex-col  items-center w-[100%]">
                 <div className={`${BorderCard}`}>
                     {/* DATE FILTER */}
                     <div className={`flex justify-between flex-col items-center w-[80%] h-[20%] p-2`}>

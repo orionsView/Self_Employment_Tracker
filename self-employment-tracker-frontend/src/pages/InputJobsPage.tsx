@@ -377,7 +377,7 @@ function InputJobsPage() {
     return (
         <>
             <NavBar />
-            <div className="flex flex-col items-center h-[90%] w-[100%]">
+            <div className="flex flex-col items-center h-[100%] w-[100%]">
 
                 <Header mainTitle="Input Jobs" subTitle="Input your job information here" />
                 <div className={`${BorderCard} `}>

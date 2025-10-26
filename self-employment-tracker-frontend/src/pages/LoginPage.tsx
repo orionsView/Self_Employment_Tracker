@@ -66,8 +66,9 @@ function LoginPage() {
     return (
         <>
             <NavBar showMenu={false} />
-            <div className="flex flex-col items-center h-[90%] w-[100%]">
-                <Header mainTitle="Login" subTitle="Enter information/Sign in with Google" />
+            <Header mainTitle="Login" subTitle="Enter information/Sign in with Google" />
+
+            <div className="flex flex-col items-center w-[100%]">
 
 
                 <div className={`flex flex-col items-center h-[50%] w-[90vw] justify-between mb-4 `}>
