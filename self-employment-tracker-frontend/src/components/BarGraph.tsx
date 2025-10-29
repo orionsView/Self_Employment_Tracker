@@ -94,7 +94,7 @@ export default function BarGraph({ data, showExpenses = false, showEarnings = fa
                 <Tooltip />
                 <Legend />
                 <ReferenceLine y={0} stroke="#000" strokeWidth={1} />
-                <Bar dataKey="net_income" fill={mainGraphColor} name="Net Income" />
+                <Bar dataKey="net_income" fill={mainGraphColor} name="Profit" />
                 {/* Optional: show both earnings & expenses for context */}
                 {showEarnings && <Bar dataKey="earnings" fill="#43af3fff" name="Earnings" />}
                 {showExpenses && <Bar dataKey="expenses" fill="red" name="Expenses" />}

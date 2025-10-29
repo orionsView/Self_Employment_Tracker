@@ -135,7 +135,7 @@ function JobTable() {
                             <th className={headerCellStyle} onClick={() => { setOrderBy("TimeEntered"); setAsc(!asc) }}>Job ↕</th>
                             <th className={headerCellStyle} onClick={() => { setOrderBy("FirstName"); setAsc(!asc) }}>Client ↕</th>
                             <th className={headerCellStyle} onClick={() => { setOrderBy("TimeStarted"); setAsc(!asc) }}>Start Date ↕</th>
-                            <th className={headerCellStyle} onClick={() => { setOrderBy("net_earnings"); setAsc(!asc) }}>Net Earnings ↕</th>
+                            <th className={headerCellStyle} onClick={() => { setOrderBy("net_earnings"); setAsc(!asc) }}>Profit ↕</th>
                             <th className={headerCellStyle} onClick={() => { setOrderBy("trip_count"); setAsc(!asc) }}># Trips ↕</th>
                         </tr>
                     </thead>

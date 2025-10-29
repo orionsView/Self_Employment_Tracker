@@ -4,7 +4,7 @@ import BarGraph from "../components/BarGraph"
 import { useEffect, useState } from "react"
 import { supabase } from "../supabaseClient"
 
-import lodash from 'lodash';
+import lodash, { set } from 'lodash';
 import SuggestionModule from "../components/SuggestionModule"
 import DateRangePicker from '../components/DateRangePicker'
 import { BorderCard, MetricsSmallStyle } from '../constants/ui'
@@ -26,10 +26,10 @@ function TrendPage() {
 
 
     // Metrics
-    const [AverageNetIncome, setAverageNetIncome]: any = useState(0);
+    const [AverageProfit, setAverageProfit]: any = useState(0);
     const [AverageExpenses, setAverageExpenses]: any = useState(0);
     const [AverageEarnings, setAverageEarnings]: any = useState(0);
-    const [TotalNetIncome, setTotalNetIncome]: any = useState(0);
+    const [TotalProfit, setTotalProfit]: any = useState(0);
     const [TotalExpenses, setTotalExpenses]: any = useState(0);
     const [TotalEarnings, setTotalEarnings]: any = useState(0);
 
@@ -42,8 +42,8 @@ function TrendPage() {
     useEffect(() => {
         if (displayData.length === 0) return;
 
-        setTotalNetIncome(lodash.round(lodash.sumBy(displayData, 'net_income'), 2));
-        setAverageNetIncome(lodash.round(lodash.meanBy(displayData, 'net_income'), 2));
+        setTotalProfit(lodash.round(lodash.sumBy(displayData, 'net_income'), 2));
+        setAverageProfit(lodash.round(lodash.meanBy(displayData, 'net_income'), 2));
 
         setTotalEarnings(lodash.round(lodash.sumBy(displayData, 'earnings'), 2));
         setAverageEarnings(lodash.round(lodash.meanBy(displayData, 'earnings'), 2));
@@ -65,7 +65,7 @@ function TrendPage() {
 
         switch (selectedGraph) {
 
-            case "Week by Week Income":
+            case "Week by Week Revenue":
                 const { data, error } = await supabase
                     .rpc('get_weekly_income_summary', {
                         user_id: user.id,
@@ -82,7 +82,7 @@ function TrendPage() {
                     setDisplayData(filtered);
                 }
                 break;
-            case "Month by Month Income":
+            case "Month by Month Revenue":
                 const { data: monthData, error: monthError } = await supabase
                     .rpc('get_monthly_income_summary', {
                         user_id: user.id,
@@ -98,7 +98,7 @@ function TrendPage() {
                     setDisplayData(filtered);
                 }
                 break;
-            case "Year by Year Income":
+            case "Year by Year Revenue":
                 const { data: yearData, error: yearError } = await supabase
                     .rpc('get_yearly_income_summary', {
                         user_id: user.id,
@@ -153,9 +153,9 @@ function TrendPage() {
                         {/* Graph Type */}
                         <select onChange={(e) => setSelectedGraph(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5" defaultValue={""}>
                             <option value={""} disabled>Select a graph</option>
-                            <option>Week by Week Income</option>
-                            <option>Month by Month Income</option>
-                            <option>Year by Year Income</option>
+                            <option>Week by Week Revenue</option>
+                            <option>Month by Month Revenue</option>
+                            <option>Year by Year Revenue</option>
                         </select>
 
                         {/* Detail Level */}
@@ -204,13 +204,13 @@ function TrendPage() {
                         <div className="flex flex-row justify-around items-center w-[100%] ">
 
                             <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
-                                <p className={metricsSmallStyle}>Total Net Income {TotalNetIncome}</p>
+                                <p className={metricsSmallStyle}>Total Profit {TotalProfit}</p>
                                 <p className={metricsSmallStyle}>Total Expenses {TotalExpenses}</p>
                                 <p className={metricsSmallStyle}>Total Earnings {TotalEarnings}</p>
                             </div>
 
                             <div className="flex flex-col items-center border-1 p-[1vh] rounded-lg shadow-lg">
-                                <p className={metricsSmallStyle}>Average Net Income {AverageNetIncome}</p>
+                                <p className={metricsSmallStyle}>Average Profit {AverageProfit}</p>
                                 <p className={metricsSmallStyle}>Average Expenses {AverageExpenses}</p>
                                 <p className={metricsSmallStyle}>Average Earnings {AverageEarnings}</p>
                             </div>

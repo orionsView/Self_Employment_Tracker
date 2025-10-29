@@ -110,7 +110,7 @@ function ExportPage() {
       TimeEntered: job.TimeEntered ?? "N/A",
       TimeStarted: job.TimeStarted ?? "N/A",
       TimeEnded: job.TimeEnded ?? "N/A",
-      NetEarnings: job.net_earnings ?? "N/A",
+      Profit: job.net_earnings ?? "N/A",
       Trips: job.trip_count ?? "N/A",
     }));
 
