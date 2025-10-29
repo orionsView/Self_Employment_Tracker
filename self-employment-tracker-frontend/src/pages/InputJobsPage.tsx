@@ -26,22 +26,28 @@ type input = {
 
 type LatLng = [number, number] | null;
 type trip = {
-    distance: number,
+    manuallyLogged: TripInputMethod | null,
+    distance: number | null,
     carId: string,
-    gasPrice: number,
+    gasPrice: number | null,
     src: LatLng,
     dest: LatLng
 }
 
+enum TripInputMethod {
+    Manual = "Manual",
+    MapLink = "MapLink"
+}
+
 type expense = {
-    amount: number,
+    amount: number | null,
     methodId: string,
     date: string,
     desc: string
 }
 
 type earning = {
-    amount: number,
+    amount: number | null,
     methodId: string,
     date: string,
 }
@@ -447,7 +453,7 @@ function InputJobsPage() {
                                 if (num > 20) num = 20;
                                 setNumberOfEarnings(num);
                                 const updated = [...(inputData.earnings || [])];
-                                while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '' });
+                                while (updated.length < num) updated.push({ amount: null, methodId: '', date: '' });
                                 while (updated.length > num) updated.pop();
                                 setInputData({ ...inputData, earnings: updated });
                             }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
@@ -508,7 +514,7 @@ function InputJobsPage() {
                                 setNumberOfExpenses(num);
                                 // expand or shrink the expenses array
                                 const updated = [...(inputData.expenses || [])];
-                                while (updated.length < num) updated.push({ amount: 0, methodId: '', date: '', desc: '' });
+                                while (updated.length < num) updated.push({ amount: null, methodId: '', date: '', desc: '' });
                                 while (updated.length > num) updated.pop();
                                 setInputData({ ...inputData, expenses: updated });
                             }} className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm " />
@@ -586,9 +592,10 @@ function InputJobsPage() {
                                     const updated = [...(inputData.trips || [])];
                                     while (updated.length < num)
                                         updated.push({
-                                            distance: 0,
+                                            manuallyLogged: null,
+                                            distance: null,
                                             carId: '',
-                                            gasPrice: 0,
+                                            gasPrice: null,
                                             src: null,
                                             dest: null
                                         });
@@ -639,10 +646,25 @@ function InputJobsPage() {
                                         />
                                     </div> */}
 
-                                    <p className="font-bold">OR</p>
+                                    {/* <p className="font-bold">OR</p> */}
+
+                                    <select onChange={(e) => {
+                                        const updated = [...(inputData.trips || [])];
+                                        if (e.target.value === "Manual") {
+                                            updated[i] = { ...(updated[i] || {}), manuallyLogged: TripInputMethod.Manual };
+
+                                        } else if (e.target.value === "MapLink") {
+                                            updated[i] = { ...(updated[i] || {}), manuallyLogged: TripInputMethod.MapLink };
+                                        }
+                                        setInputData({ ...inputData, trips: updated });
+                                    }} className="w-[38vw] m-4 border bg-white  text-textColor rounded-sm p-1">
+                                        <option value="">Logging method</option>
+                                        <option value="Manual">Manual</option>
+                                        <option value="MapLink">Map</option>
+                                    </select>
 
                                     {/* Distance */}
-                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                    {inputData.trips[i].manuallyLogged === TripInputMethod.Manual && <div className="flex flex-row justify-between items-center w-[80%] mt-2">
                                         <p className="text-[4vw] text-nowrap">Distance</p>
                                         <input
                                             type="number"
@@ -654,29 +676,35 @@ function InputJobsPage() {
                                             }}
                                             className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
                                         />
-                                    </div>
+                                    </div>}
 
-                                    <p className="font-bold">OR</p>
+                                    {/* <p className="font-bold">OR</p> */}
 
                                     {/* Map Link */}
-                                    <MapInputField
-                                        location1={inputData.trips[i].src ?? null}
-                                        setLocation1={(src: [number, number] | null) => {
-                                            setInputData(prev => {
-                                                const updatedTrips = [...prev.trips];
-                                                updatedTrips[i] = { ...updatedTrips[i], src }; // clone trip object
-                                                return { ...prev, trips: updatedTrips };
-                                            });
-                                        }}
-                                        location2={inputData.trips[i].dest ?? null}
-                                        setLocation2={(dest: [number, number] | null) => {
-                                            setInputData(prev => {
-                                                const updatedTrips = [...prev.trips];
-                                                updatedTrips[i] = { ...updatedTrips[i], dest }; // clone trip object
-                                                return { ...prev, trips: updatedTrips };
-                                            });
-                                        }}
-                                    />
+                                    {inputData.trips[i].manuallyLogged === TripInputMethod.MapLink &&
+
+                                        <>
+                                            <div className="text-tertiaryColor">Select two points on the map to log the trip</div>
+                                            <MapInputField
+                                                location1={inputData.trips[i].src ?? null}
+                                                setLocation1={(src: [number, number] | null) => {
+                                                    setInputData(prev => {
+                                                        const updatedTrips = [...prev.trips];
+                                                        updatedTrips[i] = { ...updatedTrips[i], src }; // clone trip object
+                                                        return { ...prev, trips: updatedTrips };
+                                                    });
+                                                }}
+                                                location2={inputData.trips[i].dest ?? null}
+                                                setLocation2={(dest: [number, number] | null) => {
+                                                    setInputData(prev => {
+                                                        const updatedTrips = [...prev.trips];
+                                                        updatedTrips[i] = { ...updatedTrips[i], dest }; // clone trip object
+                                                        return { ...prev, trips: updatedTrips };
+                                                    });
+                                                }}
+                                            />
+                                        </>
+                                    }
 
                                     {/* Gas Price */}
                                     <div className="flex flex-row justify-between items-center w-[80%] mt-2">
@@ -703,7 +731,7 @@ function InputJobsPage() {
                         <SubmitButton disabled={(addingNewClient && !validNewClient) || submitProcessing} text={submitProcessing ? "Submitting..." : "Submit"} onClick={handleSubmit} />
                     </div>
                 </div >
-            </div>
+            </div >
         </>
     )
 }

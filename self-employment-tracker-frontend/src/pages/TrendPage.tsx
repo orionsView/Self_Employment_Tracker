@@ -4,7 +4,7 @@ import BarGraph from "../components/BarGraph"
 import { useEffect, useState } from "react"
 import { supabase } from "../supabaseClient"
 
-import lodash, { set } from 'lodash';
+import lodash from 'lodash';
 import SuggestionModule from "../components/SuggestionModule"
 import DateRangePicker from '../components/DateRangePicker'
 import { BorderCard, MetricsSmallStyle } from '../constants/ui'
