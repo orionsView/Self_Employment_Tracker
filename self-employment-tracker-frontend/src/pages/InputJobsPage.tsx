@@ -30,6 +30,7 @@ type trip = {
     distance: number | null,
     carId: string,
     gasPrice: number | null,
+    mpg: number | null,
     src: LatLng,
     dest: LatLng
 }
@@ -167,6 +168,7 @@ function InputJobsPage() {
                 return {
                     ID: uuidv4(),
                     JobID: jobId,
+                    MPG: trip.mpg ?? 0,
                     Distance: trip.distance,
                     GasPrice: trip.gasPrice ?? 0,
                 };
@@ -184,6 +186,7 @@ function InputJobsPage() {
                     JobID: jobId,
                     Distance: distance,
                     GasPrice: trip.gasPrice ?? 0,
+                    MPG: trip.mpg ?? 0,
                     Src: trip.src,
                     Dst: trip.dest
                 };
@@ -596,6 +599,7 @@ function InputJobsPage() {
                                             distance: null,
                                             carId: '',
                                             gasPrice: null,
+                                            mpg: null,
                                             src: null,
                                             dest: null
                                         });
@@ -720,6 +724,23 @@ function InputJobsPage() {
                                             className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
                                         />
                                     </div>
+
+                                    {/* MPG */}
+                                    <div className="flex flex-row justify-between items-center w-[80%] mt-2">
+                                        <p className="text-[4vw] text-nowrap">MPG</p>
+                                        <input
+                                            type="number"
+                                            value={inputData.trips[i]?.mpg ?? ''}
+                                            onChange={(e) => {
+                                                const updated = [...(inputData.trips || [])];
+                                                updated[i] = { ...(updated[i] || {}), mpg: parseFloat(e.target.value) || 0 };
+                                                setInputData({ ...inputData, trips: updated });
+                                            }}
+                                            className="w-[38vw] ml-4 border bg-white border-gray-300 text-gray-900 rounded-sm "
+                                        />
+
+                                    </div>
+
                                 </div>
                             </div>
                         ))}
