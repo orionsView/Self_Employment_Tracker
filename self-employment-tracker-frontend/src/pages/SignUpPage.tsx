@@ -72,10 +72,14 @@ function SignUpPage() {
 
         setPasswordConfirmationRegex(new RegExp(`^${escapeRegex}$`));
 
-        console.log(passwordConfimationRegex);
+        // console.log(passwordConfimationRegex);
         console.log(currentInput);
     }, [currentInput.password])
 
+    useEffect(() => {
+        console.log("Current Input: ", currentInput);
+
+    }, [currentInput])
     // const navigate = useNavigate();
 
 

@@ -28,7 +28,7 @@ function TextInputField(props: TextInputFieldProps) {
 
 
     useEffect(() => {
-        // console.log("Validating input field:", props);
+        console.log("Validating input field:", props);
         if (!props.validationRegex || !props.setValidity) return;
 
         const isMatch = !!props.currentValue?.match(props.validationRegex);
