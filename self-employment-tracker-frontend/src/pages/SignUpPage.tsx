@@ -80,7 +80,6 @@ function SignUpPage() {
         console.log("Current Input: ", currentInput);
 
     }, [currentInput])
-    // const navigate = useNavigate();
 
 
 

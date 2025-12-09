@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { supabase } from "../supabaseClient";
 import { useEffect, useState } from "react";
 import InfoDropdown from "../components/InfoDropDown";
+// import SubmitButton from "../components/SubmitButton";
 
 type Job = {
     id: number;
@@ -39,9 +40,10 @@ type Transaction = {
     date: Date;
 }
 
+
 function LoggedJobInfoPage() {
-    const [jobData, setJobData] = useState<Job | null>(null);
     const { jobID } = useParams();
+    const [jobData, setJobData] = useState<Job | null>(null);
 
     useEffect(() => {
         loadPage();
@@ -162,6 +164,19 @@ function LoggedJobInfoPage() {
         console.log("earningsArray: ", earningsArray);
     }, [jobMap, clientMap, tripArray, expenseArray, earningsArray]);
 
+    async function deleteJob() {
+        const { data, error } = await supabase.rpc("delete_job_cascade", {
+            job_uuid: jobID
+        });
+        
+
+        if (error) console.error("RPC error:", error);
+        else {
+            window.location.href = "/menu";
+            alert("Job deleted successfully.");
+        }
+
+    }
 
     return (
         <>
@@ -170,13 +185,17 @@ function LoggedJobInfoPage() {
             <div className="h-[100%] w-[100vw] flex flex-col items-center">
                 <div className=" w-[80%] flex flex-col items-center">
 
-                    <InfoDropdown title="Job Details" text={jobMap ?? {}} />
-                    <InfoDropdown title="Client" text={clientMap ?? {}} />
-                    <InfoDropdown title="Trips" text={tripArray} />
-                    <InfoDropdown title="Expenses" text={expenseArray} />
-                    <InfoDropdown title="Earnings" text={earningsArray} />
+                    <InfoDropdown title="Job Details" text={jobMap ?? {}} editable={false} />
+                    <InfoDropdown title="Client" text={clientMap ?? {}} editable={false} />
+                    <InfoDropdown title="Trips" text={tripArray} editable={false} />
+                    <InfoDropdown title="Expenses" text={expenseArray} editable={false} />
+                    <InfoDropdown title="Earnings" text={earningsArray} editable={false} />
                 </div>
+
+                <button className="bg-red-600 text-white font-bold py-2 px-4 rounded" onClick={deleteJob}>Delete Job</button>
+
             </div>
+
         </>
 
     );

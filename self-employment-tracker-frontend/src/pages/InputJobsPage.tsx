@@ -111,13 +111,6 @@ function InputJobsPage() {
 
 
         if (inputData.clientId === "add_new_client") {
-            // // Defensive check: ensure the new client name is valid before inserting
-            // const nameIsValid = /^(?!\s*$)[a-zA-Z\s.'-]+$/.test(inputData.newClientName);
-            // if (!nameIsValid) {
-            //     setSubmitProcessing(false);
-            //     alert('New client name is invalid');
-            //     return;
-            // }
 
             setInputData({ ...inputData, clientId: newClientId });
             const names = inputData.newClientName.split(" ");

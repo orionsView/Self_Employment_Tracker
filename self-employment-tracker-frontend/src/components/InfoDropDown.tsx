@@ -4,7 +4,7 @@ import { BorderCard } from "../constants/ui";
 
 type InfoText = string | Record<string, any> | Array<Record<string, any>>;
 
-function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
+function InfoDropdown({ title, text, editable = false }: { title: string; text: InfoText; editable: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +29,7 @@ function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
                 onClick={() => setIsOpen((prev) => !prev)}
                 className={`${BorderCard} w-[100%] text-tertiaryColor `}
             >
-                {title}
+                {title} {editable !== false && <span className="text-sm text-gray-500">(editable)</span>}
             </div>
 
             {/* Animated text block */}
@@ -43,7 +43,7 @@ function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
                         className="overflow-hidden mt-2 bg-tertiaryColor border border-gray-200 rounded-lg shadow-lg p-4 text-textColor"
                     >
                         {typeof text === 'string' ? (
-                            <p>{text}</p>
+                            editable == false ? <p>{text}</p> : <input type="text" defaultValue={text}></input>
                         ) : Array.isArray(text) ? (
                             <div className="flex flex-col gap-3">
                                 {text.length === 0 ? (
@@ -56,7 +56,7 @@ function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
                                                 {Object.entries(item).map(([k, v]) => (
                                                     <div key={k} className="flex justify-between">
                                                         <span className="font-semibold mr-2">{k}:</span>
-                                                        <span>{String(v ?? '')}</span>
+                                                        <input defaultValue={String(v ?? '')} disabled={!editable} className={editable ? 'border-1' : ''}></input>
                                                     </div>
                                                 ))}
                                             </div>
@@ -72,7 +72,8 @@ function InfoDropdown({ title, text }: { title: string; text: InfoText }) {
                                     Object.entries(text).map(([k, v]) => (
                                         <div key={k} className="flex justify-between py-1">
                                             <span className="font-semibold mr-2">{k}:</span>
-                                            <span>{String(v ?? '')}</span>
+                                            <input defaultValue={String(v ?? '')} disabled={!editable} className={editable ? 'border-1' : ''}></input>
+
                                         </div>
                                     ))
                                 )}
