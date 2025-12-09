@@ -168,7 +168,9 @@ function LoggedJobInfoPage() {
         const { data, error } = await supabase.rpc("delete_job_cascade", {
             job_uuid: jobID
         });
-        
+
+        console.log(`data: ${JSON.stringify(data)}`);
+
 
         if (error) console.error("RPC error:", error);
         else {
